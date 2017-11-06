@@ -266,6 +266,7 @@ echo "You are not calling me from a Condor job"
 exit 1
 fi
 
+configure_cluster \$_CONDOR_JOB_AD
 restart_spark \$_CONDOR_JOB_AD
 EOF
 chmod +x $SPARK_HOME/sbin/start-spark-cluster.sh
