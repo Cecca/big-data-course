@@ -1,0 +1,9 @@
+#!/bin/bash
+
+cat <<EOF | base64 -d > /tmp/setup.sh.gz
+{{COMPRESSED_DATA}}
+EOF
+
+gunzip /tmp/setup.sh.gz
+bash /tmp/setup.sh
+

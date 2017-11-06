@@ -178,8 +178,8 @@ service condor start
 ##########################################
 
 ## Templated configuration
-SPARK_VERSION=2.2.0
-SPARK_HOME=/opt/spark
+SPARK_VERSION={{SPARK_VERSION}}
+SPARK_HOME={{SPARK_HOME}}
 
 echo "Adding Spark group and user"
 # Create a Spark user and a Spark group

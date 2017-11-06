@@ -22,4 +22,7 @@ export IMAGE_ID=ami-000000c6
 ##  Custom. You need to know the EC2-id of the image
 #export IMAGE_ID=
 
+# Spark configuration
+export SPARK_VERSION=2.2.0
+export SPARK_HOME=/opt/spark
 
