@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# TODO: generate a ssh key for Spark
+
 HOSTIP=$(hostname -I | awk '{print $1}')
 ##################
 # ELASTIQ CONFIG #

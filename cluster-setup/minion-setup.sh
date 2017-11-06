@@ -170,3 +170,45 @@ EOF
 
 # Start condor
 service condor start
+
+##########################################
+##
+## Setup Spark
+##
+##########################################
+
+## TODO: Move to external configuration file
+## Configuration
+SPARK_VERSION=2.2.0
+SPARK_HOME=/opt/spark
+
+echo "Adding Spark group and user"
+# Create a Spark user and a Spark group
+groupadd spark
+useradd -G spark spark
+
+# Download spark
+echo "Installing Java"
+apt-get update
+apt-get -y install openjdk-9-jdk-headless
+
+if [[ ! -d $SPARK_HOME ]]
+then
+    echo "Downloading Spark"
+    SPARK_URL=http://it.apache.contactlab.it/spark/spark-$SPARK_VERSION/spark-$SPARK_VERSION-bin-hadoop2.7.tgz
+    curl -o /tmp/spark.tgz $SPARK_URL
+
+    echo "Unpacking Spark"
+    cd /opt
+    tar xzvf /tmp/spark.tgz
+    mv spark-$SPARK_VERSION-bin-hadoop2.7 spark
+fi
+
+chown -R spark:spark $SPARK_HOME
+
+cat <<EOF > $SPARK_HOME/conf/spark-env.sh
+SPARK_LOCAL_IP=$HOSTIP
+SPARK_MASTER_HOST=%ipv4%
+EOF
+chdmod +x $SPARK_HOME/conf/spark-env.sh
+
