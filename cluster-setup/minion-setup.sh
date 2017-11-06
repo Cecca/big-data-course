@@ -184,7 +184,7 @@ SPARK_HOME=/opt/spark
 echo "Adding Spark group and user"
 # Create a Spark user and a Spark group
 groupadd spark
-useradd -G spark spark
+useradd -g spark spark
 
 # Download spark
 echo "Installing Java"
@@ -260,12 +260,12 @@ function restart_spark () {
   \$SPARK_SBIN/start-all.sh
 }
 
-if [ -z ${_CONDOR_JOB_AD+x} ]
+if [ -z \${_CONDOR_JOB_AD+x} ]
 then
 echo "You are not calling me from a Condor job"
 exit 1
 fi
 
-restart_spark $_CONDOR_JOB_AD
+restart_spark \$_CONDOR_JOB_AD
 EOF
 chmod +x $SPARK_HOME/sbin/start-spark-cluster.sh
