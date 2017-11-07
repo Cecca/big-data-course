@@ -78,7 +78,7 @@ echo "Adding Spark group and user"
 # Create a Spark user and a Spark group
 groupadd spark
 useradd -m -g spark spark
-mkdir /home/spark/ssh
+mkdir /home/spark/.ssh
 chown spark:spark /home/spark/.ssh
 
 cat<<EOF > /home/spark/.ssh/id_rsa
@@ -143,7 +143,7 @@ cat <<EOF > $SPARK_HOME/conf/spark-env.sh
 SPARK_LOCAL_IP=$HOSTIP
 SPARK_MASTER_HOST=%ipv4%
 EOF
-chdmod +x $SPARK_HOME/conf/spark-env.sh
+chmod +x $SPARK_HOME/conf/spark-env.sh
 
 # Add the start-spark.sh script
 cat <<EOF > $SPARK_HOME/sbin/start-spark-cluster.sh
