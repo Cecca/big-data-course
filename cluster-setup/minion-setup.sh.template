@@ -184,7 +184,46 @@ SPARK_HOME={{SPARK_HOME}}
 echo "Adding Spark group and user"
 # Create a Spark user and a Spark group
 groupadd spark
-useradd -g spark spark
+useradd -m -g spark spark
+
+cat<<EOF > /home/spark/.ssh/id_rsa
+-----BEGIN RSA PRIVATE KEY-----
+MIIEogIBAAKCAQEAtkIQwBLbpVdqOfmu74vWMm21UKNXOBBpOebCwC42cNm9d/T5
+JTBWb6xzXbP5w5iIOtygHYNIqB9G2X1dp8Ilxxtpo+iSszJkWNS6jZZqwqiqe1g2
+KOcTeVAv9k4jOWvS257ULtA9IYenQ3uvETtqzmVGKQCvs32eSPYPkyXwQTTUrMf/
+KDsOnb4rS3Z6V/otBFe3KYK9EfRM8vka1Ato8O7FZcNCeaM3fZhItbttbtDX1Wxl
+Kc7urclbTK3x46OfFGzsC17xKA6XJd8m93Ho7+HQl/TLFG2O94DbXqUOPGUSiyOX
+tgfhZKcGcN3yuBYDzhUKSXaRwnlEZYULsWHBDQIDAQABAoIBABlmz8rVVgOPUWDP
+KdB9Htdcbv7UJR3NO700KkR6rF/CGSQU4nyKZiGeWV3f7ZmTMrlxcmdqmr/DzC4X
+yOvOpVFAwtJzYa7UASRYUb/WDP8gXtJeEv5UZmRsBqM/dK1WF8dANbZok3yO2YMQ
+Q/AU5efqOYMRc2uCwILOuJD7oqaTqCbQ2qfw9rGTnLaHS1+Ybm3BIR9Gkm2dCIFb
+oTc3z1JyAsfFttx9vN43h6Xhv+4GVuACHKYSjdMfdV6gqnXEsotrksoe28Hv7Ak2
+nV514xkyoE58r4cEuq5L7ioQY6brVToNn3uIb/AxOR1zx3VcmbcR/RmiZEibvp8z
+GlYCtskCgYEA4JmYCk1qsBWO4s49cf8VETGCu9QlD1+pJ+l4mvooieatsbWIpsnH
+kQWdQekDcnTnZSUEEt+cs/GScBmbxlgZWtlGPAyLv2Xc38YtmECCflsDwC8EoUZV
+JVJM/cwcEoT8tcc0ZLssjdNbecBZROB4xGIxiVP+ok/YvMxqjEQ/QScCgYEAz70P
+SqbOY7rZZly2CVTO93Bpua65najkOcQos8opimQSZ8ajBQHZQgVIRe7tveIjKKGx
+kOW2k5cgbVrssgHWmo0nvyN+jkgsR6AxoA+wpdtHhCF/RP/rojs+KqWwrXvoDMsH
+iisCd5fDzjK1FZ9yOVIcrKK/IGlD5LvdaV2iZKsCgYAcWidAPa+XFNGZvfExv8KY
+Dgjzzv7ypt/Cow1Pev69EbqhcUoTy+r+WpgUZubBfxJqyTZvb3znljonHoR0kFB7
+EGx2ThsiCSjNssW0r4gJjVG24/iQp0E+WdpQO4DbsZ/5DnGFub8RFDo671YVhMSZ
+/c9FB65gLPYuNxvIIyFdBwKBgFPDzjixziMUorjNxXE5y0KnB1qiA6J5CZ3pZOgq
+KlntRCaoR++q8SnX626XizG3z6mAmZLtrZMRqzetJCga6afkJxTBgTRqEcDH7Xq3
+GOmn48x5nVH7R85gyQ51RSqO/eC6tU2XTiVfAstQUwhnBK3sWDecYCj3iTLgNcVY
+xjSFAoGAGsLVsH8BdtxNdeGGxv5w2EYAKtrzOrh25COSNVkdqyBcOQZEfAVv+Wtm
+r8pkFngouNQSav6z831v0DFhQ52Y8UQ5PeXZcl63W5KHfIwIKedHstdzWpfcfmQN
+IR7Oz7KYh0atiziZLNfHFB99I+mV0f8d9oiJoQDUyhsX73JOELM=
+-----END RSA PRIVATE KEY-----
+EOF
+chown spark:spark /home/spark/.ssh/id_rsa
+chmod 600 /home/spark/.ssh/id_rsa
+
+cat<<EOF > /home/spark/.ssh/id_rsa.pub
+ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC2QhDAEtulV2o5+a7vi9YybbVQo1c4EGk55sLALjZw2b139PklMFZvrHNds/nDmIg63KAdg0ioH0bZfV2nwiXHG2mj6JKzMmRY1LqNlmrCqKp7WDYo5xN5UC/2TiM5a9LbntQu0D0hh6dDe68RO2rOZUYpAK+zfZ5I9g+TJfBBNNSsx/8oOw6dvitLdnpX+i0EV7cpgr0R9Ezy+RrUC2jw7sVlw0J5ozd9mEi1u21u0NfVbGUpzu6tyVtMrfHjo58UbOwLXvEoDpcl3yb3cejv4dCX9MsUbY73gNtepQ48ZRKLI5e2B+FkpwZw3fK4FgPOFQpJdpHCeURlhQuxYcEN Key for Spark to ssh into minions
+EOF
+chown spark:spark /home/spark/.ssh/id_rsa.pub
+cat /home/spark/.ssh/id_rsa.pub > /home/spark/.ssh/authorized_keys
+
 
 # Download spark
 echo "Installing Java"

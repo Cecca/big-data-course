@@ -16,5 +16,6 @@ master-setup.sh: master-setup.sh.template minion-setup.sh $(CONF_FILE)
 
 .PHONY: clean
 clean:
+	$(RM) bootstrap.sh
 	$(RM) minion-setup.sh
 	$(RM) master-setup.sh
