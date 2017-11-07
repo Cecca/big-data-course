@@ -48,6 +48,10 @@ WANT_SUSPEND    = False
 WANT_VACATE     = False
 RANK            = Scheduler =?= \$(DedicatedScheduler)
 
+# Advertise as a single slot, independently of the number of cores
+SLOT_TYPE_1 = cpus=100%
+NUM_SLOTS_TYPE_1 = 1
+
 #  Settings you should leave alone, but that must be defined
 MPI_CONDOR_RSH_PATH = \$(LIBEXEC)
 CONDOR_SSHD = /usr/sbin/sshd
@@ -74,6 +78,8 @@ echo "Adding Spark group and user"
 # Create a Spark user and a Spark group
 groupadd spark
 useradd -m -g spark spark
+mkdir /home/spark/ssh
+chown spark:spark /home/spark/.ssh
 
 cat<<EOF > /home/spark/.ssh/id_rsa
 -----BEGIN RSA PRIVATE KEY-----
