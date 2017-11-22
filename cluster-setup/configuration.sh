@@ -9,8 +9,10 @@ export KEY_NAME=cloudveneto-machines
 ##
 ##  Fedora 23:            
 #export IMAGE_ID=ami-00000027
+## ubuntu-16.04-spark-2.2.0-hadoop-2.7
+export IMAGE_ID=ami-00000107
 ##  ubuntu-16.04-oracle-java-9
-export IMAGE_ID=ami-00000101
+# export IMAGE_ID=ami-00000101
 ##  ubuntu-16.04.1-LTS:   
 #export IMAGE_ID=ami-000000c6
 ##  ubuntu-14.04.3-LTS:   
