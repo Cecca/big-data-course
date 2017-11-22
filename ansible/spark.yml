@@ -11,6 +11,6 @@
         group: spark
 
     - name: add spark binaries to the path
-      lineinfile:
-        line: PATH=$PATH:/opt/spark/bin
-        path: /etc/environment
+      copy:
+        src: spark-path.sh
+        dest: /etc/profile.d/spark-path.sh
