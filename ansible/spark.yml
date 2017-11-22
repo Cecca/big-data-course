@@ -10,7 +10,10 @@
         owner: root
         group: spark
 
-    - name: add spark binaries to the path
-      copy:
-        src: spark-path.sh
-        dest: /etc/profile.d/spark-path.sh
+    - name: link spark binaries to /usr/local/bin
+      file:
+        src: "/opt/spark/bin/{{ item }}"
+        dest: "/usr/local/bin/{{ item }}"
+        state: link
+      with_items:
+        - spark-submit
