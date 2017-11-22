@@ -13,3 +13,4 @@
     - name: add spark binaries to the path
       lineinfile:
         line: PATH=$PATH:/opt/spark/bin
+        path: /etc/environment
