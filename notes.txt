@@ -1,0 +1,27 @@
+First of all, install ansible with
+
+    apt install python-pip && pip install ansible
+
+to get the latest version (the one in the repos is buggy for the features we need)
+
+Then, create the hosts file
+
+--------------------------------------
+
+ansible-pull --private-key /home/ubuntu/.ssh/cloudveneto-machines.pem -U ubuntu@10.67.41.112:/var/git/config.git -C ansible --accept-host-key
+
+----------------------------------------
+
+Prepare an image with the software we need already installed:
+
+- oracle jdk9 (the openjdk version 9 creates problems with Spark)
+- Spark (better to preinstall it than to download all the times)
+- Hadoop HDFS (on the frontend)
+
+---------------------------------------------
+
+Setup security group for NFS server
+
+--------------------------------------------------
+
+dump frontend IP in /etc

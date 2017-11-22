@@ -1,0 +1,20 @@
+---
+- hosts: all
+
+  tasks:
+    - name: include usernames
+      include_vars:
+        file: usernames.yml
+
+    - name: install nfs server
+      apt:
+        name: nfs-client
+        state: present
+
+    - name: mount user homes
+      mount:
+        path: "/home/{{ item }}"
+        src: "{{ lookup('file', '/etc/frontend-ip') }}:/home/{{ item }}"
+        state: mounted
+        fstype: nfs
+      with_items: "{{ usernames }}"

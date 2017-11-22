@@ -1,0 +1,44 @@
+---
+- hosts: all
+  
+  vars:
+    frontend_hostname: master
+
+  tasks:
+
+    - name: include usernames
+      include_vars:
+        file: usernames.yml
+
+    - name: create spark group
+      group:
+        name: spark
+        state: present
+        
+
+    - name: create spark users
+      user:
+        name: "{{ item }}"
+        state: present
+        groups: spark
+        append: yes
+        shell: /bin/bash
+      with_items: "{{ usernames }}"
+
+
+    - name: generate ssh keys (on the frontend)
+      user:
+        name: "{{ item }}"
+        generate_ssh_key: yes
+      with_items: "{{ usernames }}"
+      when: ansible_hostname == frontend_hostname
+
+    
+    - name: authorize the user's own key
+      authorized_key:
+        user: "{{ item }}"
+        state: present
+        key: "{{ lookup('file', '/home/' + item + '/.ssh/id_rsa.pub') }}"
+      with_items: "{{ usernames }}"
+      when: ansible_hostname == frontend_hostname
+      

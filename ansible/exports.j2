@@ -1,0 +1,7 @@
+# Export directory nfs in root directory
+/root/nfs 10.67.0.0/255.255.0.0(rw,no_root_squash,subtree_check)
+
+# Export all user homes
+{% for user in usernames %}
+/home/{{ user }} 10.67.*.*(rw,no_root_squash,subtree_check)
+{% endfor %}

@@ -1,0 +1,25 @@
+---
+- hosts: all
+
+  handlers:
+    - name: Reload NFS server
+      service: name=nfs-kernel-server state=reloaded
+
+  tasks:
+    - name: include usernames
+      include_vars:
+        file: usernames.yml
+
+    - name: install nfs server
+      apt:
+        name: nfs-server
+        state: present
+
+    - name: create the NFS directory in root folder
+      file: path=/root/nfs
+            state=directory
+
+    - name: configure nfs exports
+      template: src=exports.j2 dest=/etc/exports
+      notify: 
+        - Reload NFS server
