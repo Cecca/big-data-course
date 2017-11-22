@@ -1,0 +1,15 @@
+---
+- hosts: all
+  tasks:
+
+    - name: install start-spark.sh script
+      copy:
+        src: start-spark.sh
+        dst: /usr/sbin/start-spark.sh
+        mode: u=rw,g=rx,o=r
+        owner: root
+        group: spark
+
+    - name: add spark binaries to the path
+      lineinfile:
+        line: PATH=$PATH:/opt/spark/bin

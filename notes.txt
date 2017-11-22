@@ -25,3 +25,11 @@ Setup security group for NFS server
 --------------------------------------------------
 
 dump frontend IP in /etc
+
+--------------------------------------------------
+
+Create log directory for Spark
+
+-------------------------------------------------
+
+Update decurity group for Spark. Not needed, I don't know why
