@@ -5,7 +5,7 @@
     - name: install start-spark.sh script
       copy:
         src: start-spark.sh
-        dst: /usr/sbin/start-spark.sh
+        dest: /usr/sbin/start-spark.sh
         mode: u=rw,g=rx,o=r
         owner: root
         group: spark
