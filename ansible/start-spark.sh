@@ -34,10 +34,10 @@ function configure_cluster () {
   print_slaves $CONDOR_JOB_DESCRIPTION_FILE > $SLAVES_FILE
   print_master $CONDOR_JOB_DESCRIPTION_FILE > $MASTER_FILE
   MASTER=$(print_master $CONDOR_JOB_DESCRIPTION_FILE)
-  cat EOF<< > $SPARK_HOME/conf/spark-env.sh
-    SPARK_LOCAL_IP=$IP_ADDR
-    SPARK_MASTER_HOST=$MASTER
-  EOF
+cat <<EOF > $SPARK_HOME/conf/spark-env.sh
+SPARK_LOCAL_IP=$IP_ADDR
+SPARK_MASTER_HOST=$MASTER
+EOF
 }
 
 function is_spark_running () {
