@@ -1,3 +1,4 @@
 ---
 - import_playbook: ansible/users.yml
 - import_playbook: ansible/nfs-client.yml
+- import_playbook: ansible/spark.yml
