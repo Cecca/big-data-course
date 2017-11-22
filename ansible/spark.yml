@@ -1,6 +1,16 @@
 ---
 - hosts: all
+
+  vars:
+    spark_version: 2.1.2
+
   tasks:
+
+    - name: download Spark
+      unarchive:
+        src: "http://it.apache.contactlab.it/spark/spark-{{ spark_version }}/spark-{{ spark_version }}-bin-hadoop2.7.tgz"
+        dest: /opt
+        creates: /opt/spark 
 
     - name: install start-spark.sh script
       copy:
