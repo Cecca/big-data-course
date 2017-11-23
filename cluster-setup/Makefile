@@ -1,5 +1,4 @@
 SHELL := /bin/bash
-DATA=$(shell base64 -w0 minion-setup.sh)
 CONF_FILE=configuration.sh
 TEMPLATER=utils/templater.sh
 
@@ -12,7 +11,7 @@ minion-setup.sh: minion-setup.sh.template start-spark-cluster.sh $(CONF_FILE)
 	source $(CONF_FILE) && $(TEMPLATER) minion-setup.sh.template > minion-setup.sh
 
 master-setup.sh: master-setup.sh.template minion-setup.sh $(CONF_FILE)
-	source credentials/ec2rc.sh && source $(CONF_FILE) && USER_DATA=$(DATA) $(TEMPLATER) master-setup.sh.template > master-setup.sh
+	source credentials/ec2rc.sh && source $(CONF_FILE) && USER_DATA=$(shell base64 -w0 minion-setup.sh) $(TEMPLATER) master-setup.sh.template > master-setup.sh
 
 .PHONY: clean
 clean:

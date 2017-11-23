@@ -71,5 +71,5 @@ service condor start
 # Setup with ansible
 apt install python-pip && pip install ansible
 
-ansible-pull -U root@%ipv4%:/var/git/config.git -C master --accept-host-key --full --purge
+ansible-pull -U {{CONFIG_REPO}} -C master --accept-host-key --full --purge
 
