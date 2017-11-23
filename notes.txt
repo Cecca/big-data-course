@@ -49,3 +49,7 @@ Configuration server
 sudo mkdir /var/git/
 sudo git init --bare /var/git/config.git
 sudo chown -R ubuntu /var/git/
+
+-----------------------------------------------------
+
+Ansible is installed within a virtualenv, because of conflicting required versions of cryptography between it and boto (needed by elastiq)

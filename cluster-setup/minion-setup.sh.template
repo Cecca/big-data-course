@@ -69,7 +69,11 @@ EOF
 service condor start
 
 # Setup with ansible
-apt install python-pip && pip install ansible
+apt install python-pip virtualenv
 
+virtualenv /var/ansible-virtualenv
+source /var/ansible-virtualenv/bin/activate
+pip install ansible
 ansible-pull -U {{CONFIG_REPO}} -C master --accept-host-key --full --purge
+deactivate
 

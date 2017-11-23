@@ -1,6 +1,6 @@
 #!/bin/bash
 
-apt install -y python-pip
+apt install -y python-pip virtualenv
 
 HOSTIP=$(hostname -I | awk '{print $1}')
 
@@ -175,7 +175,7 @@ service condor start
 
 ## ElastiQ configuration
 
-pip install boto
+apt install -y python-boto
 wget https://github.com/dberzano/elastiq/releases/download/v0.9.10/python-elastiq_0.9.10-1py27_all.deb
 dpkg -i python-elastiq_0.9.10-1py27_all.deb
 #
@@ -209,6 +209,8 @@ EOF
 service elastiq start
 
 # Setup with ansible
+virtualenv /var/ansible-virtualenv
+source /var/ansible-virtualenv/bin/activate
 pip install ansible
-
 ansible-pull -U {{CONFIG_REPO}} -C master --accept-host-key --full --purge
+deactivate
