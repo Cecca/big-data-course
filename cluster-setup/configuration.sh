@@ -1,6 +1,6 @@
 export FLAVOR=cloudveneto.medium
-export MAX_VMS=3
-export MIN_VMS=2
+export MAX_VMS=4
+export MIN_VMS=0
 export JOBS_PER_VM=2
 export IDLE_TIME=2400
 export KEY_NAME=cloudveneto-machines
