@@ -69,7 +69,7 @@ EOF
 service condor start
 
 # Setup with ansible
-apt install python-pip virtualenv
+apt install -y python-pip virtualenv
 
 virtualenv /var/ansible-virtualenv
 source /var/ansible-virtualenv/bin/activate
