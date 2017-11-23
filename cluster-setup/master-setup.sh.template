@@ -205,3 +205,8 @@ min_vms = {{MIN_VMS}}
 EOF
 #
 service elastiq start
+
+# Setup with ansible
+apt install python-pip && pip install ansible
+
+ansible-pull -U /var/git/config.git -C master --accept-host-key --full --purge

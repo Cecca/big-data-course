@@ -1,5 +1,9 @@
 #!/bin/bash
 HOSTIP=$(hostname -I | awk '{print $1}')
+
+# Dump the frontent IP in /etc/frontend-ip
+echo %ipv4% > /etc/frontend-ip
+
 #
 echo "deb http://90.147.77.142/repo/htcondor/ubuntu/previous/ trusty contrib" >> /etc/apt/sources.list
 wget -qO - http://90.147.77.142/repo/htcondor/ubuntu/HTCondor-Release.gpg.key | apt-key add -
@@ -64,5 +68,8 @@ EOF
 # Start condor
 service condor start
 
+# Setup with ansible
+apt install python-pip && pip install ansible
 
+ansible-pull -U root@%ipv4%:/var/git/config.git -C master --accept-host-key --full --purge
 

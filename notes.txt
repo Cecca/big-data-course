@@ -37,3 +37,7 @@ Update decurity group for Spark. Not needed, I don't know why
 --------------------------------------------------
 
 Spark 2.1.2 e Hadoop 2.7.4
+
+-------------------------------------------------- 
+
+Add the cloudveneto key and accept it on the root account
