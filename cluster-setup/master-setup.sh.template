@@ -207,6 +207,6 @@ EOF
 service elastiq start
 
 # Setup with ansible
-apt install python-pip && pip install ansible
+apt install -y python-pip && pip install ansible
 
 ansible-pull -U {{CONFIG_REPO}} -C master --accept-host-key --full --purge
