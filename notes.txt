@@ -41,3 +41,11 @@ Spark 2.1.2 e Hadoop 2.7.4
 -------------------------------------------------- 
 
 Add the cloudveneto key and accept it on the root account
+
+------------------------------------------------------
+
+Configuration server
+
+sudo mkdir /var/git/
+sudo git init --bare /var/git/config.git
+sudo chown -R ubuntu /var/git/

@@ -30,3 +30,5 @@ export IMAGE_ID=ami-0000010a
 export SPARK_VERSION=2.2.0
 export SPARK_HOME=/opt/spark
 
+# Configuration repository
+export CONFIG_REPO=ubuntu@10.67.41.123:/var/git/config.git
