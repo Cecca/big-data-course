@@ -3,6 +3,7 @@
 apt install -y python-pip virtualenv
 
 HOSTIP=$(hostname -I | awk '{print $1}')
+echo $HOSTIP > /etc/frontend-ip
 
 # CA CERT
 cat<< EOF >/tmp/cacerts.txt
