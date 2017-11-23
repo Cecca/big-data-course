@@ -1,5 +1,7 @@
 #!/bin/bash
 
+apt install -y python-pip
+
 HOSTIP=$(hostname -I | awk '{print $1}')
 
 # CA CERT
@@ -173,7 +175,7 @@ service condor start
 
 ## ElastiQ configuration
 
-apt-get install -y python-boto
+pip install boto
 wget https://github.com/dberzano/elastiq/releases/download/v0.9.10/python-elastiq_0.9.10-1py27_all.deb
 dpkg -i python-elastiq_0.9.10-1py27_all.deb
 #
@@ -207,6 +209,6 @@ EOF
 service elastiq start
 
 # Setup with ansible
-apt install -y python-pip && pip install ansible
+pip install ansible
 
 ansible-pull -U {{CONFIG_REPO}} -C master --accept-host-key --full --purge
