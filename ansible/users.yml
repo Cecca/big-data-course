@@ -2,7 +2,7 @@
 - hosts: all
   
   vars:
-    frontend_hostname: master
+    frontend_hostname: frontend
 
   tasks:
 
