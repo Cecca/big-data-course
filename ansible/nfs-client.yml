@@ -6,7 +6,7 @@
       include_vars:
         file: usernames.yml
 
-    - name: install nfs server
+    - name: install nfs client
       apt:
         name: nfs-client
         state: present
