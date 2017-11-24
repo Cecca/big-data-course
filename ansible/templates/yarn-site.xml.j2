@@ -1,0 +1,99 @@
+<?xml version="1.0"?>
+<!--
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License. See accompanying LICENSE file.
+-->
+<configuration>
+
+<!-- Site specific YARN configuration properties -->
+
+  <property>
+    <name>yarn.resourcemanager.webapp.address</name>
+    <value>{{ yarn.resourcemanager.webapp_address }}</value>
+  </property>
+
+  <property>
+    <name>yarn.resourcemanager.hostname</name>
+    <value>{{ yarn.resourcemanager.hostname }}</value>
+    <description>
+      Hostname for the resource manager
+    </description>
+  </property>
+
+<property>
+    <name>yarn.nodemanager.local-dirs</name>
+    <value>{{ yarn.nodemanager.local_dirs |join(',') }}</value>
+    <description>
+      Comma-separated list of paths on the local filesystem where
+      intermediate data is written.
+    </description>
+  </property>
+
+
+  <property>
+    <name>yarn.nodemanager.resource.memory-mb</name>
+    <value>{{ yarn.nodemanager.memory }}</value>
+    <description>the amount of memory on the NodeManager in MB</description>
+  </property>
+
+  <property>
+    <name>yarn.nodemanager.resource.cpu-vcores</name>
+    <value>{{ yarn.nodemanager.cpu_vcores }}</value>
+    <description>the number of cores for each node manager</description>
+  </property>
+
+  <property>
+    <name>yarn.scheduler.minimum-allocation-mb</name>
+    <value>{{ yarn.scheduler.minimum_allocation_mb }}</value>
+    <description>the minimum memory that can be allocated for each container, in MB</description>
+  </property>
+
+  <!--
+
+   <property>
+    <name>yarn.resourcemanager.scheduler.class</name>
+    <value>org.apache.hadoop.yarn.server.resourcemanager.scheduler.capacity.CapacityScheduler</value>
+    <description>In case you do not want to use the default scheduler</description>
+  </property>
+
+
+  <property>
+    <name>yarn.scheduler.maximum-allocation-mb</name>
+    <value>{{ yarn.scheduler.maximum_allocation_mb }}</value>
+    <description>the maximum memory that can be allocated for each container, in MB</description>
+  </property>
+
+  <property>
+    <name>yarn.nodemanager.remote-app-log-dir</name>
+    <value>{{ yarn.nodemanager.app_logs }}</value>
+    <description>directory on hdfs where the application logs are moved to </description>
+  </property>
+
+  <property>
+    <name>yarn.nodemanager.log-dirs</name>
+    <value>{{ yarn.nodemanager.log_dirs }}</value>
+    <description>the directories used by Nodemanagers as log directories</description>
+  </property>
+
+  <property>
+    <name>yarn.nodemanager.local-dirs</name>
+    <value>{{ yarn.nodemanager.local_dirs |join(',') }}</value>
+    <description>
+      Comma-separated list of paths on the local filesystem where
+      intermediate data is written.
+    </description>
+  </property>
+
+  -->
+
+
+</configuration>

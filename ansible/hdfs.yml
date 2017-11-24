@@ -1,0 +1,53 @@
+- hosts: all
+
+  vars:
+    java_home: /usr/lib/jvm/java-9-oracle
+    hadoop_home: /opt/hadoop
+    hdfs_volume: /dev/vdb
+    hdfs_volume_mount_point: /var/hdfs
+    hdfs: {
+      host: 10.67.41.127,
+      port: 9000,
+      name_dir: [/var/hdfs/names],
+      data_dir: [/var/hdfs/data],
+      replication: 1
+    }
+
+  tasks:
+
+    - name: format the volume, if needed
+      filesystem:
+        fstype: ext4
+        dev: "{{ hdfs_volume }}"
+      when: ansible_hostname == "frontend"
+
+    - name: make the mount point
+      file: 
+        name: /var/hdfs
+        state: directory
+      when: ansible_hostname == "frontend"        
+      
+    - name: mount the volume
+      mount:
+        src: "{{ hdfs_volume }}"
+        path: "{{ hdfs_volume_mount_point }}"
+        state: mounted
+        fstype: ext4        
+      when: ansible_hostname == "frontend"        
+
+    - name: copy configuration templates
+      template:
+        src: "templates/{{ item }}.j2"
+        dest: "{{ hadoop_home }}/etc/hadoop/{{ item }}"
+      with_items:
+        - hdfs-site.xml
+        - datanodes
+
+    - name: copy the startup scripts
+      copy:
+        src: "files/{{ item }}"
+        dest: "{{ hadoop_home }}/sbin/{{ item }}"
+        mode: u+x
+      with_items:
+        - start-dfs.sh
+        - stop-dfs.sh

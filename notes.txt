@@ -57,3 +57,23 @@ Ansible is installed within a virtualenv, because of conflicting required versio
 -------------------------------------------------------
 
 Users may experience delays as machines are spinned up
+
+--------------------------------------------------
+
+Should configure /etc/hosts
+
+echo "$(ip addr | egrep -o '10.67.41.[0-9]+' | head -n1) $(hostname)" >> /etc/hosts
+
+should contain the hostnames of all the nodes in the cluster
+
+-------------------------------------
+
+Add yarn user, or run hadoop with spark user (which needs authorized access on all machines)
+
+----------------------------------
+
+Install python in image
+
+------------------------------------
+
+Describe how to setup ssh so to use ansible from the local machine

@@ -1,0 +1,41 @@
+- hosts: all
+
+  vars:
+    java_home: /usr/lib/jvm/java-9-oracle
+    hadoop_home: /opt/hadoop
+    yarn: {
+      resourcemanager: {
+        webapp_address: '0.0.0.0:8088',
+        hostname: 10.67.41.127
+      },
+      scheduler: {
+        maximum_allocation_mb: 9216,
+        minimum_allocation_mb: 512
+      },
+      nodemanager: {
+        memory: 6144, # leave some space for the OS
+        cpu_vcores: 8,
+        app_logs: /app-logs,
+        log_dirs: /var/log/yarn-nodemanager,
+        local_dirs: [/tmp/yarn-local-dirs]
+      }
+    }
+
+
+  tasks:
+
+    - name: copy configuration templates
+      template:
+        src: "templates/{{ item }}.j2"
+        dest: "{{ hadoop_home }}/etc/hadoop/{{ item }}"
+      with_items:
+        - hadoop-env.sh
+        - yarn-site.xml
+        - slaves
+
+    - name: make yarn local dirs
+      file:
+        name: "{{ item }}"
+        state: directory
+        mode: 777
+      with_items: "{{ yarn.nodemanager.local_dirs }}"
