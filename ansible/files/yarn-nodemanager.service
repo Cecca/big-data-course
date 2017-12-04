@@ -4,8 +4,8 @@ After=network.target
 
 [Service]
 Type=forking
-User=root
-Group=root
+User=yarn
+Group=yarn
 ExecStart=/opt/hadoop/sbin/yarn-daemon.sh --config /opt/hadoop/etc/hadoop start nodemanager
 ExecStop=/opt/hadoop/sbin/yarn-daemon.sh --config /opt/hadoop/etc/hadoop stop nodemanager
 

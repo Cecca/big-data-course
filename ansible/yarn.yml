@@ -24,6 +24,19 @@
 
   tasks:
 
+    - name: create yarn group
+      group:
+        name: yarn
+        state: present
+
+    - name: create yarn user
+      user:
+        name: yarn
+        group: yarn
+        state: present
+        createhome: no
+        system: yes
+
     - name: copy configuration templates
       template:
         src: "templates/{{ item }}.j2"
@@ -39,6 +52,14 @@
         state: directory
         mode: 777
       with_items: "{{ yarn.nodemanager.local_dirs }}"
+
+    - name: fix owner and group
+      file:
+        path: /opt/hadoop
+        state: directory
+        recurse: yes
+        owner: yarn
+        group: yarn
 
     - name: install services
       copy:
