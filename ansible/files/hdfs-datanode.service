@@ -1,0 +1,13 @@
+[Unit]
+Description=Apache Hadoop HDFS datanode
+After=network.target
+
+[Service]
+Type=forking
+User=hadoop
+Group=hadoop
+ExecStart=/opt/hadoop/sbin/hadoop-daemon.sh --config /opt/hadoop/etc/hadoop/ --script /opt/hadoop/bin/hdfs start datanode
+ExecStop=/opt/hadoop/sbin/hadoop-daemon.sh --config /opt/hadoop/etc/hadoop/ --script /opt/hadoop/bin/hdfs stop datanode
+
+[Install]
+WantedBy=multi-user.target

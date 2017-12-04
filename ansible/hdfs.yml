@@ -15,6 +15,19 @@
 
   tasks:
 
+    - name: create hadoop group
+      group:
+        name: hadoop
+        state: present
+
+    - name: create hadoop user
+      user:
+        name: hadoop
+        group: hadoop
+        state: present
+        createhome: no
+        system: yes
+
     - name: format the volume, if needed
       filesystem:
         fstype: ext4
@@ -25,6 +38,9 @@
       file: 
         name: /var/hdfs
         state: directory
+        owner: hadoop
+        group: hadoop
+        recurse: yes
       when: ansible_hostname == "frontend"        
       
     - name: mount the volume
@@ -41,13 +57,25 @@
         dest: "{{ hadoop_home }}/etc/hadoop/{{ item }}"
       with_items:
         - hdfs-site.xml
+        - core-site.xml
         - datanodes
 
-    - name: copy the startup scripts
+    - name: copy systemd scripts
       copy:
         src: "files/{{ item }}"
-        dest: "{{ hadoop_home }}/sbin/{{ item }}"
-        mode: u+x
+        dest: "/etc/systemd/system/{{ item }}"
       with_items:
-        - start-dfs.sh
-        - stop-dfs.sh
+        - hdfs-datanode.service
+        - hdfs-namenode.service
+        - hdfs-secondary-namenode.service
+
+    - name: enable and start systemd services
+      service:
+        name: "{{ item }}"
+        state: started
+        enabled: yes
+      when: ansible_hostname == "frontend"
+      with_items:
+        - hdfs-datanode
+        - hdfs-namenode
+        - hdfs-secondary-namenode

@@ -28,19 +28,4 @@
     <value>hdfs://{{ hdfs.host }}:{{ hdfs.port }}</value>
   </property>
 
-  <property>
-    <name>dfs.replication</name>
-    <value>{{ hdfs.replication }}</value>
-  </property>
-
-  <property>
-    <name>dfs.namenode.name.dir</name>
-    <value>{{ hdfs.name_dir|join(',') }}</value>
-  </property>
-
-  <property>
-    <name>dfs.datanode.data.dir</name>
-    <value>{{ hdfs.data_dir|join(',') }}</value>
-  </property>
-
 </configuration>

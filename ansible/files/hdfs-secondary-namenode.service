@@ -1,0 +1,13 @@
+[Unit]
+Description=Apache Hadoop HDFS secondary namenode
+After=network.target
+
+[Service]
+Type=forking
+User=hadoop
+Group=hadoop
+ExecStart=/opt/hadoop/sbin/hadoop-daemon.sh --config /opt/hadoop/etc/hadoop/ --script /opt/hadoop/bin/hdfs start secondarynamenode
+ExecStop=/opt/hadoop/sbin/hadoop-daemon.sh --config /opt/hadoop/etc/hadoop/ --script /opt/hadoop/bin/hdfs stop secondarynamenode
+
+[Install]
+WantedBy=multi-user.target

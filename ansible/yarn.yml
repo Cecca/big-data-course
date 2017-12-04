@@ -24,15 +24,15 @@
 
   tasks:
 
-    - name: create yarn group
+    - name: create hadoop group
       group:
-        name: yarn
+        name: hadoop
         state: present
 
-    - name: create yarn user
+    - name: create hadoop user
       user:
-        name: yarn
-        group: yarn
+        name: hadoop
+        group: hadoop
         state: present
         createhome: no
         system: yes
@@ -58,8 +58,8 @@
         path: /opt/hadoop
         state: directory
         recurse: yes
-        owner: yarn
-        group: yarn
+        owner: hadoop
+        group: hadoop
 
     - name: install services
       copy:
