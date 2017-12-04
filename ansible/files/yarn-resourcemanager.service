@@ -1,0 +1,13 @@
+[Unit]
+Description=Apache Hadoop YARN resource manager
+After=network.target
+
+[Service]
+Type=forking
+User=root
+Group=root
+ExecStart=/opt/hadoop/sbin/yarn-daemon.sh --config /opt/hadoop/etc/hadoop start resourcemanager
+ExecStop=/opt/hadoop/sbin/yarn-daemon.sh --config /opt/hadoop/etc/hadoop stop resourcemanager
+
+[Install]
+WantedBy=multi-user.target

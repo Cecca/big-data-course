@@ -39,3 +39,25 @@
         state: directory
         mode: 777
       with_items: "{{ yarn.nodemanager.local_dirs }}"
+
+    - name: install services
+      copy:
+        src: "files/{{ item }}"
+        dest: "/etc/systemd/system/{{ item }}"
+      with_items:
+        - yarn-nodemanager.service
+        - yarn-resourcemanager.service
+
+    - name: enable Yarn resource manager
+      service:
+        name: yarn-resourcemanager
+        enabled: yes
+        state: started
+      when: ansible_hostname == "frontend"
+
+    - name: enable Yarn node managers
+      service:
+        name: yarn-nodemanager
+        enabled: yes
+        state: started
+      when: ansible_hostname != "frontend"
