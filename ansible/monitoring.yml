@@ -1,0 +1,94 @@
+- hosts: all
+
+  vars:
+    frontend_ip: 10.67.41.127
+
+  tasks:
+
+    - name: import elastisearch key
+      apt_key: 
+        url: https://artifacts.elastic.co/GPG-KEY-elasticsearch
+        state: present
+
+    - name: setup apt repository
+      apt_repository:
+        repo: deb https://artifacts.elastic.co/packages/6.x/apt stable main
+        state: present
+
+    - name: install apt-transport-https
+      apt:
+        name: apt-transport-https
+        state: present
+
+    - name: install elasticsearch on frontend
+      apt:
+        name: elasticsearch
+        state: present
+      when: ansible_hostname == "frontend"
+
+    # - name: download kibana tar
+    #   get_url:
+    #     url: "https://artifacts.elastic.co/downloads/kibana/kibana-6.0.0-linux-x86_64.tar.gz"
+    #     dest: /opt/kibana-6.0.0.tar.gz
+    #   when: ansible_hostname == "frontend"
+
+    - name: create kibana group
+      group:
+        name: kibana
+        state: present
+
+    - name: create kibana user
+      user:
+        name: kibana
+        group: kibana
+        state: present
+        createhome: no
+        system: yes
+
+    # The .deb installation does not work for Kibana
+    - name: unpack
+      unarchive:
+        src: https://artifacts.elastic.co/downloads/kibana/kibana-6.0.0-linux-x86_64.tar.gz
+        dest: /opt
+        creates: /opt/kibana-6.0.0-linux-x86_64
+        remote_src: yes
+        owner: kibana
+        group: kibana
+      when: ansible_hostname == "frontend"
+
+    - file:
+        path: /opt/kibana-6.0.0-linux-x86_64
+        owner: kibana
+        group: kibana
+        recurse: true
+
+    - file:
+        src: /opt/kibana-6.0.0-linux-x86_64
+        dest: /opt/kibana
+        state: link
+        owner: kibana
+        group: kibana
+      when: ansible_hostname == "frontend"
+
+    - copy:
+        src: files/kibana.service
+        dest: /etc/systemd/system/kibana.service
+      when: ansible_hostname == "frontend"
+
+    - copy:
+        src: files/kibana.yml
+        dest: /opt/kibana/config/kibana.yml 
+      when: ansible_hostname == "frontend"
+
+    - name: enable kibana service
+      service:
+        name: kibana
+        state: started
+        enabled: yes
+    
+    - apt:
+        name: filebeat
+
+    - template:
+        src: templates/filebeat.yml.j2
+        dest: /etc/filebeat/filebeat.yml
