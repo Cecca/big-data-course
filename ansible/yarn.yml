@@ -55,6 +55,7 @@
         - hadoop-env.sh
         - yarn-site.xml
         - slaves
+      tags: ['reconfig']
 
     - name: make yarn local dirs
       file:
@@ -86,6 +87,7 @@
         enabled: yes
         state: restarted
       when: ansible_hostname == "frontend"
+      tags: ['restart', 'reconfig']
 
     - name: enable Yarn node managers
       service:
@@ -93,3 +95,5 @@
         enabled: yes
         state: restarted
       when: ansible_hostname != "frontend"
+      tags: ['restart', 'reconfig']
+      

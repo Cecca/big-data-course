@@ -1,0 +1,12 @@
+# It is _very important_ to correctly setup the host names, 
+# otherwise Yarn containers will fail miserably without
+# clearly telling what's wrong
+
+- hosts: all
+
+  tasks:
+
+    - name: setup hosts
+      template:
+        src: templates/hosts.j2
+        dest: /etc/hosts

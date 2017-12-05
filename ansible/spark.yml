@@ -2,15 +2,14 @@
 - hosts: all
   tasks:
 
-    - name: install start-spark.sh script
-      copy:
-        src: start-spark.sh
-        dest: /usr/sbin/start-spark.sh
-        mode: u=rw,g=rx,o=r
-        owner: root
+    - name: make local directories
+      file:
+        path: /var/spark/local
+        state: directory
         group: spark
-
-    - name: add spark binaries to the path
-      copy:
-        src: spark-path.sh
-        dest: /etc/profile.d/spark-path.sh
+        mode: o+w
+    
+    - name: configure spark
+      template:
+        src: templates/spark-env.sh.j2
+        dest: /opt/spark/conf/spark-env.sh
