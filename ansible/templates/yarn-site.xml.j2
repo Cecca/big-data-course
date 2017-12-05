@@ -38,23 +38,44 @@
     </description>
   </property>
 
+  <property>
+    <name>yarn.nodemanager.vmem-check-enabled</name>
+    <value>true</value>
+  </property>
+
+  <property>
+    <name>yarn.nodemanager.vmem-pmem-ratio</name>
+    <value>2.5</value>
+  </property>
 
   <property>
     <name>yarn.nodemanager.resource.memory-mb</name>
-    <value>{{ yarn.nodemanager.memory }}</value>
+    <value> 6144 </value>
     <description>the amount of memory on the NodeManager in MB</description>
   </property>
 
   <property>
     <name>yarn.nodemanager.resource.cpu-vcores</name>
-    <value>{{ yarn.nodemanager.cpu_vcores }}</value>
+    <value> 8 </value>
     <description>the number of cores for each node manager</description>
   </property>
 
   <property>
     <name>yarn.scheduler.minimum-allocation-mb</name>
-    <value>{{ yarn.scheduler.minimum_allocation_mb }}</value>
+    <value> 512 </value>
     <description>the minimum memory that can be allocated for each container, in MB</description>
+  </property>
+
+
+  <property>
+    <name>yarn.scheduler.maximum-allocation-mb</name>
+    <value> 6144 </value>
+    <description>the maximum memory that can be allocated for each container, in MB</description>
+  </property>
+
+  <property>
+    <name>yarn.nodemanager.disk-health-checker.max-disk-utilization-per-disk-percentage</name>
+    <value>100.0</value>
   </property>
 
   <!--
@@ -66,11 +87,6 @@
   </property>
 
 
-  <property>
-    <name>yarn.scheduler.maximum-allocation-mb</name>
-    <value>{{ yarn.scheduler.maximum_allocation_mb }}</value>
-    <description>the maximum memory that can be allocated for each container, in MB</description>
-  </property>
 
   <property>
     <name>yarn.nodemanager.remote-app-log-dir</name>

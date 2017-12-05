@@ -1,7 +1,7 @@
 - hosts: all
 
   vars:
-    java_home: /usr/lib/jvm/java-8-openjdk-amd64
+    java_home: /usr/lib/jvm/java-8-oracle
     hadoop_home: /opt/hadoop
     yarn: {
       resourcemanager: {
@@ -17,7 +17,7 @@
         cpu_vcores: 8,
         app_logs: /app-logs,
         log_dirs: /var/log/yarn-nodemanager,
-        local_dirs: [/tmp/yarn-local-dirs]
+        local_dirs: [/tmp/yarn-local-dirs,/var/hadoop/yarn/local]
       }
     }
 
@@ -60,7 +60,8 @@
       file:
         name: "{{ item }}"
         state: directory
-        mode: 777
+        owner: hadoop
+        group: hadoop
       with_items: "{{ yarn.nodemanager.local_dirs }}"
 
     - name: fix owner and group
@@ -83,12 +84,12 @@
       service:
         name: yarn-resourcemanager
         enabled: yes
-        state: started
+        state: restarted
       when: ansible_hostname == "frontend"
 
     - name: enable Yarn node managers
       service:
         name: yarn-nodemanager
         enabled: yes
-        state: started
+        state: restarted
       when: ansible_hostname != "frontend"

@@ -1,7 +1,7 @@
 - hosts: all
 
   vars:
-    java_home: /usr/lib/jvm/java-8-openjdk-amd64
+    java_home: /usr/lib/jvm/java-8-oracle
     hadoop_home: /opt/hadoop
     hdfs_volume: /dev/vdb
     hdfs_volume_mount_point: /var/hdfs
@@ -72,7 +72,7 @@
     - name: enable and start systemd services
       service:
         name: "{{ item }}"
-        state: started
+        state: restarted
         enabled: yes
       when: ansible_hostname == "frontend"
       with_items:
