@@ -1,7 +1,7 @@
 - hosts: all
 
   vars:
-    java_home: /usr/lib/jvm/java-9-oracle
+    java_home: /usr/lib/jvm/java-8-openjdk-amd64
     hadoop_home: /opt/hadoop
     yarn: {
       resourcemanager: {
@@ -23,6 +23,16 @@
 
 
   tasks:
+
+    - name: install java 8
+      apt:
+        name: openjdk-8-jdk-headless
+        state: present
+
+    - name: correct java version selected
+      alternatives:
+        name: java
+        path: "{{ java_home }}/bin/java"
 
     - name: create hadoop group
       group:
