@@ -26,12 +26,6 @@
         state: present
       when: ansible_hostname == "frontend"
 
-    # - name: download kibana tar
-    #   get_url:
-    #     url: "https://artifacts.elastic.co/downloads/kibana/kibana-6.0.0-linux-x86_64.tar.gz"
-    #     dest: /opt/kibana-6.0.0.tar.gz
-    #   when: ansible_hostname == "frontend"
-
     - name: create kibana group
       group:
         name: kibana
@@ -92,3 +86,18 @@
     - template:
         src: templates/filebeat.yml.j2
         dest: /etc/filebeat/filebeat.yml
+
+    - apt:
+        name: metricbeat
+
+    - template:
+        src: templates/metricbeat.yml.j2
+        dest: /etc/metricbeat/metricbeat.yml
+
+    - service:
+        name: "{{ item }}"
+        state: restarted
+        enabled: yes
+      with_items:
+        - filebeat
+        - metricbeat
