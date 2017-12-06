@@ -30,6 +30,7 @@
       group:
         name: kibana
         state: present
+      when: ansible_hostname == "frontend"
 
     - name: create kibana user
       user:
@@ -38,6 +39,7 @@
         state: present
         createhome: no
         system: yes
+      when: ansible_hostname == "frontend"
 
     # The .deb installation does not work for Kibana
     - name: unpack
@@ -55,6 +57,7 @@
         owner: kibana
         group: kibana
         recurse: true
+      when: ansible_hostname == "frontend"
 
     - file:
         src: /opt/kibana-6.0.0-linux-x86_64
@@ -79,6 +82,7 @@
         name: kibana
         state: started
         enabled: yes
+      when: ansible_hostname == "frontend"
     
     - apt:
         name: filebeat

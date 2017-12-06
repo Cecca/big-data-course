@@ -72,8 +72,12 @@ Add yarn user, or run hadoop with spark user (which needs authorized access on a
 
 ----------------------------------
 
-Install python in image
+Install python in image!!
 
 ------------------------------------
 
 Describe how to setup ssh so to use ansible from the local machine
+
+-------------------------------------
+
+ansible -i hosts all -m ping
