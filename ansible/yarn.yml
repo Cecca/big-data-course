@@ -24,11 +24,6 @@
 
   tasks:
 
-    - name: install java 8
-      apt:
-        name: openjdk-8-jdk-headless
-        state: present
-
     - name: correct java version selected
       alternatives:
         name: java

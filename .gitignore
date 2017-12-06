@@ -1,3 +1,4 @@
 /cluster-setup/master-setup.sh
 /cluster-setup/bootstrap.sh
 /cluster-setup/minion-setup.sh
+.vscode
