@@ -26,6 +26,19 @@
         state: present
       when: ansible_hostname == "frontend"
 
+    - name: configure elasticsearch
+      copy:
+        src: files/elasticsearch.yml
+        dest: /etc/elasticsearch/elasticsearch.yml
+      when: ansible_hostname == "frontend"        
+
+    - name: start elasticsearch
+      service:
+        name: elasticsearch
+        state: started
+        enabled: yes
+      when: ansible_hostname == "frontend"      
+
     - name: create kibana group
       group:
         name: kibana
@@ -105,3 +118,10 @@
       with_items:
         - filebeat
         - metricbeat
+
+    - name: setup kibana dashboards for metricbeat
+      shell: metricbeat setup --dashboards && touch /var/metricbeat-dashboard-created
+      args:
+        creates: /var/metricbeat-dashboard-created
+      when: ansible_hostname == "frontend"
+        
