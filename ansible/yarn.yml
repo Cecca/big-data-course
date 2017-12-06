@@ -6,7 +6,7 @@
     yarn: {
       resourcemanager: {
         webapp_address: '0.0.0.0:8088',
-        hostname: 10.67.41.127
+        hostname: frontend
       },
       scheduler: {
         maximum_allocation_mb: 9216,

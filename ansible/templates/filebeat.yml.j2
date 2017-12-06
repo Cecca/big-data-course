@@ -36,7 +36,7 @@ setup.kibana:
   # Scheme and port can be left out and will be set to the default (http and 5601)
   # In case you specify and additional path, the scheme is required: http://localhost:5601/path
   # IPv6 addresses should always be defined as: https://[2001:db8::1]:5601
-  host: "{{ frontend_ip }}:5601"
+  host: "frontend:5601"
 
 #================================ Outputs =====================================
 
@@ -45,7 +45,7 @@ setup.kibana:
 #-------------------------- Elasticsearch output ------------------------------
 output.elasticsearch:
   # Array of hosts to connect to.
-  hosts: ["{{ frontend_ip }}:9200"]
+  hosts: ["frontend:9200"]
 
   # Optional protocol and basic auth credentials.
   #protocol: "https"
@@ -55,7 +55,7 @@ output.elasticsearch:
 #----------------------------- Logstash output --------------------------------
 #output.logstash:
   # The Logstash hosts
-  #hosts: ["{{ frontend_ip }}:5044"]
+  #hosts: ["frontend:5044"]
 
   # Optional SSL. By default is off.
   # List of root certificates for HTTPS server verifications

@@ -1,4 +1,4 @@
-- hosts: all
+- hosts: frontend
 
   vars:
     java_home: /usr/lib/jvm/java-8-oracle
@@ -6,7 +6,7 @@
     hdfs_volume: /dev/vdb
     hdfs_volume_mount_point: /var/hdfs
     hdfs: {
-      host: 10.67.41.127,
+      host: frontend,
       port: 9000,
       name_dir: [/var/hdfs/names],
       data_dir: [/var/hdfs/data],
