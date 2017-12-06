@@ -81,3 +81,7 @@ Describe how to setup ssh so to use ansible from the local machine
 -------------------------------------
 
 ansible -i hosts all -m ping
+
+-------------------------------------
+
+Todo: setup spark history server
