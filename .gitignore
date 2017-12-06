@@ -2,3 +2,5 @@
 /cluster-setup/bootstrap.sh
 /cluster-setup/minion-setup.sh
 .vscode
+docs/_build
+ansible/site.retry
