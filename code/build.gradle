@@ -30,5 +30,6 @@ dependencies {
 
 shadowJar {
     zip64 true
+    configurations = [project.configurations.compile] // Exclude runtime-only path (which contains the models)
 }
 
