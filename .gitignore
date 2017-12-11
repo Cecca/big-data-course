@@ -4,3 +4,6 @@
 .vscode
 docs/_build
 ansible/site.retry
+.idea
+build
+.gradle
