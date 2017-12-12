@@ -4,7 +4,6 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.mapred.join.ArrayListBackedIterator;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
@@ -22,8 +21,6 @@ import scala.Tuple2;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Stream;
-import java.util.stream.StreamSupport;
 
 public class Preprocess {
 
@@ -52,11 +49,6 @@ public class Preprocess {
   }
 
   private static Word2VecModel trainWord2Vec(JavaRDD<ArrayList<String>> sentences, Args arguments) {
-//    JavaRDD<ArrayList<String>> sentences = pages.flatMap((wp) -> {
-//      Iterable<ArrayList<String>> sents = Lemmatizer.lemmatizedSentences(wp.getText());
-//      return sents.iterator();
-//    });
-
     return new Word2Vec()
             .setVectorSize(arguments.dims)
             .setMinCount(arguments.minCount)
@@ -87,8 +79,7 @@ public class Preprocess {
     Broadcast<Set<String>> bStopWords = broadcastStopwords(sc);
 
     JavaRDD<WikiPage> pages = InputOutput.read(sc, arguments.input)
-            .filter((wp) -> !wp.getTitle().contains("disambiguation"))
-            .cache();
+            .filter((wp) -> !wp.getTitle().contains("disambiguation"));
 
     JavaPairRDD<Long, ArrayList<ArrayList<String>>> docSentences = pages.mapToPair((wp) -> {
       ArrayList<ArrayList<String>> sents = Lemmatizer.lemmatizedSentences(wp.getText());
