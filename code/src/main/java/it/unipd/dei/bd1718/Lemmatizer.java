@@ -1,15 +1,20 @@
 package it.unipd.dei.bd1718;
 
+import edu.stanford.nlp.ling.CoreAnnotations;
+import edu.stanford.nlp.ling.CoreLabel;
+import edu.stanford.nlp.pipeline.Annotation;
+import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.simple.Document;
 import edu.stanford.nlp.simple.Sentence;
-import org.apache.spark.api.java.JavaRDD;
-import org.apache.spark.api.java.function.Function;
+import edu.stanford.nlp.util.CoreMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Properties;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 /**
@@ -19,6 +24,22 @@ import java.util.regex.Pattern;
  * lemmatization see this link: https://nlp.stanford.edu/IR-book/html/htmledition/stemming-and-lemmatization-1.html
  */
 public class Lemmatizer {
+
+  private static StanfordCoreNLP pipeline;
+
+  private static Logger logger = LoggerFactory.getLogger(Lemmatizer.class);
+
+  static {
+    // Create StanfordCoreNLP object properties, with POS tagging
+    // (required for lemmatization), and lemmatization
+    Properties props;
+    props = new Properties();
+    props.put("annotators", "tokenize,ssplit,pos,lemma");
+
+    // StanfordCoreNLP loads a lot of models, so you probably
+    // only want to do this once per execution
+    pipeline = new StanfordCoreNLP(props);
+  }
 
   /**
    * Some symbols are interpreted as tokens. This regex allows us to exclude them.
@@ -68,13 +89,18 @@ public class Lemmatizer {
   }
 
   public static ArrayList<ArrayList<String>> lemmatizedSentences(String doc) {
-    Document d = new Document(doc.toLowerCase());
+    long start = System.currentTimeMillis();
+    Annotation document = new Annotation(doc);
+    pipeline.annotate(document);
 
     ArrayList<ArrayList<String>> sentences = new ArrayList<>();
 
-    for (Sentence sentence : d.sentences()) {
+    long numLemmas = 0;
+    for (CoreMap sentence : document.get(CoreAnnotations.SentencesAnnotation.class)) {
       ArrayList<String> lemmas = new ArrayList<>();
-      for (String lemma : sentence.lemmas()) {
+      for (CoreLabel token : sentence.get(CoreAnnotations.TokensAnnotation.class)) {
+        String lemma = token.get(CoreAnnotations.LemmaAnnotation.class);
+        numLemmas++;
         // Remove symbols
         if (!symbols.matcher(lemma).matches() && !specialTokens.contains(lemma)) {
           lemmas.add(lemma);
@@ -84,6 +110,10 @@ public class Lemmatizer {
         sentences.add(lemmas);
       }
     }
+    long end = System.currentTimeMillis();
+    logger.info("Performed initial annotation in " + (end - start) + " ms");
+    double throughput = 1000 * ((double) numLemmas) / (end - start);
+    logger.info("Annotation throughput " + throughput + " lemmas/s");
 
     return sentences;
   }
