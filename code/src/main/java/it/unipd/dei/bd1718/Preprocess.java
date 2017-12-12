@@ -2,9 +2,14 @@ package it.unipd.dei.bd1718;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+import org.apache.commons.collections.iterators.ArrayListIterator;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.io.ArrayWritable;
+import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.mapred.SequenceFileOutputFormat;
 import org.apache.spark.SparkConf;
+import org.apache.spark.SparkContext;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
@@ -14,6 +19,10 @@ import org.apache.spark.mllib.feature.Word2Vec;
 import org.apache.spark.mllib.feature.Word2VecModel;
 import org.apache.spark.mllib.linalg.Vector;
 import org.apache.spark.mllib.linalg.Vectors;
+import org.apache.spark.rdd.SequenceFileRDDFunctions;
+import org.apache.spark.sql.Encoders;
+import org.apache.spark.sql.SparkSession;
+import org.apache.zookeeper.KeeperException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Tuple2;
@@ -34,6 +43,9 @@ public class Preprocess {
     @Parameter(names = "--output", required = true, description = "Path to the output vector dataset")
     String output;
 
+    @Parameter(names = "--lemmas", required = true, description = "Lemmatized input, to speed up execution")
+    String lemmas;
+
     @Parameter(names = "--dimensions", description = "Number of dimensions for word2vec vectors")
     int dims = 100;
 
@@ -46,6 +58,29 @@ public class Preprocess {
     @Parameter(names = "--model", required = true, description = "Path to the word2vec model. If not existing, a new one will be trained using the dataset as input")
     String model;
 
+  }
+
+  private static JavaPairRDD<Long, ArrayList<ArrayList<String>>> loadLemmas(JavaSparkContext sc, Args arguments) throws IOException {
+    FileSystem fs = FileSystem.get(sc.hadoopConfiguration());
+
+    if (fs.exists(new Path(arguments.lemmas))) {
+      logger.info("Lemmas file exists");
+      return sc.objectFile(arguments.lemmas)
+              .mapToPair((p) -> (Tuple2<Long, ArrayList<ArrayList<String>>>) p);
+    } else {
+      logger.info("Lemmas file does not exist, creating");
+      JavaRDD<WikiPage> pages = InputOutput.read(sc, arguments.input)
+              .filter((wp) -> !wp.getTitle().contains("disambiguation"));
+
+      JavaPairRDD<Long, ArrayList<ArrayList<String>>> docSentences = pages.mapToPair((wp) -> {
+        ArrayList<ArrayList<String>> sents = Lemmatizer.lemmatizedSentences(wp.getText());
+        return new Tuple2<>(wp.getId(), sents);
+      });
+
+      docSentences.saveAsObjectFile(arguments.lemmas);
+      return sc.objectFile(arguments.lemmas)
+              .mapToPair((p) -> (Tuple2<Long, ArrayList<ArrayList<String>>>) p);
+    }
   }
 
   private static Word2VecModel trainWord2Vec(JavaRDD<ArrayList<String>> sentences, Args arguments) {
@@ -66,7 +101,9 @@ public class Preprocess {
 
     final int dimensions = arguments.dims;
 
-    SparkConf conf = new SparkConf(true).setAppName("Preprocess");
+    SparkConf conf = new SparkConf(true)
+            .set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
+            .setAppName("Preprocess");
     JavaSparkContext sc = new JavaSparkContext(conf);
     FileSystem fs = FileSystem.get(sc.hadoopConfiguration());
 
@@ -78,13 +115,10 @@ public class Preprocess {
 
     Broadcast<Set<String>> bStopWords = broadcastStopwords(sc);
 
-    JavaRDD<WikiPage> pages = InputOutput.read(sc, arguments.input)
-            .filter((wp) -> !wp.getTitle().contains("disambiguation"));
 
-    JavaPairRDD<Long, ArrayList<ArrayList<String>>> docSentences = pages.mapToPair((wp) -> {
-      ArrayList<ArrayList<String>> sents = Lemmatizer.lemmatizedSentences(wp.getText());
-      return new Tuple2<>(wp.getId(), sents);
-    }).cache();
+
+    JavaPairRDD<Long, ArrayList<ArrayList<String>>> docSentences =
+            loadLemmas(sc, arguments);
 
     Word2VecModel w2v;
     if (fs.exists(new Path(arguments.model))) {
@@ -132,6 +166,8 @@ public class Preprocess {
     JavaPairRDD<Long, List<Tuple2<String, Object>>> synonyms =
             vectorsCheck.mapValues((v) -> Arrays.asList(bw2v.getValue().findSynonyms(v, 3)));
 
+    JavaRDD<WikiPage> pages = InputOutput.read(sc, arguments.input)
+            .filter((wp) -> !wp.getTitle().contains("disambiguation"));
     pages.mapToPair((wp) -> new Tuple2<>(wp.getId(), wp))
             .join(synonyms)
             .takeSample(false, 10)
