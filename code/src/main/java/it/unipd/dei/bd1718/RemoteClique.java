@@ -1,9 +1,13 @@
 package it.unipd.dei.bd1718;
 
 import org.apache.commons.collections.ArrayStack;
+import org.apache.commons.collections.iterators.SingletonIterator;
+import org.apache.spark.api.java.JavaRDD;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.function.ToDoubleBiFunction;
 
 /**
@@ -65,6 +69,27 @@ public class RemoteClique {
     }
 
     return result;
+  }
+
+  public static <T> ArrayList<T> runMapReduce(final JavaRDD<T> points, int k, ToDoubleBiFunction<T, T> distance) {
+
+    // Map phase
+    JavaRDD<ArrayList<T>> coresets = points.mapPartitions((it) -> {
+      ArrayList<T> localPoints = new ArrayList<>();
+      while(it.hasNext()) {
+        localPoints.add(it.next());
+      }
+      ArrayList<T> coreset = KCenter.run(localPoints, k, distance);
+      return Collections.singleton(coreset).iterator();
+    });
+
+    // Reduce phase
+    ArrayList<T> aggregatedCoreset = coresets.reduce((a, b) -> {
+      a.addAll(b);
+      return a;
+    });
+
+    return runSequential(aggregatedCoreset, k, distance);
   }
 
 }
