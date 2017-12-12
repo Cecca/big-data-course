@@ -2,11 +2,16 @@ package it.unipd.dei.bd1718;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.io.Input;
+import com.esotericsoftware.kryo.io.Output;
 import org.apache.commons.collections.iterators.ArrayListIterator;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.ArrayWritable;
+import org.apache.hadoop.io.BytesWritable;
 import org.apache.hadoop.io.LongWritable;
+import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.mapred.SequenceFileOutputFormat;
 import org.apache.spark.SparkConf;
 import org.apache.spark.SparkContext;
@@ -27,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Tuple2;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -61,12 +67,40 @@ public class Preprocess {
   }
 
   private static void writeSentences(JavaPairRDD<Long, ArrayList<ArrayList<String>>> docSentences, String path) {
-    docSentences.saveAsObjectFile(path);
+    docSentences.mapPartitionsToPair((it) -> {
+      Kryo kryo = new Kryo();
+      ByteArrayOutputStream bos = new ByteArrayOutputStream();
+      Output out = new Output(bos);
+      while(it.hasNext()) {
+        Tuple2<Long, ArrayList<ArrayList<String>>> p = it.next();
+        out.writeLong(p._1());
+        kryo.writeClassAndObject(out, p._2());
+      }
+      out.close();
+      BytesWritable bytes = new BytesWritable(bos.toByteArray());
+      return Collections.singleton(new Tuple2<>(NullWritable.get(), bytes)).iterator();
+    }).saveAsNewAPIHadoopFile(path, NullWritable.class, BytesWritable.class, org.apache.hadoop.mapreduce.lib.output.SequenceFileOutputFormat.class);
   }
 
   private static JavaPairRDD<Long, ArrayList<ArrayList<String>>> readSentences(JavaSparkContext sc, String path) {
-    return sc.objectFile(path)
-            .mapToPair((p) -> (Tuple2<Long, ArrayList<ArrayList<String>>>) p);
+     return sc.newAPIHadoopFile(path, org.apache.hadoop.mapreduce.lib.input.SequenceFileInputFormat.class, NullWritable.class, BytesWritable.class, sc.hadoopConfiguration())
+             .values()
+             .flatMapToPair((bytes) -> {
+               Kryo kryo = new Kryo();
+               Input input = new Input(((BytesWritable) bytes).getBytes());
+               ArrayList<Tuple2<Long, ArrayList<ArrayList<String>>>> tuples = new ArrayList<>();
+               while(!input.eof()) {
+                 Tuple2<Long, ArrayList<ArrayList<String>>> t = new Tuple2<>(
+                         input.readLong(),
+                         (ArrayList<ArrayList<String>>) kryo.readClassAndObject(input)
+                 );
+                 if (t._2() == null) {
+                   break;
+                 }
+                 tuples.add(t);
+               }
+               return tuples.iterator();
+            });
   }
 
   private static JavaPairRDD<Long, ArrayList<ArrayList<String>>> loadLemmas(JavaSparkContext sc, Args arguments) throws IOException {
