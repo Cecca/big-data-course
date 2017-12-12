@@ -4,6 +4,7 @@ import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.mapred.join.ArrayListBackedIterator;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
@@ -50,11 +51,11 @@ public class Preprocess {
 
   }
 
-  private static Word2VecModel trainWord2Vec(JavaRDD<WikiPage> pages, Args arguments) {
-    JavaRDD<ArrayList<String>> sentences = pages.flatMap((wp) -> {
-      Iterable<ArrayList<String>> sents = Lemmatizer.lemmatizedSentences(wp.getText());
-      return sents.iterator();
-    });
+  private static Word2VecModel trainWord2Vec(JavaRDD<ArrayList<String>> sentences, Args arguments) {
+//    JavaRDD<ArrayList<String>> sentences = pages.flatMap((wp) -> {
+//      Iterable<ArrayList<String>> sents = Lemmatizer.lemmatizedSentences(wp.getText());
+//      return sents.iterator();
+//    });
 
     return new Word2Vec()
             .setVectorSize(arguments.dims)
@@ -89,39 +90,48 @@ public class Preprocess {
             .filter((wp) -> !wp.getTitle().contains("disambiguation"))
             .cache();
 
+    JavaPairRDD<Long, ArrayList<ArrayList<String>>> docSentences = pages.mapToPair((wp) -> {
+      ArrayList<ArrayList<String>> sents = Lemmatizer.lemmatizedSentences(wp.getText());
+      return new Tuple2<>(wp.getId(), sents);
+    }).cache();
+
     Word2VecModel w2v;
     if (fs.exists(new Path(arguments.model))) {
       w2v = Word2VecModel.load(sc.sc(), arguments.model);
     } else {
-      w2v = trainWord2Vec(pages, arguments);
+      w2v = trainWord2Vec(
+              docSentences.values().flatMap((sents) -> sents.iterator()),
+              arguments);
       w2v.save(sc.sc(), arguments.model);
     }
 
     Broadcast<Word2VecModel> bw2v = sc.broadcast(w2v);
-    JavaPairRDD<Long, Vector> vectors = pages
-            .mapToPair((wp) -> {
+    JavaPairRDD<Long, Vector> vectors = docSentences
+            .mapToPair((pair) -> {
               double vec[] = new double[dimensions];
               AtomicInteger counter = new AtomicInteger();
-              Lemmatizer.foreachLemma(wp.getText(), (lemma) -> {
-                try {
-                  if (!bStopWords.getValue().contains(lemma)) {
-                    double[] lemVec = bw2v.getValue().transform(lemma).toArray();
-                    for (int i = 0; i < dimensions; i++) {
-                      vec[i] += lemVec[i];
+              for (ArrayList<String> sentence : pair._2()) {
+                for (String lemma : sentence) {
+                  try {
+                    if (!bStopWords.getValue().contains(lemma)) {
+                      double[] lemVec = bw2v.getValue().transform(lemma).toArray();
+                      for (int i = 0; i < dimensions; i++) {
+                        vec[i] += lemVec[i];
+                      }
+                      counter.incrementAndGet();
                     }
-                    counter.incrementAndGet();
+                  } catch (IllegalStateException e) {
+                    System.err.println("WARNING: Skipping `" + lemma + "` since it's missing from the vocabulary");
                   }
-                } catch (IllegalStateException e) {
-                  System.err.println("WARNING: Skipping `" + lemma + "` since it's missing from the vocabulary");
                 }
-              });
+              }
               int numLemmas = counter.intValue();
               for (int i=0; i<dimensions; i++) {
                 vec[i] /= numLemmas;
               }
 
               Vector result = Vectors.dense(vec);
-              return new Tuple2<>(wp.getId(), result);
+              return new Tuple2<>(pair._1(), result);
             }).cache();
 
     InputOutput.writeVectors(vectors, arguments.output);
