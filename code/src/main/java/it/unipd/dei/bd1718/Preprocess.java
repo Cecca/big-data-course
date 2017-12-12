@@ -60,13 +60,21 @@ public class Preprocess {
 
   }
 
+  private static void writeSentences(JavaPairRDD<Long, ArrayList<ArrayList<String>>> docSentences, String path) {
+    docSentences.saveAsObjectFile(path);
+  }
+
+  private static JavaPairRDD<Long, ArrayList<ArrayList<String>>> readSentences(JavaSparkContext sc, String path) {
+    return sc.objectFile(path)
+            .mapToPair((p) -> (Tuple2<Long, ArrayList<ArrayList<String>>>) p);
+  }
+
   private static JavaPairRDD<Long, ArrayList<ArrayList<String>>> loadLemmas(JavaSparkContext sc, Args arguments) throws IOException {
     FileSystem fs = FileSystem.get(sc.hadoopConfiguration());
 
     if (fs.exists(new Path(arguments.lemmas))) {
       logger.info("Lemmas file exists");
-      return sc.objectFile(arguments.lemmas)
-              .mapToPair((p) -> (Tuple2<Long, ArrayList<ArrayList<String>>>) p);
+      return readSentences(sc, arguments.lemmas);
     } else {
       logger.info("Lemmas file does not exist, creating");
       JavaRDD<WikiPage> pages = InputOutput.read(sc, arguments.input)
@@ -77,10 +85,9 @@ public class Preprocess {
         return new Tuple2<>(wp.getId(), sents);
       });
 
-      docSentences.saveAsObjectFile(arguments.lemmas);
+      writeSentences(docSentences, arguments.lemmas);
 
-      return sc.objectFile(arguments.lemmas)
-              .mapToPair((p) -> (Tuple2<Long, ArrayList<ArrayList<String>>>) p);
+      return readSentences(sc, arguments.lemmas);
     }
   }
 
