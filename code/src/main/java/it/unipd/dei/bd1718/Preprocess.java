@@ -78,6 +78,7 @@ public class Preprocess {
       });
 
       docSentences.saveAsObjectFile(arguments.lemmas);
+
       return sc.objectFile(arguments.lemmas)
               .mapToPair((p) -> (Tuple2<Long, ArrayList<ArrayList<String>>>) p);
     }

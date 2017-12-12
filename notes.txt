@@ -85,7 +85,3 @@ ansible -i hosts all -m ping
 -------------------------------------
 
 Todo: setup spark history server
-
-
-
-anarak
