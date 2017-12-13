@@ -61,6 +61,9 @@ public class Preprocess {
     @Parameter(names = "--min-count", description = "Minimum number of occurrences of each word in word2vec training")
     int minCount = 3;
 
+    @Parameter(names = "--partitions", description = "Partitions to use for word2vec training")
+    int partitions = 1;
+
     @Parameter(names = "--model", required = true, description = "Path to the word2vec model. If not existing, a new one will be trained using the dataset as input")
     String model;
 
@@ -130,6 +133,7 @@ public class Preprocess {
             .setVectorSize(arguments.dims)
             .setMinCount(arguments.minCount)
             .setNumIterations(arguments.iterations)
+            .setNumPartitions(arguments.partitions)
             .fit(sentences);
   }
 
