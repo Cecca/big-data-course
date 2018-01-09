@@ -11,7 +11,7 @@ import java.util.Iterator;
 import java.util.function.ToDoubleBiFunction;
 
 /**
- * Sequential approximation algorithm for the remote-clique problem
+ * Approximation algorithm for the remote-clique problem
  */
 public class RemoteClique {
 

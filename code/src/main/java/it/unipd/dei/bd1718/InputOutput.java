@@ -46,7 +46,7 @@ public class InputOutput {
             .json(path);
   }
 
-  public static JavaPairRDD<Long, Vector> readVectors(JavaSparkContext sc, String path) {
+  public static JavaPairRDD<Long, Vector> readVectorsPairs(JavaSparkContext sc, String path) {
     return new SparkSession(sc.sc())
             .read()
             .parquet(path)
@@ -55,9 +55,25 @@ public class InputOutput {
             .mapToPair((x) -> x);
   }
 
-  public static void writeVectors(JavaPairRDD<Long, Vector> vectors, String path) {
+  public static void writeVectorsPairs(JavaPairRDD<Long, Vector> vectors, String path) {
     new SparkSession(vectors.context())
             .createDataset(vectors.rdd(), Encoders.tuple(Encoders.LONG(), Encoders.kryo(Vector.class)))
+            .write()
+            .option("compression", "gzip")
+            .parquet(path);
+  }
+
+  public static JavaRDD<Vector> readVectors(JavaSparkContext sc, String path) {
+    return new SparkSession(sc.sc())
+            .read()
+            .parquet(path)
+            .as(Encoders.kryo(Vector.class))
+            .javaRDD();
+  }
+
+  public static void writeVectors(JavaRDD<Vector> vectors, String path) {
+    new SparkSession(vectors.context())
+            .createDataset(vectors.rdd(), Encoders.kryo(Vector.class))
             .write()
             .option("compression", "gzip")
             .parquet(path);
