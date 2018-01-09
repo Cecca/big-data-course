@@ -207,22 +207,22 @@ public class Preprocess {
 
     InputOutput.writeVectorsPairs(vectors, arguments.output);
 
-    JavaPairRDD<Long, Vector> vectorsCheck =
-            JavaPairRDD.fromJavaRDD(InputOutput.readVectorsPairs(sc, arguments.output));
-    JavaPairRDD<Long, List<Tuple2<String, Object>>> synonyms =
-            vectorsCheck.mapValues((v) -> Arrays.asList(bw2v.getValue().findSynonyms(v, 3)));
-
-    JavaRDD<WikiPage> pages = InputOutput.read(sc, arguments.input)
-            .filter((wp) -> !wp.getTitle().contains("disambiguation"));
-    pages.mapToPair((wp) -> new Tuple2<>(wp.getId(), wp))
-            .join(synonyms)
-            .takeSample(false, 10)
-            .stream()
-            .forEach((tup) -> {
-              System.out.println(
-                      "Page `" + tup._2()._1().getTitle() +
-                      "` with closest vectors " + tup._2()._2());
-            });
+//    JavaPairRDD<Long, Vector> vectorsCheck =
+//            JavaPairRDD.fromJavaRDD(InputOutput.readVectorsPairs(sc, arguments.output));
+//    JavaPairRDD<Long, List<Tuple2<String, Object>>> synonyms =
+//            vectorsCheck.mapValues((v) -> Arrays.asList(bw2v.getValue().findSynonyms(v, 3)));
+//
+//    JavaRDD<WikiPage> pages = InputOutput.read(sc, arguments.input)
+//            .filter((wp) -> !wp.getTitle().contains("disambiguation"));
+//    pages.mapToPair((wp) -> new Tuple2<>(wp.getId(), wp))
+//            .join(synonyms)
+//            .takeSample(false, 10)
+//            .stream()
+//            .forEach((tup) -> {
+//              System.out.println(
+//                      "Page `" + tup._2()._1().getTitle() +
+//                      "` with closest vectors " + tup._2()._2());
+//            });
   }
 
   private static Broadcast<Set<String>> broadcastStopwords(JavaSparkContext sc) {

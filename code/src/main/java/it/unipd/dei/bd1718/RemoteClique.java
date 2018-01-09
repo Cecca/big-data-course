@@ -131,6 +131,9 @@ public class RemoteClique {
     @Parameter(names = "--algorithm")
     String algorithm = "random";
 
+    @Parameter(names = "--pages")
+    String pagesPath = null;
+
     Set<String> validAlgorithms = new HashSet<>(Arrays.asList(
             "random", "mapreduce", "sequential"
     ));
@@ -179,9 +182,22 @@ public class RemoteClique {
       throw new IllegalArgumentException("Unknown algorithm");
     }
 
-    System.out.println("Solution with diversity " + measure(solution, Distance::cosineDistanceWithIdentifier) + "\n");
-    for (Tuple2<Long, Vector> p : solution) {
-      System.out.println(p._1() + " " + p._2());
+    if (arguments.pagesPath == null) {
+      System.out.println("Solution with diversity " + measure(solution, Distance::cosineDistanceWithIdentifier) + "\n");
+      for (Tuple2<Long, Vector> p : solution) {
+        System.out.println(p._1() + " " + p._2());
+      }
+    } else {
+      JavaRDD<WikiPage> pages = InputOutput.read(sc, arguments.pagesPath);
+      ArrayList<Long> ids = new ArrayList<>(solution.size());
+      for (Tuple2<Long, Vector> p : solution) {
+        ids.add(p._1());
+      }
+      List<WikiPage> matches = pages.filter((p) -> ids.contains(p.getId())).collect();
+      System.out.println("Solution with diversity " + measure(solution, Distance::cosineDistanceWithIdentifier) + "\n");
+      for (WikiPage p : matches) {
+        System.out.println(p);
+      }
     }
 
   }
