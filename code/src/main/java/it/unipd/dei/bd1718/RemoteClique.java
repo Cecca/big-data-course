@@ -162,7 +162,7 @@ public class RemoteClique {
             .setAppName("Remote clique diversity");
     JavaSparkContext sc = new JavaSparkContext(conf);
 
-    JavaRDD<Tuple2<Long, Vector>> vectors = InputOutput.readVectorsPairs(sc, arguments.input).map((t) -> t);
+    JavaRDD<Tuple2<Long, Vector>> vectors = InputOutput.readVectorsPairs(sc, arguments.input);
 
     ArrayList<Tuple2<Long, Vector>> solution;
     if ("random".equals(arguments.algorithm)) {

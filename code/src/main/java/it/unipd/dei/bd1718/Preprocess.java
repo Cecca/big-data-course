@@ -208,7 +208,7 @@ public class Preprocess {
     InputOutput.writeVectorsPairs(vectors, arguments.output);
 
     JavaPairRDD<Long, Vector> vectorsCheck =
-            InputOutput.readVectorsPairs(sc, arguments.output);
+            JavaPairRDD.fromJavaRDD(InputOutput.readVectorsPairs(sc, arguments.output));
     JavaPairRDD<Long, List<Tuple2<String, Object>>> synonyms =
             vectorsCheck.mapValues((v) -> Arrays.asList(bw2v.getValue().findSynonyms(v, 3)));
 

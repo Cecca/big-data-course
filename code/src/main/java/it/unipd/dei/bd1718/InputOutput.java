@@ -7,6 +7,7 @@ import org.apache.spark.mllib.linalg.Vector;
 import org.apache.spark.sql.Encoders;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.catalyst.encoders.ExpressionEncoder;
+import scala.Tuple2;
 
 /**
  * Static methods to read and write datasets in (compressed) json
@@ -46,13 +47,12 @@ public class InputOutput {
             .json(path);
   }
 
-  public static JavaPairRDD<Long, Vector> readVectorsPairs(JavaSparkContext sc, String path) {
+  public static JavaRDD<Tuple2<Long, Vector>> readVectorsPairs(JavaSparkContext sc, String path) {
     return new SparkSession(sc.sc())
             .read()
             .parquet(path)
             .as(Encoders.tuple(Encoders.LONG(), Encoders.kryo(Vector.class)))
-            .javaRDD()
-            .mapToPair((x) -> x);
+            .javaRDD();
   }
 
   public static void writeVectorsPairs(JavaPairRDD<Long, Vector> vectors, String path) {
