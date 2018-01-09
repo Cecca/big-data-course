@@ -5,6 +5,7 @@ import com.beust.jcommander.Parameter;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.api.java.function.Function2;
 import org.apache.spark.mllib.linalg.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,18 +21,18 @@ public class RemoteClique {
 
   private static Logger logger = LoggerFactory.getLogger(RemoteClique.class);
 
-  public static  <T> double measure(final ArrayList<T> points, ToDoubleBiFunction<T, T> distance) {
+  public static  <T> double measure(final ArrayList<T> points, Function2<T, T, Double> distance) throws Exception {
     final int n = points.size();
     double sum = 0.0;
     for (int i=0; i<n; i++) {
       for (int j=i+1; j<n; j++) {
-        sum += distance.applyAsDouble(points.get(i), points.get(j));
+        sum += distance.call(points.get(i), points.get(j));
       }
     }
     return sum;
   }
 
-  public static <T> ArrayList<T> runSequential(final ArrayList<T> points, int k, ToDoubleBiFunction<T, T> distance) {
+  public static <T> ArrayList<T> runSequential(final ArrayList<T> points, int k, Function2<T, T, Double> distance) throws Exception {
     final int n = points.size();
     if (k <= n) {
       return points;
@@ -50,7 +51,7 @@ public class RemoteClique {
         if (candidates[i]) {
           for (int j = i+1; j < n; j++) {
             if (candidates[j]) {
-              double d = distance.applyAsDouble(points.get(i), points.get(j));
+              double d = distance.call(points.get(i), points.get(j));
               if (d > maxDist) {
                 maxDist = d;
                 maxI = i;
@@ -87,7 +88,7 @@ public class RemoteClique {
     return result;
   }
 
-  public static <T> ArrayList<T> runMapReduce(final JavaRDD<T> points, int k, ToDoubleBiFunction<T, T> distance) {
+  public static <T> ArrayList<T> runMapReduce(final JavaRDD<T> points, int k, Function2<T, T, Double> distance) throws Exception {
 
     // Map phase
     JavaRDD<ArrayList<T>> coresets = points.mapPartitions((it) -> {
@@ -109,8 +110,8 @@ public class RemoteClique {
   }
 
   public static <T> ArrayList<T> runRandom(final JavaRDD<T> points, int k) {
-    ArrayList<T> result = new ArrayList<>();
-    Collections.copy(points.takeSample(false, k), result);
+    ArrayList<T> result = new ArrayList<>(k);
+    result.addAll(points.takeSample(false, k));
     return result;
   }
 
@@ -140,7 +141,7 @@ public class RemoteClique {
 
   }
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws Exception {
 
     Args arguments = new Args();
     JCommander.newBuilder()
@@ -185,7 +186,7 @@ public class RemoteClique {
     if (arguments.pagesPath == null) {
       System.out.println("Solution with diversity " + measure(solution, Distance::cosineDistanceWithIdentifier) + "\n");
       for (Tuple2<Long, Vector> p : solution) {
-        System.out.println(p._1() + " " + p._2());
+        System.out.println("Page: " + p._1());
       }
     } else {
       JavaRDD<WikiPage> pages = InputOutput.read(sc, arguments.pagesPath);

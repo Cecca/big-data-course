@@ -1,5 +1,7 @@
 package it.unipd.dei.bd1718;
 
+import org.apache.spark.api.java.function.Function2;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.function.ToDoubleBiFunction;
@@ -9,7 +11,7 @@ import java.util.function.ToDoubleBiFunction;
  */
 public class KCenter {
 
-  public static <T> ArrayList<T> run(final ArrayList<T> points, final int k, ToDoubleBiFunction<T, T> distance) {
+  public static <T> ArrayList<T> run(final ArrayList<T> points, final int k, Function2<T, T, Double> distance) throws Exception {
     final int n = points.size();
     if (n < k) {
       throw new IllegalArgumentException("Cannot compute clustering with " + k + " clusters on " + n + " points");
@@ -30,7 +32,7 @@ public class KCenter {
       double maxDist = 0;
 
       for (int i=0; i<n; i++) {
-        double d = distance.applyAsDouble(points.get(i), lastCenter);
+        double d = distance.call(points.get(i), lastCenter);
         if (d < minDistances[i]) {
           minDistances[i] = d;
         }

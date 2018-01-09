@@ -72,6 +72,6 @@ public class WikiPage implements Serializable {
 
   @Override
   public String toString() {
-    return "(" + id + ") `" + title + "` " + Arrays.asList(categories) + " " + text;
+    return "(" + id + ") `" + title + "` " + Arrays.asList(categories);
   }
 }
