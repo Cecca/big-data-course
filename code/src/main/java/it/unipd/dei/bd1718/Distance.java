@@ -3,11 +3,12 @@ package it.unipd.dei.bd1718;
 
 import org.apache.spark.mllib.linalg.Vectors;
 import org.apache.spark.mllib.linalg.Vector;
+import scala.Tuple2;
 
 public class Distance {
 
   /**
-   * Cosine distance between vectors where all the elements are positive.
+   * Cosine distance between vectors.
    */
   public static double cosineDistance(Vector a, Vector b) {
     if (a.size() != b.size()) {
@@ -27,10 +28,16 @@ public class Distance {
       // happens
       cosine = 1;
     }
-    // If you wish to use this function with vectors that can have
-    // negative components (like the ones given by word2vec), then
-    // rescale by PI instead of PI/2
-    return (2 / Math.PI) * Math.acos(cosine);
+    // If you wish to use this function with vectors that only have
+    // positive components, then rescale by PI/2 instead of PI
+    return (Math.PI) * Math.acos(cosine);
+  }
+
+  /**
+   * Friendly wrapper for the cosine distance that takes vectors with an attached identifier.
+   */
+  public static double cosineDistanceWithIdentifier(Tuple2<Long, Vector> a, Tuple2<Long, Vector> b) {
+    return cosineDistance(a._2(), b._2());
   }
 
 }
