@@ -19,7 +19,7 @@ public class Distance {
     }
     double num = 0;
     for (int i=0; i<a.size(); i++) {
-      num += a.apply(i) * b.apply(i);
+      num += a.apply(i) * b.apply(i); // the .apply method gets the i-th element
     }
     double normA = Vectors.norm(a, 2);
     double normB = Vectors.norm(b, 2);
@@ -33,7 +33,7 @@ public class Distance {
     }
     // If you wish to use this function with vectors that only have
     // positive components, then rescale by PI/2 instead of PI
-    return (Math.PI) * Math.acos(cosine);
+    return Math.acos(cosine) / Math.PI;
   }
 
   /**
