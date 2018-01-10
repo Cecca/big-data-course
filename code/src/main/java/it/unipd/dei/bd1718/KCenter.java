@@ -1,17 +1,14 @@
 package it.unipd.dei.bd1718;
 
-import org.apache.spark.api.java.function.Function2;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.function.ToDoubleBiFunction;
 
 /**
  * Implementation of Gonzalez's k-center algorithm.
  */
 public class KCenter {
 
-  public static <T> ArrayList<T> run(final ArrayList<T> points, final int k, DistanceFunction<T> distance) throws Exception {
+  public static <T> ArrayList<T> run(final ArrayList<T> points, final int k, DistanceFunction<T> distance) {
     final int n = points.size();
     if (n < k) {
       throw new IllegalArgumentException("Cannot compute clustering with " + k + " clusters on " + n + " points");

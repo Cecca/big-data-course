@@ -5,6 +5,9 @@ import org.apache.spark.mllib.linalg.Vectors;
 import org.apache.spark.mllib.linalg.Vector;
 import scala.Tuple2;
 
+/**
+ * Some distance functions between several types.
+ */
 public class Distance {
 
   /**

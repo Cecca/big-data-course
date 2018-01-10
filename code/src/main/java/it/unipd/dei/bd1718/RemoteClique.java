@@ -5,23 +5,34 @@ import com.beust.jcommander.Parameter;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
-import org.apache.spark.api.java.function.Function2;
 import org.apache.spark.mllib.linalg.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Tuple2;
 
 import java.util.*;
-import java.util.function.ToDoubleBiFunction;
 
 /**
- * Approximation algorithm for the remote-clique problem
+ * Approximation algorithms for the remote-clique problem.
+ *
+ * This class presents several algorithms for this problem.
+ * First and foremost, the classic sequential algorithm.
+ * Then, there is a two-round MapReduce implementation.
+ *
+ * Each function is parametric in the distance function and
+ * in the data type.
+ *
+ * This class also provides a command line interface that works with
+ * the Wikipedia dataset, using the cosine distance function.
  */
 public class RemoteClique {
 
   private static Logger logger = LoggerFactory.getLogger(RemoteClique.class);
 
-  public static  <T> double measure(final ArrayList<T> points, DistanceFunction<T> distance) throws Exception {
+  /**
+   * Compute the sum of pairwise distances (that is, the remote clique measure) on the given set.
+   */
+  public static  <T> double measure(final ArrayList<T> points, DistanceFunction<T> distance) {
     final int n = points.size();
     double sum = 0.0;
     for (int i=0; i<n; i++) {
@@ -32,7 +43,10 @@ public class RemoteClique {
     return sum;
   }
 
-  public static <T> ArrayList<T> runSequential(final ArrayList<T> points, int k, DistanceFunction<T> distance) throws Exception {
+  /**
+   * Sequential approximation algorithm based on matching.
+   */
+  public static <T> ArrayList<T> runSequential(final ArrayList<T> points, int k, DistanceFunction<T> distance) {
     final int n = points.size();
     if (k >= n) {
       return points;
@@ -88,7 +102,10 @@ public class RemoteClique {
     return result;
   }
 
-  public static <T> ArrayList<T> runMapReduce(final JavaRDD<T> points, int k, DistanceFunction<T> distance) throws Exception {
+  /**
+   * Two round MapReduce algorithm
+   */
+  public static <T> ArrayList<T> runMapReduce(final JavaRDD<T> points, int k, DistanceFunction<T> distance) {
 
     // Map phase
     JavaRDD<ArrayList<T>> coresets = points.mapPartitions((it) -> {
