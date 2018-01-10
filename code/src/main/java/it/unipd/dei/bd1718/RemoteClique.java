@@ -21,22 +21,18 @@ public class RemoteClique {
 
   private static Logger logger = LoggerFactory.getLogger(RemoteClique.class);
 
-  public static  <T> double measure(final ArrayList<T> points, Function2<T, T, Double> distance) throws Exception {
+  public static  <T> double measure(final ArrayList<T> points, DistanceFunction<T> distance) throws Exception {
     final int n = points.size();
     double sum = 0.0;
     for (int i=0; i<n; i++) {
       for (int j=i+1; j<n; j++) {
-        double d = distance.call(points.get(i), points.get(j));
-        sum += distance.call(points.get(i), points.get(j));
-        if (Double.isNaN(sum)) {
-          throw new RuntimeException("Sum is NaN at " + i + " " + j + " distance being summed: " + d + ", vectors" + points.get(i) + " and " + points.get(j));
-        }
+        sum += distance.apply(points.get(i), points.get(j));
       }
     }
     return sum;
   }
 
-  public static <T> ArrayList<T> runSequential(final ArrayList<T> points, int k, Function2<T, T, Double> distance) throws Exception {
+  public static <T> ArrayList<T> runSequential(final ArrayList<T> points, int k, DistanceFunction<T> distance) throws Exception {
     final int n = points.size();
     if (k >= n) {
       return points;
@@ -55,7 +51,7 @@ public class RemoteClique {
         if (candidates[i]) {
           for (int j = i+1; j < n; j++) {
             if (candidates[j]) {
-              double d = distance.call(points.get(i), points.get(j));
+              double d = distance.apply(points.get(i), points.get(j));
               if (d > maxDist) {
                 maxDist = d;
                 maxI = i;
@@ -92,7 +88,7 @@ public class RemoteClique {
     return result;
   }
 
-  public static <T> ArrayList<T> runMapReduce(final JavaRDD<T> points, int k, Function2<T, T, Double> distance) throws Exception {
+  public static <T> ArrayList<T> runMapReduce(final JavaRDD<T> points, int k, DistanceFunction<T> distance) throws Exception {
 
     // Map phase
     JavaRDD<ArrayList<T>> coresets = points.mapPartitions((it) -> {
@@ -111,7 +107,6 @@ public class RemoteClique {
     });
 
     logger.info("Aggregated coreset has {} points", aggregatedCoreset.size());
-    logger.info("Looking for solution with {} points", k);
 
     return runSequential(aggregatedCoreset, k, distance);
   }

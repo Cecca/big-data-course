@@ -11,7 +11,7 @@ import java.util.function.ToDoubleBiFunction;
  */
 public class KCenter {
 
-  public static <T> ArrayList<T> run(final ArrayList<T> points, final int k, Function2<T, T, Double> distance) throws Exception {
+  public static <T> ArrayList<T> run(final ArrayList<T> points, final int k, DistanceFunction<T> distance) throws Exception {
     final int n = points.size();
     if (n < k) {
       throw new IllegalArgumentException("Cannot compute clustering with " + k + " clusters on " + n + " points");
@@ -32,7 +32,7 @@ public class KCenter {
       double maxDist = 0;
 
       for (int i=0; i<n; i++) {
-        double d = distance.call(points.get(i), lastCenter);
+        double d = distance.apply(points.get(i), lastCenter);
         if (d < minDistances[i]) {
           minDistances[i] = d;
         }
