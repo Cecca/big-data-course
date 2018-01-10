@@ -26,7 +26,11 @@ public class RemoteClique {
     double sum = 0.0;
     for (int i=0; i<n; i++) {
       for (int j=i+1; j<n; j++) {
+        double d = distance.call(points.get(i), points.get(j));
         sum += distance.call(points.get(i), points.get(j));
+        if (Double.isNaN(sum)) {
+          throw new RuntimeException("Sum is NaN at " + i + " " + j + " distance being summed: " + d + ", vectors" + points.get(i) + " and " + points.get(j));
+        }
       }
     }
     return sum;

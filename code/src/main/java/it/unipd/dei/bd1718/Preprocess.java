@@ -27,6 +27,7 @@ import org.apache.spark.mllib.linalg.Vectors;
 import org.apache.spark.rdd.SequenceFileRDDFunctions;
 import org.apache.spark.sql.Encoders;
 import org.apache.spark.sql.SparkSession;
+import org.apache.spark.util.LongAccumulator;
 import org.apache.zookeeper.KeeperException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -176,11 +177,14 @@ public class Preprocess {
       w2v.save(sc.sc(), arguments.model);
     }
 
+    LongAccumulator skippedPages = sc.sc().longAccumulator("skipped-pages");
+    LongAccumulator skippedLemmas = sc.sc().longAccumulator("skipped-lemmas");
     Broadcast<Word2VecModel> bw2v = sc.broadcast(w2v);
     JavaPairRDD<Long, Vector> vectors = docSentences
-            .mapToPair((pair) -> {
+            .flatMapToPair((pair) -> {
               double vec[] = new double[dimensions];
               AtomicInteger counter = new AtomicInteger();
+              AtomicInteger skipped = new AtomicInteger();
               for (ArrayList<String> sentence : pair._2()) {
                 for (String lemma : sentence) {
                   try {
@@ -192,20 +196,29 @@ public class Preprocess {
                       counter.incrementAndGet();
                     }
                   } catch (IllegalStateException e) {
-                    System.err.println("WARNING: Skipping `" + lemma + "` since it's missing from the vocabulary");
+                    skipped.incrementAndGet();
+                    logger.warn("Skipping `" + lemma + "` since it's missing from the vocabulary");
                   }
                 }
               }
+              skippedLemmas.add(skipped.intValue());
               int numLemmas = counter.intValue();
+              if (numLemmas == 0) {
+                skippedPages.add(1);
+                logger.warn("Skipping id " + pair._1() + " because no lemmas were mapped");
+                return Collections.emptyIterator();
+              }
               for (int i=0; i<dimensions; i++) {
                 vec[i] /= numLemmas;
               }
 
               Vector result = Vectors.dense(vec);
-              return new Tuple2<>(pair._1(), result);
+              return Collections.singleton(new Tuple2<>(pair._1(), result)).iterator();
             }).cache();
 
     InputOutput.writeVectorsPairs(vectors, arguments.output);
+
+    logger.info("Output written. {} pages skipped. {} lemmas skipped (overall)", skippedPages.value(), skippedLemmas.value());
 
 //    JavaPairRDD<Long, Vector> vectorsCheck =
 //            JavaPairRDD.fromJavaRDD(InputOutput.readVectorsPairs(sc, arguments.output));
