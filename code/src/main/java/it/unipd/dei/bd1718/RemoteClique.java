@@ -38,7 +38,7 @@ public class RemoteClique {
 
   public static <T> ArrayList<T> runSequential(final ArrayList<T> points, int k, Function2<T, T, Double> distance) throws Exception {
     final int n = points.size();
-    if (k <= n) {
+    if (k >= n) {
       return points;
     }
 
@@ -109,6 +109,9 @@ public class RemoteClique {
       a.addAll(b);
       return a;
     });
+
+    logger.info("Aggregated coreset has {} points", aggregatedCoreset.size());
+    logger.info("Looking for solution with {} points", k);
 
     return runSequential(aggregatedCoreset, k, distance);
   }
@@ -185,6 +188,10 @@ public class RemoteClique {
       solution = runSequential(localVectors, arguments.k, Distance::cosineDistanceWithIdentifier);
     }  else {
       throw new IllegalArgumentException("Unknown algorithm");
+    }
+
+    if (solution.size() != arguments.k) {
+      throw new IllegalArgumentException("Solution of the wrong size: " + solution.size() + " instead of " + arguments.k);
     }
 
     if (arguments.pagesPath == null) {
