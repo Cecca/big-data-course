@@ -47,46 +47,10 @@ public class Lemmatizer {
   private static Pattern symbols = Pattern.compile("^[',\\.`/-_]+$");
 
   /**
-   * A set of special tokens that are present in the Wikipedia dataset
+   * A set of special tokens that are present in the Wikipedia dataset, and that should be removed
    */
   private static HashSet<String> specialTokens =
           new HashSet<>(Arrays.asList("-lsb-", "-rsb-", "-lrb-", "-rrb-", "'s", "--"));
-
-  /**
-   * Transform a single document in the sequence of its lemmas.
-   */
-  public static ArrayList<String> lemmatize(String doc) {
-    Document d = new Document(doc.toLowerCase());
-    // Count spaces to allocate the vector to the right size and avoid trashing memory
-    int numSpaces = 0;
-    for (int i = 0; i < doc.length(); i++) {
-      if (doc.charAt(i) == ' ') {
-        numSpaces++;
-      }
-    }
-    ArrayList<String> lemmas = new ArrayList<>(numSpaces);
-
-    for (Sentence sentence : d.sentences()) {
-      for (String lemma : sentence.lemmas()) {
-        // Remove symbols
-        if (!symbols.matcher(lemma).matches() && !specialTokens.contains(lemma)) {
-          lemmas.add(lemma);
-        }
-      }
-    }
-
-    return lemmas;
-  }
-
-  public static WikiPage lemmatize(WikiPage wp) {
-    ArrayList<String> lemmas = lemmatize(wp.getText());
-    StringBuilder newText = new StringBuilder();
-    for(String lemma : lemmas) {
-      newText.append(lemma).append(' ');
-    }
-    wp.setText(newText.toString());
-    return wp;
-  }
 
   public static ArrayList<ArrayList<String>> lemmatizedSentences(String doc) {
     long start = System.currentTimeMillis();
@@ -116,19 +80,6 @@ public class Lemmatizer {
     logger.info("Annotation throughput " + throughput + " lemmas/s");
 
     return sentences;
-  }
-
-  public static void foreachLemma(String doc, Consumer<String> fn) {
-    Document d = new Document(doc.toLowerCase());
-
-    for (Sentence sentence : d.sentences()) {
-      for (String lemma : sentence.lemmas()) {
-        // Remove symbols
-        if (!symbols.matcher(lemma).matches() && !specialTokens.contains(lemma)) {
-          fn.accept(lemma);
-        }
-      }
-    }
   }
 
   public static void main(String[] args) {

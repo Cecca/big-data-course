@@ -125,3 +125,32 @@
         creates: /var/metricbeat-dashboard-created
       when: ansible_hostname == "frontend"
         
+    - name: setup curator
+      apt:
+        name: python-pip
+      when: ansible_hostname == "frontend"
+
+    - pip:
+        name: elasticsearch-curator
+        state: present
+        extra_args: --user
+      become: yes
+      become_user: root
+      when: ansible_hostname == "frontend"
+
+    - name: copy files
+      copy:
+        src: "files/{{ item }}"
+        dest: "/etc/elasticsearch/{{ item }}"
+      with_items:
+        - curator.yml
+        - delete_indices.yml        
+      when: ansible_hostname == "frontend"
+
+    - cron:
+        name: "Clean old indices"
+        minute: "0"
+        hour: "0"
+        job: "/root/.local/bin/curator --config /etc/elasticsearch/curator.yml /etc/elasticsearch/delete_indices.yml"
+      when: ansible_hostname == "frontend"
+
