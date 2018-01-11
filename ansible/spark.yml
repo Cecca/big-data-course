@@ -13,3 +13,8 @@
       template:
         src: templates/spark-env.sh.j2
         dest: /opt/spark/conf/spark-env.sh
+
+    - name: configure spark defaults
+      copy:
+        src: files/spark-defaults.conf
+        dest: /opt/spark/conf/spark-defaults.conf
