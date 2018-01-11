@@ -1,0 +1,13 @@
+[Unit]
+Description=Apache Hadoop HDFS datanode
+After=network.target
+
+[Service]
+Type=forking
+User=hadoop
+Group=hadoop
+ExecStart=/opt/spark/sbin/spark-daemon.sh start org.apache.spark.deploy.history.HistoryServer 1
+ExecStop=/opt/spark/sbin/spark-daemon.sh stop org.apache.spark.deploy.history.HistoryServer
+
+[Install]
+WantedBy=multi-user.target
