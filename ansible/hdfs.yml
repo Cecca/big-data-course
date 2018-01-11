@@ -79,3 +79,21 @@
         - hdfs-datanode
         - hdfs-namenode
         - hdfs-secondary-namenode
+
+
+    - name: create temporary and scratch directories
+      command: /opt/hadoop/bin/hdfs -mkdir -p /tmp /shared/spark-logs
+      become: yes
+      become_user: hadoop
+
+    - name: change ownership of common hdfs directories
+      command: /opt/hadoop/bin/hdfs -chown -R hadoop:hadoop /tmp /shared/spark-logs
+      become: yes
+      become_user: hadoop
+
+    - name: change permissions of common hdfs directories
+      command: /opt/hadoop/bin/hdfs -chmod -R 777 /tmp /shared/spark-logs
+      become: yes
+      become_user: hadoop
+
+    # TODO: Create one directory per user under /user
