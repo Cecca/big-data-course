@@ -17,7 +17,7 @@
         cpu_vcores: 8,
         app_logs: /app-logs,
         log_dirs: /var/log/yarn-nodemanager,
-        local_dirs: [/tmp/yarn-local-dirs,/var/hadoop/yarn/local]
+        local_dirs: [/tmp/yarn-local-dirs,/var/spark/local]
       }
     }
 
@@ -58,6 +58,7 @@
         state: directory
         owner: hadoop
         group: hadoop
+        mode: 777
       with_items: "{{ yarn.nodemanager.local_dirs }}"
 
     - name: fix owner and group

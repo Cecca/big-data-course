@@ -32,7 +32,7 @@ HADOOP_CONF_DIR=/opt/hadoop/etc/hadoop
 SPARK_LOCAL_IP={{ ansible_ens3.ipv4.address }}
 # - SPARK_PUBLIC_DNS, to set the public DNS name of the driver program
 # - SPARK_LOCAL_DIRS, storage directories to use on this node for shuffle and RDD data
-# SPARK_LOCAL_DIRS=/var/spark/local
+SPARK_LOCAL_DIRS=/var/spark/local
 # - MESOS_NATIVE_JAVA_LIBRARY, to point to your libmesos.so if you use Mesos
 
 # Options read in YARN client mode

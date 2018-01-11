@@ -1,13 +1,43 @@
 ---
 - hosts: all
+
+  vars:
+    spark_volume: /dev/vdb
+    spark_volume_mount_point: /var/spark
+    
   tasks:
+
+    - name: format the volume, if needed
+      filesystem:
+        fstype: ext4
+        dev: "{{ spark_volume }}"
+      when: ansible_hostname != "frontend"
+
+    - name: make the mount point
+      file: 
+        name: "{{ spark_volume_mount_point }}"
+        state: directory
+        owner: hadoop
+        group: hadoop
+        recurse: yes
+      when: ansible_hostname != "frontend"        
+      
+    - name: mount the volume
+      mount:
+        src: "{{ spark_volume }}"
+        path: "{{ spark_volume_mount_point }}"
+        state: mounted
+        fstype: ext4        
+      when: ansible_hostname != "frontend"
 
     - name: make local directories
       file:
         path: /var/spark/local
         state: directory
         group: spark
-        mode: o+w
+        owner: hadoop
+        mode: 777
+      when: ansible_hostname != "frontend"        
     
     - name: configure spark
       template:
