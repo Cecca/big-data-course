@@ -206,8 +206,12 @@ public class RemoteClique {
       throw new IllegalArgumentException("Solution of the wrong size: " + solution.size() + " instead of " + arguments.k);
     }
 
+    int k = arguments.k;
+    double sumDist = measure(solution, Distance::cosineDistanceWithIdentifier);
+    double avgDist = sumDist / (k*(k-1)/2);
+
     if (arguments.pagesPath == null) {
-      System.out.println("Solution with diversity " + measure(solution, Distance::cosineDistanceWithIdentifier) + "\n");
+      System.out.println("Solution with diversity " + sumDist + " (average distance: " + avgDist + ")" + "\n");
       for (Tuple2<Long, Vector> p : solution) {
         System.out.println("Page: " + p._1());
       }
@@ -218,7 +222,7 @@ public class RemoteClique {
         ids.add(p._1());
       }
       List<WikiPage> matches = pages.filter((p) -> ids.contains(p.getId())).collect();
-      System.out.println("Solution with diversity " + measure(solution, Distance::cosineDistanceWithIdentifier) + "\n");
+      System.out.println("Solution with diversity " + sumDist + " (average distance: " + avgDist + ")" + "\n");
       for (WikiPage p : matches) {
         System.out.println(p);
       }
