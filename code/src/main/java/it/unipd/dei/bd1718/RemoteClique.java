@@ -9,6 +9,7 @@ import org.apache.spark.mllib.linalg.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Tuple2;
+import shapeless.Tuple;
 
 import java.util.*;
 
@@ -196,7 +197,15 @@ public class RemoteClique {
       solution = runMapReduce(vectors, arguments.k, Distance::cosineDistanceWithIdentifier);
     } else if ("sequential".equals(arguments.algorithm)) {
       logger.info("Running sequential algorithm");
-      ArrayList<Tuple2<Long, Vector>> localVectors = (ArrayList<Tuple2<Long, Vector>>) vectors.collect();
+      long cnt = vectors.count();
+      if (cnt > Integer.MAX_VALUE) {
+        throw new IllegalArgumentException("Cannot run sequential algorithm, there are more than MAX_INT points");
+      }
+      ArrayList<Tuple2<Long, Vector>> localVectors= new ArrayList<>((int) cnt);
+      Iterator<Tuple2<Long, Vector>> it = vectors.toLocalIterator();
+      while(it.hasNext()) {
+        localVectors.add(it.next());
+      }
       solution = runSequential(localVectors, arguments.k, Distance::cosineDistanceWithIdentifier);
     }  else {
       throw new IllegalArgumentException("Unknown algorithm");
