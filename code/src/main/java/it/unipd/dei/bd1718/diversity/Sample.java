@@ -1,4 +1,4 @@
-package it.unipd.dei.bd1718;
+package it.unipd.dei.bd1718.diversity;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
@@ -9,7 +9,6 @@ import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.mllib.linalg.Vector;
-import org.apache.spark.sql.execution.DataSourceScanExec;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Tuple2;

@@ -1,4 +1,4 @@
-package it.unipd.dei.bd1718;
+package it.unipd.dei.bd1718.diversity;
 
 import java.util.ArrayList;
 import java.util.Arrays;
