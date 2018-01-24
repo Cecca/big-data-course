@@ -10,6 +10,7 @@ This document describes the setup for the project to be done for the Big Data co
    admin_setup
    starting_cluster
    commands-guide
+   homeworks
 
 
 Indices and tables
