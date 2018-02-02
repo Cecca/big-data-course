@@ -184,7 +184,10 @@ public class RemoteClique {
     SparkConf conf = new SparkConf(true)
             .set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
             .setAppName("Remote clique diversity");
+
     JavaSparkContext sc = new JavaSparkContext(conf);
+
+    long startTime = System.currentTimeMillis();
 
     JavaRDD<Tuple2<Long, Vector>> vectors = InputOutput.readVectorsPairs(sc, arguments.input);
 
@@ -236,6 +239,10 @@ public class RemoteClique {
         System.out.println(p);
       }
     }
+
+    long endTime = System.currentTimeMillis();
+
+    logger.info("Elapsed time: {} ms", endTime - startTime);
 
   }
 
