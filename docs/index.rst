@@ -11,6 +11,7 @@ This document describes the setup for the project to be done for the Big Data co
    starting_cluster
    commands-guide
    homeworks
+   api
 
 
 Indices and tables

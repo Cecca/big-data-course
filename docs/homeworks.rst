@@ -22,6 +22,8 @@ Then, head over to the `download page of Intellij Idea <https://www.jetbrains.co
 Homework 1: functional programming
 ----------------------------------
 
+.. note:: TODO: write about method references
+
 The purpose of this first homework is to get acquainted with the principles of *functional programming*, on which MapReduce and Spark are based.
 One of the core ideas of functional programming is that functions can be arguments to other functions.
 For instance, a sorting algorithm may take as a parameter the comparison function along with the data to be sorted.
