@@ -11,7 +11,7 @@ Preliminaries: setup
 --------------------
 
 Before doing any work, you should setup your machine.
-The first step is to download the project template available `here <https://drive.google.com/open?id=11REd6DsiYDTwnI8uWmoBh8q7FCd9ObAB>`_.
+The first step is to download the project template available `here <https://drive.google.com/uc?export=download&id=11REd6DsiYDTwnI8uWmoBh8q7FCd9ObAB>`_.
 Then, head over to the `download page of Intellij Idea <https://www.jetbrains.com/idea/download/>`_ and follow the instructions of the video below to setup your machine (you can view the video fullscreen).
 
 .. raw:: html
@@ -181,7 +181,7 @@ Loading data from text files
 In the first homework, we built a RDD by calling ``sc.parallelize`` on an existing collection.
 However, usually data is stored in one or more files, in a variety of formats.
 The simplest format is plaintext, we we will now see how to load text files into Spark.
-Download the sample file `text-sample.txt <https://drive.google.com/file/d/1DWSGmHHepOfAUznj5KrfU9q4kg-tlslY/view?usp=sharing>`_ and place it in the root directory of your code.
+Download the sample file `text-sample.txt <https://drive.google.com/uc?export=download&id=1DWSGmHHepOfAUznj5KrfU9q4kg-tlslY>`_ and place it in the root directory of your code.
 
 The following line of code loads the text file into an RDD with an element for each line::
 
