@@ -11,7 +11,7 @@ Preliminaries: setup
 --------------------
 
 Before doing any work, you should setup your machine.
-The first step is to download the project template available `here <TODO>`_.
+The first step is to download the project template available `here <https://drive.google.com/open?id=11REd6DsiYDTwnI8uWmoBh8q7FCd9ObAB>`_.
 Then, head over to the `download page of Intellij Idea <https://www.jetbrains.com/idea/download/>`_ and follow the instructions of the video below to setup your machine (you can view the video fullscreen).
 
 .. raw:: html
