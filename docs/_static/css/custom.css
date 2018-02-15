@@ -1,0 +1,12 @@
+table.highlighttable {
+    margin-left: -1em;
+    width: 100%;
+}
+
+table.highlighttable td {
+    padding: 0 0em 0 0em;
+}
+
+body {
+    font-family: Georgia, 'Hiragino Mincho Pro', serif;
+}

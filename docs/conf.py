@@ -89,7 +89,9 @@ html_theme = 'alabaster'
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
-# html_theme_options = {}
+html_theme_options = {
+    'fixed_sidebar': True
+}
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -168,5 +170,7 @@ texinfo_documents = [
      'Miscellaneous'),
 ]
 
+def setup(app):
+    app.add_stylesheet('css/custom.css')  # may also be an URL
 
 

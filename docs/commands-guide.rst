@@ -15,6 +15,8 @@ These commands live in ``/opt/spark/bin``
   Spark supports the execution of jobs using several cluster managers (for more information please refer to the `official documentation <https://spark.apache.org/docs/latest/submitting-applications.html>`_).
   For the Big Data course we are using the `Yarn <https://hadoop.apache.org/docs/current/hadoop-yarn/hadoop-yarn-site/YARN.html>`_ cluster manager.
 
+.. _spark-submit:: Function spark-submit
+
 .. function:: spark-submit [spark options] code.jar [program arguments]
 
   Submit Spark jobs to the cluster. This command requires the path to the jar file containing **all** the bytecode of your application [#building-jar]_.
