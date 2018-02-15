@@ -132,21 +132,8 @@ Make a copy of the file ``src/main/java/it/unipd/dei/bd1718/FirstHomeworkTemplat
 Homework 2: Spark basics
 ------------------------
 
-In this second homework, we will see how to use Spark more in detail.
+In this second homework, we will see how to use Spark more in detail, using the classic word count task as a running example.
 
-.. topic:: TODO:
-
-  * Connect with a cluster manager
-  * The Spark context
-  * Parallelizing collections
-  * Reading text files
-  * Word count example
-
-    * With map, followed by groupby, followed by sum
-    * With reduce
-    * With countbyvalue
-
-    Add a plot showing which one is the fastest on wikipedia.
 
 Setting things up: the Spark context
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -164,18 +151,23 @@ To instantiate such a class, you need to provide some configuration using the cl
 Let's break down the code snippet above.
 On line 2, we pass ``true`` to the ``SparkConf`` constructor.
 The effect is that configuration properties will be read from system properties (i.e., the ones passed on the command line after the ``java`` command using the ``-Dproperty.name=property-value`` sintax).
-Line 3 sets the name of out application. Note that this line and the following one are method invocations on the ``SparkConf`` object being created.
+Line 3 sets the name of your application. Note that this line and the following one are method invocations on the ``SparkConf`` object being created.
 Finally, line 4 sets the address of the master.
-As detailed in `TODO`_, there are several values that this stirng can take.
+As detailed in the `Spark documentation <https://spark.apache.org/docs/latest/submitting-applications.html#master-urls>`_, there are several values that this stirng can take.
 For this course, two are interesting.
 
-* ``"local"``: use the local resources of the computer. This sets up a Spark process on the local machine, using the available cores for parallelism.
-  Use this ``"local"`` when testing code on your local machine.
-* ``"yarn"``: run Spark on the Yarn cluster manager. This is the cluster manager used by the cloud computing platform available for the course. Use this value when running on the cluster.
+* ``"local[*]"``: use the local resources of the computer. This sets up a Spark process on the local machine, using the available cores for parallelism.
+  Use this setting when testing code on your local machine.
+* ``"yarn"``: run Spark on the Yarn cluster manager. This is the cluster manager used by the cloud computing platform available for the course. Use this setting when running on it.
 
 There is also the possibility of not setting the master in the ``SparkConf`` object. 
 In this case, you should specify the Spark master either using the Java property ``spark.master`` on the command line (for instance when running locally on your laptop), or by specifying the ``--master`` option of the ``spark-submit`` command (:ref:`documentation <spark-submit>`).
 By not hardcoding the master configuration in you code, you have the flexibility of running on different architectures.
+If you are using the Intellij Idea IDE, you can configure the Spark master using the configuration dialog that can be accessed from ``Run -> Edit configurations``, as shown in the following figure, where the relevant configuration is ``VM options``.
+
+.. figure:: images/configure-master.png
+
+A run configuration is created for you the first time you try to run a main method by clicking on the green arrow beside the line of the main method itself.
 
 Once you have created a ``SparkConf`` object, you can instantiate a ``JavaSparkContext`` as simply as::
 
@@ -187,13 +179,25 @@ Loading data from text files
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 In the first homework, we built a RDD by calling ``sc.parallelize`` on an existing collection.
-However, usually ata is stored in one or more files, in a variety of formats.
+However, usually data is stored in one or more files, in a variety of formats.
 The simplest format is plaintext, we we will now see how to load text files into Spark.
-Download this `sample file <TODO>`_ and place it in the root directory of your code.
+Download the sample file `text-sample.txt <https://drive.google.com/file/d/1DWSGmHHepOfAUznj5KrfU9q4kg-tlslY/view?usp=sharing>`_ and place it in the root directory of your code.
 
 The following line of code loads the text file into an RDD with an element for each line::
 
   JavaRDD<String> lines = sc.textFile("text-sample.txt");
+
+If you open the file you will see that it looks quite strange. Here are the first three lines::
+
+  Follyfoot Follyfoot be a child television series co-produce by the majority-partner british television company Yorkshire Television for transmission on itv and the independe...
+  Golden line the golden line be a type of Latin dactylic hexameter frequently mention in Latin classroom in English speak country and in contemporary scholarship write in Eng...
+  Chris Isaak Christopher Joseph Isaak bear June be a american rock musician and occasional actor he be best know for he hit wicked game as well as the popular hit song Baby...
+
+This file has been obtained by sampling 1000 documents from a recent dump of Wikipedia.
+The text of each page has been `lemmatized <https://en.wikipedia.org/wiki/Lemmatisation>`_. Lemmatization is a common preprocessing step when dealing with text documents.
+Using Natural Language Processing techniques, each word is reduced to a *lemma*: plurals are turned to singluar, verbs are turned to infinity, etc...
+
+In this homework, in which we are counting word occurrences, it is useful to have a lemmatized dataset: this way we count variations of the same lemma correctly.
     
 Counting words
 ^^^^^^^^^^^^^^
@@ -228,7 +232,7 @@ First of all, we will see the classic MapReduce algorithm for word counting::
     .collectAsMap();    // <-- Collection of the result
 
 The map function is implemented with a ``flatMapToPair`` call.
-We use a ``flatMapToPair`` problem for two reasons.
+We use a ``flatMapToPair`` operation for two reasons.
 The first is that we have to generate a dataset of key-value pairs, the second is tat from a single value (a document represented as a single string), we have to generate several key-value pairs.
 The map function first splits the document at spaces then iterates over the tokens, creating a new pair for each one of them.
 The pairs are accumulated in an ArrayList, which we then return as an iterator.
@@ -264,23 +268,19 @@ You should see an improvement in the running time.
 On my machine, this version takes **4390.2 milliseconds** on average.
 This improvement is due to the fact that we are doing *document-level* aggregation, that is, we are aggregating some data before information is exchanged between processors, thus reducing the amount of data exchanged.
 
-.. note::
-
-  We still have to say that data is partitioned across processors.
-
-We can bring this concept a step forward.
+We can bring this concept a step further.
 Recall that a RDD is a collection of data partitioned across many processors, potentially located on different machines.
 Each partition will contain several elements, documents in this case, and will be processed in one go by a single processor.
 So, instead of doing document-level aggregation, we could do partition-level aggregation.
 This is the purpose of the ``reduceByKey`` operation.
 The name is slightly misleading, since it's not really equivalent to the standard definition of a reduce operation in MapReduce.
 The standard reduce of MapReduce can operate on all the values associated with a key, and is implemented with a ``groupByKey`` in Spark, as we have seen.
-A ``reduceByKey`` instead, applies a user-provided function to pairs of elements sharing the same key, until there is just one element per key.
+A ``reduceByKey``, instead, applies a user-provided function to pairs of elements sharing the same key, until there is just one element per key.
 There is no guarantee on the order of application, therefore the function being applyed **must** be commutative and associative.
 By accepting this restriction, you allow Spark to aggregate data at a partition level, resulting in even less communication between processors and therefore in more performant code.
 The implementation of word count with ``reduceByKey`` is the following::
 
-  Map<String, Long> count = words
+  Map<String, Long> count = docs
     .flatMapToPair((document) -> {   // <-- map phase
       String[] tokens = document.split(" ");
       HashMap<String, Long> counts = new HashMap<>();
@@ -301,3 +301,16 @@ On my machine, using 4 cores, this implementation takes **3641.2 milliseconds** 
 The plot below compares the running times of the three implementations we have seen so far, with confidence bars.
 
 .. figure:: images/word-count-implementations.png
+
+Each bar corresponds to a different implementation:
+
+1. ``gropuByKey`` is the first implementation we looked at.
+2. ``groupByKey-agg`` is the second implementation, with document-level aggregation.
+3. ``reduceByKey`` is the last implementation, doing partition-level aggregation.
+
+Exercises
+^^^^^^^^^
+
+1. Instead of words, count the occurrences of characters across the dataset. 
+  Suggestion: you can use the method ``String.toCharArray()`` to get the characters of the document's string.
+2. Group words by length: count the number of words of length 1, of length 2 and so on...

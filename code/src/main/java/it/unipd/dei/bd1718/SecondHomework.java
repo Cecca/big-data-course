@@ -44,29 +44,29 @@ public class SecondHomework {
 //      })
 //      .collectAsMap();
 
-//    Map<String, Integer> count = words.flatMapToPair((d) -> {
-//      String[] tokens = d.split(" ");
-//      HashMap<String, Long> counts = new HashMap<>();
-//      ArrayList<Tuple2<String, Long>> pairs = new ArrayList<>();
-//      for (String token : tokens) {
-//        counts.put(token, 1L + counts.getOrDefault(token, 0L));
-//      }
-//      for (Map.Entry<String, Long> e : counts.entrySet()) {
-//        pairs.add(new Tuple2<>(e.getKey(), e.getValue()));
-//      }
-//      return pairs.iterator();
-////      return counts.entrySet().stream()
-////        .map((entry) -> new Tuple2<>(entry.getKey(), entry.getValue()))
-////        .iterator();
-//    }).groupByKey()
-//      .mapValues((it) -> {
-//        int sum = 0;
-//        for (long c : it) {
-//          sum += c;
-//        }
-//        return sum;
-//      })
-//      .collectAsMap();
+    Map<String, Integer> count = words.flatMapToPair((d) -> {
+      String[] tokens = d.split(" ");
+      HashMap<String, Long> counts = new HashMap<>();
+      ArrayList<Tuple2<String, Long>> pairs = new ArrayList<>();
+      for (String token : tokens) {
+        counts.put(token, 1L + counts.getOrDefault(token, 0L));
+      }
+      for (Map.Entry<String, Long> e : counts.entrySet()) {
+        pairs.add(new Tuple2<>(e.getKey(), e.getValue()));
+      }
+      return pairs.iterator();
+//      return counts.entrySet().stream()
+//        .map((entry) -> new Tuple2<>(entry.getKey(), entry.getValue()))
+//        .iterator();
+    }).groupByKey()
+      .mapValues((it) -> {
+        int sum = 0;
+        for (long c : it) {
+          sum += c;
+        }
+        return sum;
+      })
+      .collectAsMap();
 
 //    Map<String, Long> count = words.flatMapToPair((d) -> {
 //      String[] tokens = d.split(" ");
