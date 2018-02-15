@@ -184,9 +184,27 @@ public class RemoteClique {
     SparkConf conf = new SparkConf(true)
             .set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
             .setAppName("Remote clique diversity");
+    logger.info("Provided configuration: {}", conf.toDebugString());
+
     JavaSparkContext sc = new JavaSparkContext(conf);
 
-    JavaRDD<Tuple2<Long, Vector>> vectors = InputOutput.readVectorsPairs(sc, arguments.input);
+    int executorCores = conf.getInt("spark.executor.cores", -1);
+    int numExecutors = conf.getInt("spark.executor.instances", -1);
+    int numPartitions = sc.defaultParallelism();
+    if (executorCores > 0 && numExecutors > 0) {
+      numPartitions = executorCores * numExecutors;
+    } else {
+      logger.warn("Could not determine number of executors or cores: {} and {}, respectively",
+              executorCores, numExecutors);
+      logger.warn("Configuration: ", conf.toDebugString());
+    }
+
+    long startTime = System.currentTimeMillis();
+    logger.info("Start time: {}", startTime);
+    logger.info("Number of partitions: {}", numPartitions);
+
+    JavaRDD<Tuple2<Long, Vector>> vectors = InputOutput.readVectorsPairs(sc, arguments.input)
+            .repartition(numPartitions);
 
     ArrayList<Tuple2<Long, Vector>> solution;
     if ("random".equals(arguments.algorithm)) {
@@ -236,6 +254,10 @@ public class RemoteClique {
         System.out.println(p);
       }
     }
+
+    long endTime = System.currentTimeMillis();
+
+    System.out.println("Elapsed time: " + (endTime - startTime) + " ms");
 
   }
 
