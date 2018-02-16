@@ -10,6 +10,7 @@ import org.apache.hadoop.fs.Path;
 import org.apache.hadoop.io.BytesWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.spark.SparkConf;
+import org.apache.spark.SparkContext;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
@@ -20,9 +21,11 @@ import org.apache.spark.mllib.feature.Word2VecModel;
 import org.apache.spark.mllib.linalg.Vector;
 import org.apache.spark.mllib.linalg.Vectors;
 import org.apache.spark.util.LongAccumulator;
+import org.apache.spark.util.SizeEstimator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Tuple2;
+import shapeless.Tuple;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -56,8 +59,11 @@ public class Preprocess {
     @Parameter(names = "--partitions", description = "Partitions to use for word2vec training")
     int partitions = 1;
 
-    @Parameter(names = "--model", required = true, description = "Path to the word2vec model. If not existing, a new one will be trained using the dataset as input")
+    @Parameter(names = "--model", description = "Path to the word2vec model. If not existing, a new one will be trained using the dataset as input")
     String model;
+
+    @Parameter(names = "--glove", description = "Path to the glove model.")
+    String glove;
 
   }
 
@@ -129,6 +135,54 @@ public class Preprocess {
             .fit(sentences);
   }
 
+  private static Map<String, Vector> loadModel(
+          JavaPairRDD<Long, ArrayList<ArrayList<String>>> docSentences,
+          FileSystem fs,
+          Args arguments) throws IOException {
+    SparkContext sc = docSentences.context();
+    if (arguments.glove != null) {
+      Map<String, Vector> result = new HashMap<>();
+
+      List<Tuple2<String, Vector>> vecs =
+              JavaSparkContext.fromSparkContext(sc).textFile(arguments.glove).mapToPair((line) -> {
+                String[] tokens = line.split(" ");
+                double[] values = new double[tokens.length - 1];
+                for (int i = 0; i< values.length; i++) {
+                  values[i] = Double.parseDouble(tokens[i+1]);
+                }
+                Vector v = Vectors.dense(values);
+                return new Tuple2<>(tokens[0], v);
+              }).collect();
+      for (Tuple2<String, Vector> t : vecs) {
+        if (t._2() == null) {
+          throw new RuntimeException("Null vector for word " + t._1());
+        }
+        result.put(t._1(), t._2());
+      }
+      return result;
+    } else {
+      if (arguments.model == null) {
+        throw new IllegalArgumentException("You should provide either --model or --glove");
+      }
+      Word2VecModel w2v;
+      if (fs.exists(new Path(arguments.model))) {
+        w2v = Word2VecModel.load(sc, arguments.model);
+      } else {
+        w2v = trainWord2Vec(
+                docSentences.values().flatMap((sents) -> sents.iterator()),
+                arguments);
+        w2v.save(sc, arguments.model);
+      }
+      Map<String, Vector> result = new HashMap<>();
+      scala.collection.Iterator<String> it = w2v.getVectors().keysIterator();
+      while (it.hasNext()) {
+        String word = it.next();
+        result.put(word, w2v.transform(word));
+      }
+      return result;
+    }
+  }
+
   public static void main(String[] args) throws IOException {
     System.out.println("Reading command line options");
     Args arguments = new Args();
@@ -136,8 +190,6 @@ public class Preprocess {
             .addObject(arguments)
             .build()
             .parse(args);
-
-    final int dimensions = arguments.dims;
 
     SparkConf conf = new SparkConf(true)
             .set("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
@@ -153,42 +205,36 @@ public class Preprocess {
 
     Broadcast<Set<String>> bStopWords = broadcastStopwords(sc);
 
-
-
     JavaPairRDD<Long, ArrayList<ArrayList<String>>> docSentences =
             loadLemmas(sc, arguments);
 
-    Word2VecModel w2v;
-    if (fs.exists(new Path(arguments.model))) {
-      w2v = Word2VecModel.load(sc.sc(), arguments.model);
-    } else {
-      w2v = trainWord2Vec(
-              docSentences.values().flatMap((sents) -> sents.iterator()),
-              arguments);
-      w2v.save(sc.sc(), arguments.model);
-    }
+    Map<String, Vector> model = loadModel(docSentences, fs, arguments);
+    final int dimensions = model.get("be").size();
+    logger.info("Loaded model with {} entries in {} dimensions (estimated {} Mb)",
+            model.size(), dimensions, SizeEstimator.estimate(model) / 1024.0);
 
     LongAccumulator skippedPages = sc.sc().longAccumulator("skipped-pages");
     LongAccumulator skippedLemmas = sc.sc().longAccumulator("skipped-lemmas");
-    Broadcast<Word2VecModel> bw2v = sc.broadcast(w2v);
+    Broadcast<Map<String, Vector>> bModel = sc.broadcast(model);
     JavaPairRDD<Long, Vector> vectors = docSentences
             .flatMapToPair((pair) -> {
+              Map<String, Vector> lModel = bModel.getValue();
               double vec[] = new double[dimensions];
               AtomicInteger counter = new AtomicInteger();
               AtomicInteger skipped = new AtomicInteger();
               for (ArrayList<String> sentence : pair._2()) {
                 for (String lemma : sentence) {
-                  try {
-                    if (!bStopWords.getValue().contains(lemma)) {
-                      double[] lemVec = bw2v.getValue().transform(lemma).toArray();
+                  if (!bStopWords.getValue().contains(lemma)) {
+                    if (lModel.containsKey(lemma)) {
+                      double[] lemVec = lModel.get(lemma).toArray();
                       for (int i = 0; i < dimensions; i++) {
                         vec[i] += lemVec[i];
                       }
                       counter.incrementAndGet();
+                    } else {
+                      skipped.incrementAndGet();
+                      logger.warn("Skipping `" + lemma + "` since it's missing from the vocabulary");
                     }
-                  } catch (IllegalStateException e) {
-                    skipped.incrementAndGet();
-                    logger.warn("Skipping `" + lemma + "` since it's missing from the vocabulary");
                   }
                 }
               }
@@ -210,23 +256,6 @@ public class Preprocess {
     InputOutput.writeVectorsPairs(vectors, arguments.output);
 
     logger.info("Output written. {} pages skipped. {} lemmas skipped (overall)", skippedPages.value(), skippedLemmas.value());
-
-//    JavaPairRDD<Long, Vector> vectorsCheck =
-//            JavaPairRDD.fromJavaRDD(InputOutput.readVectorsPairs(sc, arguments.output));
-//    JavaPairRDD<Long, List<Tuple2<String, Object>>> synonyms =
-//            vectorsCheck.mapValues((v) -> Arrays.asList(bw2v.getValue().findSynonyms(v, 3)));
-//
-//    JavaRDD<WikiPage> pages = InputOutput.read(sc, arguments.input)
-//            .filter((wp) -> !wp.getTitle().contains("disambiguation"));
-//    pages.mapToPair((wp) -> new Tuple2<>(wp.getId(), wp))
-//            .join(synonyms)
-//            .takeSample(false, 10)
-//            .stream()
-//            .forEach((tup) -> {
-//              System.out.println(
-//                      "Page `" + tup._2()._1().getTitle() +
-//                      "` with closest vectors " + tup._2()._2());
-//            });
   }
 
   private static Broadcast<Set<String>> broadcastStopwords(JavaSparkContext sc) {
