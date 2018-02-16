@@ -319,7 +319,7 @@ Such a dataset can be obtained from the :file:`text-sample.txt` file with::
 
   JavaRDD<String> docs = sc.textFile("text-sample.txt");
 
-First of all, we will see the classic MapReduce algorithm for word counting::
+First of all, let's look at the classic MapReduce algorithm for word counting::
 
   Map<String, Long> count = docs
     .flatMapToPair((document) -> {             // <-- Map phase
@@ -332,7 +332,7 @@ First of all, we will see the classic MapReduce algorithm for word counting::
     })
     .groupByKey()                       // <-- Reduce phase
     .mapValues((it) -> {
-      int sum = 0;
+      long sum = 0;
       for (long c : it) {
         sum += c;
       }
