@@ -43,4 +43,8 @@ public class Distance {
     return cosineDistance(a._2(), b._2());
   }
 
+  public static double euclideanDistanceWithIdentifier(Tuple2<Long, Vector> a, Tuple2<Long, Vector> b) {
+    return Vectors.sqdist(a._2(), b._2());
+  }
+
 }

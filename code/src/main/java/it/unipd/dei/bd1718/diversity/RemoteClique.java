@@ -24,7 +24,7 @@ import java.util.*;
  * in the data type.
  *
  * This class also provides a command line interface that works with
- * the Wikipedia dataset, using the cosine distance function.
+ * the Wikipedia dataset, using the euclidean distance function.
  */
 public class RemoteClique {
 
@@ -212,7 +212,7 @@ public class RemoteClique {
       solution = runRandom(vectors, arguments.k);
     } else if ("mapreduce".equals(arguments.algorithm)) {
       logger.info("Running MapReduce algorithm");
-      solution = runMapReduce(vectors, arguments.k, Distance::cosineDistanceWithIdentifier);
+      solution = runMapReduce(vectors, arguments.k, Distance::euclideanDistanceWithIdentifier);
     } else if ("sequential".equals(arguments.algorithm)) {
       logger.info("Running sequential algorithm");
       long cnt = vectors.count();
@@ -224,7 +224,7 @@ public class RemoteClique {
       while(it.hasNext()) {
         localVectors.add(it.next());
       }
-      solution = runSequential(localVectors, arguments.k, Distance::cosineDistanceWithIdentifier);
+      solution = runSequential(localVectors, arguments.k, Distance::euclideanDistanceWithIdentifier);
     }  else {
       throw new IllegalArgumentException("Unknown algorithm");
     }
@@ -234,7 +234,7 @@ public class RemoteClique {
     }
 
     int k = arguments.k;
-    double sumDist = measure(solution, Distance::cosineDistanceWithIdentifier);
+    double sumDist = measure(solution, Distance::euclideanDistanceWithIdentifier);
     double avgDist = sumDist / (k*(k-1)/2);
 
     if (arguments.pagesPath == null) {
