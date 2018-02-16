@@ -260,7 +260,52 @@ In this homework, in which we are counting word occurrences, it is useful to hav
 
   When writing code, one often wonders how much time the program is taking, and where the time is spent.
   In sequential programs, measuring time is as simple as calling ``System.currentTimeMillis()`` in the relevant spots.
-  In Spark programs, however, there are some issues.
+  In Spark programs, however, there are some issues with this approach.
+  Spark transformations are *lazy*, in the sense that they don't happen right away, when a transformation method is called. 
+  Instead, Spark remembers that it has to transform the data with the given function.
+  The transformation will be actually executed only once an action (such as counting the elements or writing them to a file) requires the transformed data.
+  This allow Spark to run more efficiently, however it makes measuring time more difficult.
+  Suppose we want to take the time it takes to count the words of :file:`text-sample.txt` using the methods we will see in the next section.
+  If we were to do like the following::
+
+    JavaRDD<String> docs = sc.textFile("text-sample.txt");
+    long start = System.currentTimeMillis();
+
+    // Code of which we want to measure the running time
+
+    long end = System.currentTimeMillis();
+    System.out.println("Elapsed time " + (end - start) + " ms");
+
+  then we would be measuring also the time to load the text file!
+  In fact, ``sc.textFile`` is not executed immediately, rather it is executed when an action requires it, *after* we start our stopwatch.
+  Therefore, we need to *force* the file loading before we start the stopwatch.
+  In order to do so, we have to run an action on the ``docs`` RDD, and the simplest one is ``count``.
+  However, simply invoking ``count`` would not do: we have to explicitly tell Spark to cache the results in memory::
+
+    JavaRDD<String> docs = sc.textFile("text-sample.txt").cache();
+    docs.count();
+
+    // Now the RDD has been loaded and cached in memory and
+    // we can start measuring time
+    long start = System.currentTimeMillis();
+
+    // Code of which we want to measure the running time
+
+    long end = System.currentTimeMillis();
+    System.out.println("Elapsed time " + (end - start) + " ms");
+
+  The above strategy is good to take the overall running time of a section of the program, but is inadequate for finer grained profiling.
+  To see how much time your Spark program spends running each transformation and action, you can use the web interface that is built-in into Spark.
+  This interface runs alongside your program, and exits when the program terminates.
+  In order to have time to consult it, we have to suspend the execution of the program.
+  The simplest way is by inserting an input statement right before the end of your ``main`` method::
+
+    System.out.println("Press enter to finish");
+    System.in.read();
+
+  Now, after starting your program, open a browser and visit `<localhost:4040>`_.
+  You will see the web interface of your running program, which you are invited to explore.
+  In the fourth homework (where we will run software on the cloud) we will see an alternative way of accessing the web interface after your program has terminated, allowing you to get rid of the ``System.in.read()`` call. 
 
 
 Counting words
@@ -375,6 +420,5 @@ Each bar corresponds to a different implementation:
 Exercises
 ^^^^^^^^^
 
-1. Instead of words, count the occurrences of characters across the dataset. 
-  Suggestion: you can use the method ``String.toCharArray()`` to get the characters of the document's string.
-2. Group words by length: count the number of words of length 1, of length 2 and so on...
+1. Compute an histogram of word lengths: the number of words of length 1, 2, 3, and so on...
+
