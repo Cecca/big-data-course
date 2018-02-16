@@ -57,7 +57,7 @@ This page presents detailed API, with examples, of some of the most useful Spark
   The problem is that some functional interface, like ``java.util.Comparator``, do not inherit from ``Serializable``, therefore our function isn't seen as serializable.
   The consequence is that at runtime our program may crash with a ``TaskNotSerializableException``.
   This issue is due to the Java compiler not being smart enough in this context.
-  A workaround is to explicitly implement a class implementing both ``Serializable`` and ``Comparator``, as shown in the example for the ``min`` and ``max`` methods (cfr. :ref:`min_max_methods`).
+  A workaround is to explicitly implement a class implementing both ``Serializable`` and ``Comparator``, as shown in the example for the ``min`` and ``max`` methods (cfr. :ref:`min and max methods <min-max-methods>`).
 
 
 
@@ -157,11 +157,11 @@ This page presents detailed API, with examples, of some of the most useful Spark
   .. function:: flatMapToPair(PairFlatMapFunction<T,K,V> func)
 
     Like ``map``, but returns a ``JavaPairRDD<K, V>``.
-    This method takes a function as a parameter. This function should accept a single value of type ``T`` and return a key-value pair ``Tuple2<K, V>``.
+    This method takes a function as a parameter. This function should accept a single value of type ``T`` and returns and iterator of key-value pairs ``Tuple2<K, V>``.
     For example, to map a RDD of words to a RDD of words together with inizialized word counts::
 
       JavaRDD<String> sentences;
-      JavaPairRDD<String, Long> counts = sentences.mapToPair((s) -> {
+      JavaPairRDD<String, Long> counts = sentences.flatMapToPair((s) -> {
         String[] words = s.split(" ");
         ArrayList<Tuple2<String, Long>> counts = new ArrayList<>();
         for (String w : words) {
@@ -231,8 +231,7 @@ This page presents detailed API, with examples, of some of the most useful Spark
       List<String> localWords = distributedWords.collect();
       // localWords is a local copy of all the elements of the distributedWords RDD.
 
-  .. _min_max_methods:
-      :caption: min-max
+  .. _min-max-methods:
 
   .. function:: max(java.util.Comparator<T> comp) 
   .. function:: min(java.util.Comparator<T> comp) 

@@ -157,6 +157,33 @@ Make a copy of the file ``src/main/java/it/unipd/dei/bd1718/FirstHomeworkTemplat
 
 --------------------------------------------------------------------------------
 
+Intermission: RDDs, executors, and parallelism
+----------------------------------------------
+
+Before proceeding to homework 2, some words about Resilient Distributed Datasets, Spark's basic data abstraction, are in oder.
+
+A Resilient Distributed Dataset (RDD for short) is a collection of elements of the same type, possibly distributed across many machines.
+As we have briefly discussed in the previous homework, a RDD cannot be modified in place.
+Instead, new RDDs are created by means of *transformations*: we provide a function, and Spark applies it to the elements of the RDD, yielding another RDD with the resulting values.
+An RDD is partitioned in a configurable number of *blocks*, each of which contains several elements.
+The blocks can be distributed across many machines.
+
+Each machine is called an *executor* in Spark, and usually has many cores.
+When transforming an RDD, we have a function to be applied to all the elements of the RDD.
+In Spark, a *task* is a pair formed by a function and a block of a RDD.
+Therefore, when transforming an RDD, we have as many tasks as RDD blocks.
+Each core of each executor will take a task and execute it: the function will be applied *sequentially* to each element of the given RDD block.
+Therefore, parallelism arises from the fact that the RDDs are partitioned in many blocks, and each block can be processed independently.
+Furthermore, note that the number of blocks and the total number of cores may be different:
+
+* you may have more cores than blocks, in which case there are not enough tasks and some cores will sit idle
+* you can have exactly as many blocks as cores. Each core usually executes a single task. This actually depends on the scheduler, which may opt to make some cores execute more than one task and leave some others with no work.
+* you can have more blocks than cores, in which case some tasks will wait for others to finish.
+
+Setting the number of blocks depends on the application. Sometimes having many more blocks than cores helps with load balancing: cores completing tasks faster (possibly because of the characteristics of the data they are processing)  will have more tasks to work on.
+
+--------------------------------------------------------------------------------
+
 
 Homework 2: Spark basics
 ------------------------
@@ -228,6 +255,14 @@ Using Natural Language Processing techniques, each word is reduced to a *lemma*:
 
 In this homework, in which we are counting word occurrences, it is useful to have a lemmatized dataset: this way we count variations of the same lemma correctly.
     
+
+.. topic:: Profiling
+
+  When writing code, one often wonders how much time the program is taking, and where the time is spent.
+  In sequential programs, measuring time is as simple as calling ``System.currentTimeMillis()`` in the relevant spots.
+  In Spark programs, however, there are some issues.
+
+
 Counting words
 ^^^^^^^^^^^^^^
 
