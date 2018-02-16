@@ -1,9 +1,11 @@
+.. _spark-api:
+
 Spark API
 =========
 
 .. highlight:: Java
 
-This page presents detailed API, with examples, of some of the most useful Spark functions. Note that the ultimate source of information on this topic is the `officila Java API of Spark <https://spark.apache.org/docs/2.2.0/api/java/>`_.
+This page presents detailed API, with examples, of some of the most useful Spark functions. Note that the ultimate source of information on this topic is the `official Java API of Spark <https://spark.apache.org/docs/2.2.0/api/java/>`_.
 
 .. topic:: On functions and interfaces
 
@@ -229,7 +231,7 @@ This page presents detailed API, with examples, of some of the most useful Spark
       List<String> localWords = distributedWords.collect();
       // localWords is a local copy of all the elements of the distributedWords RDD.
 
-  .. _min_max_methods:: 
+  .. _min_max_methods:
       :caption: min-max
 
   .. function:: max(java.util.Comparator<T> comp) 

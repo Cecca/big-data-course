@@ -19,6 +19,9 @@ Then, head over to the `download page of Intellij Idea <https://www.jetbrains.co
   <iframe src="https://drive.google.com/file/d/1VJs-79tyZjdH9hx1Q2EmgC52wpg5YKSF/preview" width="640" height="360" allowfullscreen></iframe>
 
 
+--------------------------------------------------------------------------------
+
+
 Homework 1: functional programming
 ----------------------------------
 
@@ -74,7 +77,30 @@ Note that ``fixed`` is used in the body of the anonymous function, but is define
 In such cases we say that the anonymous function *captures* a variable.
 We can only capture variables that effectively ``final``, that is, you cannot re-assign to a captured variable.
 
-There are several types of collections providing a ``map`` function (including many from the Java Standard Library).
+Java 8 also introduced another way of passing functions to other functions, namely *method references*.
+Suppose you have the following class::
+
+  public class Operations {
+
+    public static double square(double x, double y) {
+      return x * y;
+    }
+  }
+
+You may which to pass the *static* method ``square`` to the method ``map`` instead of defining a lambda function, like in the examples above.
+The syntax to refer the the static method ``square`` is the following::
+
+  coll.map(Operations::square);
+
+note the double colon joining the method name ``square`` to the class it belongs to, ``Operations``.
+
+Therefore, you have two ways of passing a function to a method: either you pass an anonymous function or a method reference.
+Usually, lambda functions are used when the functionality can be coded in a few statements and is limited to a single occurrence.
+Method references, on the other hand, are useful when the code gets more complex or when it should be reused in several places.
+
+
+So far, we have assumed the existence of a collection type providing a ``map`` method accepting a function as an argument.
+There are several types of collections providing such a method (including many from the Java Standard Library).
 However, since these homeworks are about Spark, we will focus on collections provided by Spark, namely *Resilient Distributed Datasets* (RDD for short).
 An RDD is a collection of elements that can be possibly partitioned across many machines and on which operations execute in parallel.
 In the Spark Java API, the class defining the RDD data structure is ``JavaRDD`` (`API link <https://spark.apache.org/docs/latest/api/java/org/apache/spark/api/java/JavaRDD.html>`_).
@@ -95,7 +121,7 @@ There are also functions to get a single value which is the result of some opera
 
   .. image:: https://i.stack.imgur.com/OCsJC.png
 
-These are not all the methods available to transform and collect data in Spark, which we will review in the next homework.
+These are not all the methods available to transform and collect data in Spark, which we will review in the next homework (an overview of the most useful methods and types is given :ref:`here <spark-api>`).
 
 Note that the methods of ``JavaRDD`` that we saw are all functional in nature (well, except ``count`` and ``collect``): they accept another function as a parameter to know what to do with elements.
 
@@ -129,6 +155,9 @@ Make a copy of the file ``src/main/java/it/unipd/dei/bd1718/FirstHomeworkTemplat
 2. Given ``dNumbers``, compute the minimum of all the inverse values. Do it in at least two ways (e.g. using ``map`` and ``reduce``, and using the ``min`` method with an anonymous function implementing a custom comparator).
 
 
+--------------------------------------------------------------------------------
+
+
 Homework 2: Spark basics
 ------------------------
 
@@ -153,7 +182,7 @@ On line 2, we pass ``true`` to the ``SparkConf`` constructor.
 The effect is that configuration properties will be read from system properties (i.e., the ones passed on the command line after the ``java`` command using the ``-Dproperty.name=property-value`` sintax).
 Line 3 sets the name of your application. Note that this line and the following one are method invocations on the ``SparkConf`` object being created.
 Finally, line 4 sets the address of the master.
-As detailed in the `Spark documentation <https://spark.apache.org/docs/latest/submitting-applications.html#master-urls>`_, there are several values that this stirng can take.
+As detailed in the `Spark documentation <https://spark.apache.org/docs/latest/submitting-applications.html#master-urls>`_, there are several values that this string can take.
 For this course, two are interesting.
 
 * ``"local[*]"``: use the local resources of the computer. This sets up a Spark process on the local machine, using the available cores for parallelism.
