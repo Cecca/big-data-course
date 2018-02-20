@@ -19,6 +19,7 @@
         state: directory
         owner: hadoop
         group: hadoop
+        mode: 766
         recurse: yes
       when: ansible_hostname != "frontend"        
       
@@ -34,9 +35,9 @@
       file:
         path: /var/spark/local
         state: directory
-        group: spark
+        group: hadoop
         owner: hadoop
-        mode: 777
+        mode: 776
       when: ansible_hostname != "frontend"        
     
     - name: configure spark

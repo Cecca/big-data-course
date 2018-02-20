@@ -58,7 +58,7 @@
         state: directory
         owner: hadoop
         group: hadoop
-        mode: 777
+        mode: "u=rwx,g=rwx,o=rx"
       with_items: "{{ yarn.nodemanager.local_dirs }}"
 
     - name: fix owner and group
