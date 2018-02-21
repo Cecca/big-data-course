@@ -1,8 +1,11 @@
 package it.unipd.dei.bd1718.admin;
 
 
+import org.apache.spark.api.java.JavaRDD;
+import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.sql.Encoder;
 import org.apache.spark.sql.Encoders;
+import org.apache.spark.sql.SparkSession;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -20,6 +23,15 @@ public class WikiPage implements Serializable {
   public static Encoder<WikiPage> getEncoder() {
     return Encoders.bean(WikiPage.class);
   }
+
+  public static JavaRDD<WikiPage> readPages(JavaSparkContext sc, String path) {
+    return new SparkSession(sc.sc())
+            .read()
+            .json(path)
+            .as(WikiPage.getEncoder())
+            .javaRDD();
+  }
+
 
   private long id;
 

@@ -14,7 +14,6 @@ import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.broadcast.Broadcast;
 import org.apache.spark.mllib.linalg.Vector;
 import org.apache.spark.mllib.linalg.Vectors;
-import org.apache.spark.sql.SparkSession;
 import org.apache.spark.util.LongAccumulator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,14 +72,6 @@ public class SimplePreprocessing {
     return result;
   }
 
-  private static JavaRDD<WikiPage> readPages(JavaSparkContext sc, String path) {
-    return new SparkSession(sc.sc())
-            .read()
-            .json(path)
-            .as(WikiPage.getEncoder())
-            .javaRDD();
-  }
-
   public static void main(String[] args) throws IOException {
     Args arguments = new Args();
     JCommander.newBuilder()
@@ -101,7 +92,7 @@ public class SimplePreprocessing {
       return;
     }
 
-    JavaRDD<WikiPage> pages = readPages(sc, arguments.input);
+    JavaRDD<WikiPage> pages = WikiPage.readPages(sc, arguments.input);
     Broadcast<Map<String, double[]>> bModel = sc.broadcast(loadModel(sc, arguments.model));
     int dim = bModel.getValue().get("be").length;
 
