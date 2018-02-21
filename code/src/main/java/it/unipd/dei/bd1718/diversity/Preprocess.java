@@ -253,7 +253,7 @@ public class Preprocess {
               return Collections.singleton(new Tuple2<>(pair._1(), result)).iterator();
             }).cache();
 
-    InputOutput.writeVectorsPairs(vectors, arguments.output);
+    InputOutput.writeVectors(vectors.values(), arguments.output);
 
     logger.info("Output written. {} pages skipped. {} lemmas skipped (overall)", skippedPages.value(), skippedLemmas.value());
   }
