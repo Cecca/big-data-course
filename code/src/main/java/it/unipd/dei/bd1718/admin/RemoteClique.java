@@ -1,4 +1,4 @@
-package it.unipd.dei.bd1718.diversity;
+package it.unipd.dei.bd1718.admin;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
@@ -9,7 +9,6 @@ import org.apache.spark.mllib.linalg.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import scala.Tuple2;
-import shapeless.Tuple;
 
 import java.util.*;
 

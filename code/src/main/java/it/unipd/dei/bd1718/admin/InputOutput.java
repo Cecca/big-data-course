@@ -1,4 +1,4 @@
-package it.unipd.dei.bd1718.diversity;
+package it.unipd.dei.bd1718.admin;
 
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;

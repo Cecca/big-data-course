@@ -1,4 +1,4 @@
-package it.unipd.dei.bd1718.diversity;
+package it.unipd.dei.bd1718.admin;
 
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
