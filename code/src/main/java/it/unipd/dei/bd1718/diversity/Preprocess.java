@@ -223,7 +223,8 @@ public class Preprocess {
               AtomicInteger counter = new AtomicInteger();
               AtomicInteger skipped = new AtomicInteger();
               for (ArrayList<String> sentence : pair._2()) {
-                for (String lemma : sentence) {
+                for (String l : sentence) {
+                  String lemma = l.toLowerCase();
                   if (!bStopWords.getValue().contains(lemma)) {
                     if (lModel.containsKey(lemma)) {
                       double[] lemVec = lModel.get(lemma).toArray();
