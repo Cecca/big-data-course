@@ -13,4 +13,23 @@ public class Utils {
     return executorCores * numExecutors;
   }
 
+  /**
+   * String representing the memory needed for a n x n matrix
+   */
+  public static String matrixMemory(int n) {
+    final long numBytes = n*n*8;
+    final long KB = 1024;
+    final long MB = 1024*KB;
+    final long GB = 1024*MB;
+    if (numBytes >= GB) {
+      return (numBytes / ((double) GB)) + " GB";
+    } else if (numBytes >= MB) {
+      return (numBytes / ((double) MB)) + " MB";
+    } else if (numBytes >= KB) {
+      return (numBytes / ((double) KB)) + " KB";
+    } else {
+      return numBytes + " bytes";
+    }
+  }
+
 }

@@ -19,7 +19,7 @@ public class FourthHomework {
   /**
    * Two round MapReduce algorithm
    */
-  public static ArrayList<Vector> runMapReduce(final JavaRDD<Vector> points, int k, int numBlocks) {
+  public static ArrayList<Vector> runMapReduce(final JavaRDD<Vector> points, int k, int tau, int numBlocks) {
 
     // Map phase
     JavaRDD<ArrayList<Vector>> coresets = points
@@ -30,7 +30,7 @@ public class FourthHomework {
               for (Vector v : pointsIter) {
                 localPoints.add(v);
               }
-              return ThirdHomework.kCenter(localPoints, k);
+              return ThirdHomework.kCenter(localPoints, tau);
             });
 
     // Reduce phase
@@ -39,6 +39,7 @@ public class FourthHomework {
       return a;
     });
 
+    System.out.println("Aggregated coreset with " + aggregatedCoreset.size() + " points");
     return runSequential(aggregatedCoreset, k);
   }
 
@@ -71,10 +72,24 @@ public class FourthHomework {
       return points;
     }
 
+
+    System.out.println("Populating distance matrix (requiring " + Utils.matrixMemory(n) + ")");
+    long start = System.currentTimeMillis();
+    double[][] distanceMatrix = new double[n][n];
+    for (int i = 0; i < n; i++) {
+      for (int j = i+1; j < n; j++) {
+        distanceMatrix[i][j] = Vectors.sqdist(points.get(i), points.get(j));
+        distanceMatrix[j][i] = distanceMatrix[i][j];
+      }
+    }
+    long end = System.currentTimeMillis();
+    System.out.println("Populated " + n + "x" + n + " matrix in " + (end - start) + " ms");
+
     ArrayList<Vector> result = new ArrayList<>(k);
     boolean[] candidates = new boolean[n];
     Arrays.fill(candidates, true);
 
+    start = System.currentTimeMillis();
     for (int iter=0; iter<k/2; iter++) {
       // Find the maximum distance pair among the candidates
       double maxDist = 0;
@@ -84,7 +99,7 @@ public class FourthHomework {
         if (candidates[i]) {
           for (int j = i+1; j < n; j++) {
             if (candidates[j]) {
-              double d = Vectors.sqdist(points.get(i), points.get(j));
+              double d = distanceMatrix[i][j]; //Vectors.sqdist(points.get(i), points.get(j));
               if (d > maxDist) {
                 maxDist = d;
                 maxI = i;
@@ -100,9 +115,9 @@ public class FourthHomework {
       // Remove them from the set of candidates
       candidates[maxI] = false;
       candidates[maxJ] = false;
-
-
     }
+    end = System.currentTimeMillis();
+    System.out.println("Computed matching in " + (end - start) + " ms");
 
     // Add an arbitrary point to the solution, if k is odd.
     if (k % 2 != 0) {
@@ -130,6 +145,9 @@ public class FourthHomework {
     @Parameter(names = "-k", required = true)
     int k;
 
+    @Parameter(names = "--tau")
+    int tau;
+
     @Parameter(names = "--blocks")
     int blocks = -1;
 
@@ -145,7 +163,7 @@ public class FourthHomework {
   private static void appendResult(Args arguments, long elapsedTime, double diversity, double average) throws IOException {
     Files.write(
             Paths.get("diversity-result.txt"),
-            (arguments.input + "," + arguments.algorithm + "," + arguments.k + "," + arguments.blocks + "," + elapsedTime + "," + diversity + "," + average + "\n").getBytes(),
+            (arguments.input + "," + arguments.algorithm + "," + arguments.k + "," + arguments.tau + "," + arguments.blocks + "," + elapsedTime + "," + diversity + "," + average + "\n").getBytes(),
             StandardOpenOption.APPEND,
             StandardOpenOption.CREATE);
   }
@@ -190,8 +208,11 @@ public class FourthHomework {
       if (arguments.blocks < 0) {
         arguments.blocks = input.getNumPartitions();
       }
+      if (arguments.tau < 0) {
+        arguments.tau = arguments.k;
+      }
       long start = System.currentTimeMillis();
-      solution = runMapReduce(input, arguments.k, arguments.blocks);
+      solution = runMapReduce(input, arguments.k, arguments.tau, arguments.blocks);
       elapsed = System.currentTimeMillis() - start;
     } else if ("random".equals(arguments.algorithm)) {
       long start = System.currentTimeMillis();
