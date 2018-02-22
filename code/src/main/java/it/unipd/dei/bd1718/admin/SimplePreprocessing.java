@@ -8,10 +8,12 @@ import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
+import org.apache.lucene.analysis.util.StopwordAnalyzerBase;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.broadcast.Broadcast;
+import org.apache.spark.ml.feature.StopWordsRemover;
 import org.apache.spark.mllib.linalg.Vector;
 import org.apache.spark.mllib.linalg.Vectors;
 import org.apache.spark.util.LongAccumulator;
@@ -95,6 +97,7 @@ public class SimplePreprocessing {
     JavaRDD<WikiPage> pages = WikiPage.readPages(sc, arguments.input);
     Broadcast<Map<String, double[]>> bModel = sc.broadcast(loadModel(sc, arguments.model));
     int dim = bModel.getValue().get("be").length;
+    Broadcast<Set<String>> bStopWords = broadcastStopwords(sc);
 
     LongAccumulator skippedWords = sc.sc().longAccumulator("Skipped pages");
     LongAccumulator totalWords = sc.sc().longAccumulator("Skipped words");
@@ -112,7 +115,7 @@ public class SimplePreprocessing {
       for (CoreLabel token : doc.get(CoreAnnotations.TokensAnnotation.class)) {
         String word = token.get(CoreAnnotations.TextAnnotation.class).toLowerCase();
         totalWords.add(1);
-        if (bModel.getValue().containsKey(word)) {
+        if (bModel.getValue().containsKey(word) && !bStopWords.getValue().contains(word)) {
           double[] wordVector = bModel.getValue().get(word);
           for (int i=0; i<dim; i++) {
             pageVector[i] += wordVector[i];
@@ -138,6 +141,12 @@ public class SimplePreprocessing {
     logger.info("Done");
     logger.info("Skipped {} words over {}", skippedWords.value(), totalWords.value());
     logger.info("Skipped {} pages over {}", skippedPages.value(), totalPages.value());
+  }
+
+  private static Broadcast<Set<String>> broadcastStopwords(JavaSparkContext sc) {
+    HashSet<String> sws = new HashSet<>();
+    sws.addAll(sws);
+    return sc.broadcast(sws);
   }
 
 }
