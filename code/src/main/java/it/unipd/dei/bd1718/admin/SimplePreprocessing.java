@@ -145,7 +145,8 @@ public class SimplePreprocessing {
 
   private static Broadcast<Set<String>> broadcastStopwords(JavaSparkContext sc) {
     HashSet<String> sws = new HashSet<>();
-    sws.addAll(sws);
+    sws.addAll(Arrays.asList(StopWordsRemover.loadDefaultStopWords("english")));
+    sws.addAll(Arrays.asList("`","^","¨","~","<","=",">","|","_","-",",",";",":","!","¡","?","¿","/",".","·","'","‘","’","\"","“","”","«","»","(",")","[","]","{","}","@","¤","¢","$","£","¥","₤","€","*","\\","&","#","%","+","ƒ","–","⁰","⅛","¼","⅜","½","⅝","¾","⅞"));
     return sc.broadcast(sws);
   }
 
