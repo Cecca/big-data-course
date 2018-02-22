@@ -94,7 +94,7 @@ public class SimplePreprocessing {
       return;
     }
 
-    JavaRDD<WikiPage> pages = WikiPage.readPages(sc, arguments.input);
+    JavaRDD<String> pages = sc.textFile(arguments.input); // WikiPage.readPages(sc, arguments.input);
     Broadcast<Map<String, double[]>> bModel = sc.broadcast(loadModel(sc, arguments.model));
     int dim = bModel.getValue().get("be").length;
     Broadcast<Set<String>> bStopWords = broadcastStopwords(sc);
@@ -106,7 +106,7 @@ public class SimplePreprocessing {
 
     JavaRDD<Vector> vectors = pages.flatMap((page) -> {
       totalPages.add(1);
-      Annotation doc = new Annotation(page.getText());
+      Annotation doc = new Annotation(page);
       pipeline.annotate(doc);
 
       double[] pageVector = new double[dim];
