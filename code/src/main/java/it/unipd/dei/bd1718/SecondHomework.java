@@ -6,7 +6,9 @@ import org.apache.spark.api.java.JavaSparkContext;
 import scala.Tuple2;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SecondHomework {
 
@@ -28,65 +30,7 @@ public class SecondHomework {
 
     long start = System.currentTimeMillis();
 
-//    Map<String, Integer> count = words.flatMapToPair((d) -> {
-//      String[] tokens = d.split(" ");
-//      ArrayList<Tuple2<String, Long>> pairs = new ArrayList<>();
-//      for (String token : tokens) {
-//        pairs.add(new Tuple2<>(token, 1L));
-//      }
-//      return pairs.iterator();
-//    }).groupByKey()
-//      .mapValues((it) -> {
-//        int sum = 0;
-//        for (long c : it) {
-//          sum += c;
-//        }
-//        return sum;
-//      })
-//      .collectAsMap();
-
-    Map<String, Integer> count = words.flatMapToPair((d) -> {
-      String[] tokens = d.split(" ");
-      HashMap<String, Long> counts = new HashMap<>();
-      ArrayList<Tuple2<String, Long>> pairs = new ArrayList<>();
-      for (String token : tokens) {
-        counts.put(token, 1L + counts.getOrDefault(token, 0L));
-      }
-      for (Map.Entry<String, Long> e : counts.entrySet()) {
-        pairs.add(new Tuple2<>(e.getKey(), e.getValue()));
-      }
-      return pairs.iterator();
-//      return counts.entrySet().stream()
-//        .map((entry) -> new Tuple2<>(entry.getKey(), entry.getValue()))
-//        .iterator();
-    }).groupByKey()
-      .mapValues((it) -> {
-        int sum = 0;
-        for (long c : it) {
-          sum += c;
-        }
-        return sum;
-      })
-      .collectAsMap();
-
-//    Map<String, Long> count = words.flatMapToPair((d) -> {
-//      String[] tokens = d.split(" ");
-//      HashMap<String, Long> counts = new HashMap<>();
-//      ArrayList<Tuple2<String, Long>> pairs = new ArrayList<>();
-//      for (String token : tokens) {
-//        counts.put(token, 1L + counts.getOrDefault(token, 0L));
-//      }
-//      for (Map.Entry<String, Long> e : counts.entrySet()) {
-//        pairs.add(new Tuple2<>(e.getKey(), e.getValue()));
-//      }
-//      return pairs.iterator();
-//    }).reduceByKey((x, y) -> x + y)
-//      .collectAsMap();
-
-//    Map<String, Long> count = words.flatMap((d) -> {
-//      String[] tokens = d.split(" ");
-//      return Arrays.asList(tokens).iterator();
-//    }).countByValue();
+    // Your code here
 
     long end = System.currentTimeMillis();
     System.out.println("Elapsed time: " + (end - start) + " ms");

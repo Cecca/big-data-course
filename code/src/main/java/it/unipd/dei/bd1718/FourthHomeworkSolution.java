@@ -14,17 +14,39 @@ import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
 
-public class FourthHomework {
+public class FourthHomeworkSolution {
 
   /**
    * Two round MapReduce algorithm
    */
-  public static ArrayList<Vector> runMapReduce(final JavaRDD<Vector> points, int k, int numBlocks) {
-    throw new RuntimeException("Implement me!");
+  public static ArrayList<Vector> runMapReduce(final JavaRDD<Vector> points, int k, int tau, int numBlocks) {
+
+    // Map phase
+    JavaRDD<ArrayList<Vector>> coresets = points
+            .groupBy((v) -> new Random().nextInt(numBlocks))
+            .values()
+            .map((pointsIter) -> {
+              ArrayList<Vector> localPoints = new ArrayList<>();
+              for (Vector v : pointsIter) {
+                localPoints.add(v);
+              }
+              return ThirdHomeworkSolution.kCenter(localPoints, tau);
+            });
+
+    // Reduce phase
+    ArrayList<Vector> aggregatedCoreset = coresets.reduce((a, b) -> {
+      a.addAll(b);
+      return a;
+    });
+
+    System.out.println("Aggregated coreset with " + aggregatedCoreset.size() + " points");
+    return runSequential(aggregatedCoreset, k);
   }
 
   public static ArrayList<Vector> runRandom(final JavaRDD<Vector> points, int k) {
-    throw new RuntimeException("Implement me!");
+    ArrayList<Vector> result = new ArrayList<>(k);
+    result.addAll(points.takeSample(false, k));
+    return result;
   }
 
   /**
@@ -123,6 +145,9 @@ public class FourthHomework {
     @Parameter(names = "-k", required = true)
     int k;
 
+    @Parameter(names = "--tau")
+    int tau;
+
     @Parameter(names = "--blocks")
     int blocks = -1;
 
@@ -138,7 +163,7 @@ public class FourthHomework {
   private static void appendResult(Args arguments, long elapsedTime, double diversity, double average) throws IOException {
     Files.write(
             Paths.get("diversity-result.txt"),
-            (arguments.input + "," + arguments.algorithm + "," + arguments.k + "," + arguments.blocks + "," + elapsedTime + "," + diversity + "," + average + "\n").getBytes(),
+            (arguments.input + "," + arguments.algorithm + "," + arguments.k + "," + arguments.tau + "," + arguments.blocks + "," + elapsedTime + "," + diversity + "," + average + "\n").getBytes(),
             StandardOpenOption.APPEND,
             StandardOpenOption.CREATE);
   }
@@ -183,8 +208,11 @@ public class FourthHomework {
       if (arguments.blocks < 0) {
         arguments.blocks = input.getNumPartitions();
       }
+      if (arguments.tau < 0) {
+        arguments.tau = arguments.k;
+      }
       long start = System.currentTimeMillis();
-      solution = runMapReduce(input, arguments.k, arguments.blocks);
+      solution = runMapReduce(input, arguments.k, arguments.tau, arguments.blocks);
       elapsed = System.currentTimeMillis() - start;
     } else if ("random".equals(arguments.algorithm)) {
       long start = System.currentTimeMillis();
