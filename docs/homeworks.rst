@@ -438,7 +438,7 @@ These datasets are in binary format and should be read using the ``InputOutput.r
 .. warning::
   There is also a ``org.apache.spark.ml.linalg.Vector`` class within Spark.
   They are functionally equivalent, but incompatible with one another.
-  This unfortunate difference is due to the history of Spark's API.
+  This unfortunate difference is due to the history of Spark's   API.
   For the homeworks we will use classes from the ``org.apache.spark.mllib`` package.
 
 You have to develop a function that accepts a ``java.util.ArrayList`` of ``Vector`` objects and an integer ``k``, and returns the ``java.util.ArrayList`` of cluster centers (as ``Vector`` objects).
