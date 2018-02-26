@@ -18,14 +18,15 @@ Then, head over to the `download page of Intellij Idea <https://www.jetbrains.co
 
   <iframe src="https://drive.google.com/file/d/1VJs-79tyZjdH9hx1Q2EmgC52wpg5YKSF/preview" width="640" height="360" allowfullscreen></iframe>
 
+The homeworks are structured as follows.
+The project template contains a class for each homework, with some utility methods already implemented.
+Your task is to implement the functionality that is missing.
 
 --------------------------------------------------------------------------------
 
 
 Homework 1: functional programming
 ----------------------------------
-
-.. note:: TODO: write about method references
 
 The purpose of this first homework is to get acquainted with the principles of *functional programming*, on which MapReduce and Spark are based.
 One of the core ideas of functional programming is that functions can be arguments to other functions.
@@ -152,7 +153,7 @@ Make a copy of the file ``src/main/java/it/unipd/dei/bd1718/FirstHomeworkTemplat
 
 1. Given ``dNumbers``, compute the absolute value of the difference between each element and the mean of all the values.
 
-2. Given ``dNumbers``, compute the minimum of all the inverse values. Do it in at least two ways (e.g. using ``map`` and ``reduce``, and using the ``min`` method with an anonymous function implementing a custom comparator).
+2. Given ``dNumbers``, compute the minimum of all the inverse values. Do it in at least two ways (e.g. using ``map`` and ``reduce``, and using the ``min`` method with an anonymous function implementing a custom comparator. The ``min`` operator has some caveats, have a look :ref:`here <spark-api>`).
 
 
 --------------------------------------------------------------------------------
@@ -422,3 +423,34 @@ Exercises
 
 1. Compute an histogram of word lengths: the number of words of length 1, 2, 3, and so on...
 
+
+------------------------------------------------------------------------------
+
+
+Third Homework
+--------------
+
+The task of the third homework is to implement the sequential k-center algorithm by Gonzalez.
+Points to be clustered are represented by instances of the class ``org.apache.spark.mllib.linalg.Vector``.
+You can download three example datasets here, here, and here.
+These datasets are in binary format and should be read using the ``InputOutput.readVectors`` method provided within the project's template.
+
+.. warning::
+  There is also a ``org.apache.spark.ml.linalg.Vector`` class within Spark.
+  They are functionally equivalent, but incompatible with one another.
+  This unfortunate difference is due to the history of Spark API.
+  For the homeworks we will use classes from the ``org.apache.spark.mllib`` package.
+
+You have to develop a function that accepts a ``java.util.ArrayList`` of ``Vector`` objects and an integer ``k``, and returns the ``java.util.ArrayList`` of cluster centers (as ``Vector`` objects).
+We will use the Euclidean distance between vectors, which is already implemented in the static method ``sqdist`` of the class ``org.apache.spark.mllib.linalg.Vectors``::
+
+  Vector a, b;
+  double dist = Vectors.sqdist(a, b);
+
+For your convenience, the homework template already contains a ``main`` method that takes two command line arguments, namely the path to the input and the integer ``k``, and runs your implementation of the algorithm.
+It also measures the elapsed time, appending it to a file named file:`k-center-time.txt`.
+
+Exercises
+^^^^^^^^^
+
+1. After implementing k-center, verify that it runs linearly in both ``k`` and ``n``. You can use the file file:`k-center-time.txt` for this purpose.

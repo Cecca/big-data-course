@@ -115,15 +115,17 @@ public class SimplePreprocessing {
       for (CoreLabel token : doc.get(CoreAnnotations.TokensAnnotation.class)) {
         String word = token.get(CoreAnnotations.TextAnnotation.class).toLowerCase();
         totalWords.add(1);
-        if (bModel.getValue().containsKey(word) && !bStopWords.getValue().contains(word)) {
-          double[] wordVector = bModel.getValue().get(word);
-          for (int i=0; i<dim; i++) {
-            pageVector[i] += wordVector[i];
-            wordCnt += 1;
+        if (!bStopWords.getValue().contains(word)) {
+          if (bModel.getValue().containsKey(word)) {
+            double[] wordVector = bModel.getValue().get(word);
+            for (int i = 0; i < dim; i++) {
+              pageVector[i] += wordVector[i];
+              wordCnt += 1;
+            }
+          } else {
+            skippedWords.add(1);
+            logger.warn("Skipping `" + word + "` since it's missing from the vocabulary");
           }
-        } else {
-          skippedWords.add(1);
-          logger.warn("Skipping `" + word + "` since it's missing from the vocabulary");
         }
       }
       if (wordCnt == 0) {
