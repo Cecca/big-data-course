@@ -448,9 +448,9 @@ We will use the Euclidean distance between vectors, which is already implemented
   double dist = Vectors.sqdist(a, b);
 
 For your convenience, the homework template already contains a ``main`` method that takes two command line arguments, namely the path to the input and the integer ``k``, and runs your implementation of the algorithm.
-It also measures the elapsed time, appending it to a file named file:`k-center-time.txt`.
+It also measures the elapsed time, appending it to a file named ``k-center-time.txt``.
 
 Exercises
 ^^^^^^^^^
 
-1. After implementing k-center, verify that it runs linearly in both ``k`` and ``n``. You can use the file file:`k-center-time.txt` for this purpose.
+1. After implementing k-center, verify that it runs linearly in both ``k`` and ``n``. You can use the file ``k-center-time.txt`` for this purpose.
