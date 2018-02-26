@@ -93,3 +93,8 @@
       when: ansible_hostname != "frontend"
       tags: ['restart', 'reconfig']
       
+    - name: cron job for cleaning up log files every hour
+      cron:
+        name: "cleanup"
+        minute: "0"
+        job: "rm -rf /tmp/logs/* /opt/hadoop/logs/*"
