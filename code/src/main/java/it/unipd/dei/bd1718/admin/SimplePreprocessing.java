@@ -120,8 +120,8 @@ public class SimplePreprocessing {
             double[] wordVector = bModel.getValue().get(word);
             for (int i = 0; i < dim; i++) {
               pageVector[i] += wordVector[i];
-              wordCnt += 1;
             }
+            wordCnt += 1;
           } else {
             skippedWords.add(1);
             logger.warn("Skipping `" + word + "` since it's missing from the vocabulary");
