@@ -454,3 +454,25 @@ Exercises
 ^^^^^^^^^
 
 1. After implementing k-center, verify that it runs linearly in both ``k`` and ``n``. You can use the file file:`k-center-time.txt` for this purpose.
+
+------------------------------------------------------------------------------
+
+Fourth Homework
+---------------
+
+This homework's task is to solve the diversity maximization problem you have seen in class.
+The homework template provides the implementation of the sequential approximation algorithm for the diversity maximization, along with a method to compute the diversity of a given set.
+Furthermore, there is a ``main`` method which takes care of reaading command line arguments, loading input, and so on.
+The ``main`` method also allows you to select which algorithm to run on the input: if the sequential one, a random sampling or your MapReduce implementation.
+
+You are required to implement two methods.
+The first method, ``runRandom``, should take a RDD of vectors and return a random sample of size ``k``, to serve as a baseline.
+The second method, ``runMapReduce``, takes as input a RDD of vectors, the parameter ``k``, and the number of blocks on which to apply the k-center algorithm you developed in the third homework.
+
+You can group by random keys using a combination of the ``groupBy`` key method of the ``JavaRDD`` class, and the ``java.util.Random.nextInt(int)`` method.
+
+Exercises
+^^^^^^^^^
+
+1. Verify if the diversity of the solution found by the algorithm is significantly larger than that of a random sample.
+2. Study the scalability of your algorithm with respect to the various parameters.
