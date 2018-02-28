@@ -457,4 +457,38 @@ It also measures the elapsed time, appending it to a file named ``k-center-time.
 Exercises
 ^^^^^^^^^
 
-1. After implementing k-center, verify that it runs linearly in both ``k`` and ``n``. You can use the file ``k-center-time.txt`` for this purpose.
+1. After implementing k-center, verify that it runs linearly in both ``k`` and ``n``. You can use the file file:`k-center-time.txt` for this purpose.
+
+------------------------------------------------------------------------------
+
+Fourth Homework
+---------------
+
+This homework's task is to solve the diversity maximization problem you have seen in class.
+The homework template provides the implementation of the sequential approximation algorithm for the diversity maximization, along with a method to compute the diversity of a given set.
+Furthermore, there is a ``main`` method which takes care of reaading command line arguments, loading input, and so on.
+The ``main`` method also allows you to select which algorithm to run on the input: if the sequential one, a random sampling or your MapReduce implementation.
+
+You are required to implement two methods.
+The first method, ``runRandom``, should take a RDD of vectors and return a random sample of size ``k``, to serve as a baseline.
+The second method, ``runMapReduce``, takes as input a RDD of vectors, the parameter ``k``, and the number of blocks on which to apply the k-center algorithm you developed in the third homework.
+You can group by random keys using a combination of the ``groupBy`` key method of the ``JavaRDD`` class, and the ``java.util.Random.nextInt(int)`` method.
+
+For the purpose of testing your implementation on your laptop, you can use the sample of vectors provided for the previous homework.
+For this homework, you should also run your code on the cluster.
+To pack your code in a jar file suitable to be uploaded on the cluster, you can use the ``shadowjar`` task available in the *gradle* menu in Intellij IDEA, as shown in the pictures below.
+
+
+
+If you run are on Linux or MacOS, you can then upload the resulting jar using the following command from the root directory of the project::
+
+  scp build/libs/code-all.jar your-username@frontend:
+
+Instead, if you are on windows, ????
+
+
+Exercises
+^^^^^^^^^
+
+1. Verify if the diversity of the solution found by the algorithm is significantly larger than that of a random sample.
+2. Study the scalability of your implementation with respect to the various parameters, running on the cluster.
