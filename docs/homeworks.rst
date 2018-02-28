@@ -468,11 +468,23 @@ The ``main`` method also allows you to select which algorithm to run on the inpu
 You are required to implement two methods.
 The first method, ``runRandom``, should take a RDD of vectors and return a random sample of size ``k``, to serve as a baseline.
 The second method, ``runMapReduce``, takes as input a RDD of vectors, the parameter ``k``, and the number of blocks on which to apply the k-center algorithm you developed in the third homework.
-
 You can group by random keys using a combination of the ``groupBy`` key method of the ``JavaRDD`` class, and the ``java.util.Random.nextInt(int)`` method.
+
+For the purpose of testing your implementation on your laptop, you can use the sample of vectors provided for the previous homework.
+For this homework, you should also run your code on the cluster.
+To pack your code in a jar file suitable to be uploaded on the cluster, you can use the ``shadowjar`` task available in the *gradle* menu in Intellij IDEA, as shown in the pictures below.
+
+
+
+If you run are on Linux or MacOS, you can then upload the resulting jar using the following command from the root directory of the project::
+
+  scp build/libs/code-all.jar your-username@frontend:
+
+Instead, if you are on windows, ????
+
 
 Exercises
 ^^^^^^^^^
 
 1. Verify if the diversity of the solution found by the algorithm is significantly larger than that of a random sample.
-2. Study the scalability of your algorithm with respect to the various parameters.
+2. Study the scalability of your implementation with respect to the various parameters, running on the cluster.
