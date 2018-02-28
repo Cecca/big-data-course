@@ -76,7 +76,8 @@ To make another example, imagine that you want to transform your collection of `
 
 Note that ``fixed`` is used in the body of the anonymous function, but is defined outside of it!
 In such cases we say that the anonymous function *captures* a variable.
-We can only capture variables that effectively ``final``, that is, you cannot re-assign to a captured variable.
+You cannot re-assign a captured variable within an anonymous function.
+Trying to do it will result in a compilation error mentioning that all captured variables must be *effectively final*, which is the compiler's way of saying that you cannot re-assign them.
 
 Java 8 also introduced another way of passing functions to other functions, namely *method references*.
 Suppose you have the following class::
@@ -107,13 +108,13 @@ An RDD is a collection of elements that can be possibly partitioned across many 
 In the Spark Java API, the class defining the RDD data structure is ``JavaRDD`` (`API link <https://spark.apache.org/docs/latest/api/java/org/apache/spark/api/java/JavaRDD.html>`_).
 
 The peculiarity of the RDD data structure is that it does not allow in-place updates.
-The only way to modify the contents of an RDD is to *transform* it to another collection by means of some method.
+The only way to modify the contents of an RDD is to *transform* it in another collection by means of some method.
 Some methods to transform an RDD into another are the following:
 
 * ``map``: yields another RDD by applying the supplied function on each element
 * ``filter``: returns an RDD containing only the elements for which the given boolean function returns ``true``.
 
-There are also functions to get a single value which is the result of some operation on the entire collection:
+There are also functions to get a single value which is the result of some operation on the entire collection, which are called *actions*:
 
 * ``count``: returns the number of elements of the RDD
 * ``collect``: store all the data of the RDD in a local ``List``.
@@ -122,7 +123,7 @@ There are also functions to get a single value which is the result of some opera
 
   .. image:: https://i.stack.imgur.com/OCsJC.png
 
-These are not all the methods available to transform and collect data in Spark, which we will review in the next homework (an overview of the most useful methods and types is given :ref:`here <spark-api>`).
+These are not all the methods available to transform and collect data in Spark: an overview of the most useful methods and types is given :ref:`here <spark-api>`.
 
 Note that the methods of ``JavaRDD`` that we saw are all functional in nature (well, except ``count`` and ``collect``): they accept another function as a parameter to know what to do with elements.
 
@@ -149,11 +150,14 @@ We will develop some code that computes the sum of squares of the elements of ``
 Exercises
 ^^^^^^^^^
 
-Make a copy of the file ``src/main/java/it/unipd/dei/bd1718/FirstHomeworkTemplate.java`` for each of the following exercises.
+Explore Spark's API by coding variations of the examples we made above.
+Here are some examples: 
 
 1. Given ``dNumbers``, compute the absolute value of the difference between each element and the mean of all the values.
 
 2. Given ``dNumbers``, compute the minimum of all the inverse values. Do it in at least two ways (e.g. using ``map`` and ``reduce``, and using the ``min`` method with an anonymous function implementing a custom comparator. The ``min`` operator has some caveats, have a look :ref:`here <spark-api>`).
+
+Come up with a third task. You can use whichever methods of ``JavaRDD`` you want.
 
 
 --------------------------------------------------------------------------------
