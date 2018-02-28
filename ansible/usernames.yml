@@ -1,4 +1,64 @@
-usernames:
+admins:
   - ceccarel
-  - tizio
-  - caio
+
+groupusers:
+  - name: group01
+    password: $6$0.kzc7dQkf9t1anW$ldJkkxEfKXqFAniFr239OOiY63qHjp4V46fzdft4muR1QHi/Ceczk8CMsIn9bTbrNnKNfs1Tlc6NkO7s3dvGG/
+  - name: group02
+    password: $6$hYe9.VJCZei2w/KT$7JajyzrNuj7CPTAXah5GhSk3kCp2y0s..144HpX9nuTuhxCHF3oBhnbL9za0HGVmOGbGCdxD4jT9UhcK85MNG.
+  - name: group03
+    password: $6$99pGSA.DyM8zgBx2$6TiQnTq0zAf7REFDZpo3C0YiZBckPxyCk.WnYYLFGDOJ7RGC/COsD5uqJc1U1sTiyUZl6HbCU6k6O0JP3zZJc/
+  - name: group04
+    password: $6$KjE3GhOJg83E3X8G$Y/WQV0LX0Ig9MLcoy/bOF2UaETJCDLGq6Hz3IfoqLbomlPe3tvx/zpvfD4.a6VMVC6TkgBjwzyT.axqbeuIUg0
+  - name: group05
+    password: $6$1efCtpmICwU5TEwL$hbJvTyilxjrQixn8LqM0qitQVLfiVlYy4YAPcYJtPg5Flodi6X7rvCrtLeVVFh0bLqMbFwbaA4Rs6ZUPnElQb.
+  - name: group06
+    password: $6$cdc01krKJJzWvGvX$0wy9frtOMQvEWQsF8eYRmhisBfYb.gmBY5aJCfrjIu3Nz8ViVcEvN8/Vu7OcYGDAYVS73I9XgwnN/JAivsmJD1
+  - name: group07
+    password: $6$oe.zAWp5vfWV4v9i$VVq1yXbrxJkhcAbtFZq.FIvjUAOpUS6FaFDl46LnykoRtKc66ajtKUk4kpatqs0WHWEjygFciudvcu90HdSgt/
+  - name: group08
+    password: $6$vklHPjEjvEe5pQ94$1MBD1UfDLNeNrzt.u6OFgUWVGDcX6v6n6hq..2.9A/G45t.7Zb64LfjRntD6YuxMGYnuVoaWOTwBbp7Jk2XUl/
+  - name: group09
+    password: $6$05Vn2eMtjg3WxX1l$LizLJCEwre0XgcXCgRbEDDH0KnPmNeXUlNWNm3pk9tDi4ENXZMrxO5R3x7hnKb5Kf6oda7/D290r2jEOfA2Q1.
+  - name: group10
+    password: $6$YJX7rLn5IPg34OgR$FS/cl0u0OgVEc0oghNQBmW9frBm0ue5Nu/6eyD5P0yWbZkkO9dNyTV9bMQ2LXVT1qUY.uUR2dkvRzavuexH.p1
+  - name: group11
+    password: $6$h/kjgy2BMhJm/tQ8$auejshc6u9/JSHEF0K9SV2Qh7vQyangfsQyueXD/mneDyg1KCqWJGpIYzbdrr4uWcqrfJinZ2BDHJ2A.1plx20
+  - name: group12
+    password: $6$PPnyp57fO3Qv58o1$9Hj.f2B//U437BLQDdUWM8CpJDC9Ym.T3MWX6qCHyM.ZGw6/FQM9z24ZJwuIfUjTtX50vZJ5RvGfUtJwoC7vP1
+  - name: group13
+    password: $6$BvNBUOY9QeJey50d$6/dvUIZfZS0I337q9op.2iK4Q43cvl7nXBinPO38vua9VjbUp1lgzeEM5xtmxYJcYrB5/0nDKAh8/03Kq/Mcv0
+  - name: group14
+    password: $6$k48BFiBwyRIouKHi$FLji5.RyynYbWyjDGrVQ5itWolsMJSdXLDyXTa66J.XG0rHV0NccEvaAYvtj5OvwdY2qHmKC/QTav3jqEOQNw/
+  - name: group15
+    password: $6$moOkATclk0Fvk7rv$ybK2sYPZjbSPkAsmb7XRn/TsT3kjgjEaDRo1lH0rtvf1HkLmkaKWSxNfBx2fJ4qqTf4BmaSxxqfdWdXTLaqqD0
+  - name: group16
+    password: $6$P29DpgNMX.cmekY5$SpjWA2mBdxE0wHrno2.MqWxOChfkXK00JxPH64q56IDjJcTiYpHhUQZTWsYhgQ8L2.WvU.YeX3LSv/rPrCFZd0
+  - name: group17
+    password: $6$4eeFE8ZEe7L.t7V5$8DjI4jcgn082QlbUf2DHDtgm469h236itPk3BmSNkZQQJSB/K.6A98y8fise83JsZ2Z8HkZI/3NrlLFwNEE.g.
+  - name: group18
+    password: $6$z2vVkT1Adkyf84Tm$CHFBUfg4m7BiMkcABGD/oDbJo8qgl.sGQWRK6aT28i0X.FyiwQEmwjX8HoGGpkovYuHxWG2wHqVmKWEq6xrnJ0
+  - name: group19
+    password: $6$sl1leyNTBTI9hhkv$9TSq16h5dyyhGRMU/dMaSIJ4tDQwWkettbXqT4G8ig5C4dxrB.Oz1kFg42.DHnG2WR47c0oUXnkn/ZY0utpb20
+  - name: group20
+    password: $6$yxbHTH73HiUoRicZ$CJispFgFS86l9BEBlTry0JcqFng2v97ntzQfZt.Mf8Zfs81VbxzZGEpiaiLdTRnWLGyIZNucjnZe2xKRJyzRe0
+  - name: group21
+    password: $6$BD9xJ6yxb6dSwUgj$SolTg9RYHXuOb6dcy/epZmZZQpFtuJMY4YSjl3cVgKINt3t0ph9X3bro7K89XsciEP/Yeq/S2907twno7atQj0
+  - name: group22
+    password: $6$oelcsTw3l3NfrdGV$sw1qzkZsUogpXGquyJYVuc96YwKMAPPIXH8CWhPX5PoOBmUsTnYfBiu/iPT0zziKIwrdLrp4/Vql.mzdKC9Pp1
+  - name: group23
+    password: $6$oLnVfdD/UDJ3hjiX$nmMSlTXgy9A3lDYyzx9gBkthxZmHT0O9UkFLPywGumbfTMcg4JX/3rV/eA0ye8tMc.15uStMPN1pVLkXYhWFt1
+  - name: group24
+    password: $6$m5D8jlczCULv5SG.$cvHq8vxtQKEctXZLd.X.w.TunqILKXKlZOZ.OwYgaxnAhG60x6R18/IpuPnCnooy6ycA1da7hYxhTwap/5FgI1
+  - name: group25
+    password: $6$zonm6ZgrTght8NRm$bRMSk.Rhi7.tZCM9pNeGS27FgSyG3cEovZjnO2gVA4RgxHw98xGMo6o/pzWrZNnoHuEOPbb7Zp.cNm5Szk8E8/
+  - name: group26
+    password: $6$xNS6Rkvz9QAVRasU$QCnlAOEktbVE8cNcsUQsOOagjNr5ooK68XVS4ePmL5SUQKPDk8s3t6oawU6nHilPiMEj0P6oPxWwHQRxELieY1
+  - name: group27
+    password: $6$.328VfMqzLsUBuUZ$pT9uCFMlyphhiGOYop4K7TpHa6F3HY/dvwFL24DWnAnxokzwpbPoUMzTmbMQDTllZuuFIwEyZsmUGpwhuU5/q.
+  - name: group28
+    password: $6$7saBFs4t5kzklFr0$aDhtr5ezSL.2VvQ9C812fJqqciQcyJoB6t67ML2ETH5kALbcYUFNBS2i9BKVlEAe/8DAeVR.89By04bFTTms8/
+  - name: group29
+    password: $6$i6h2Kj85Pb2rzHHp$a1zHuRc6rsZzeEDzlztqLPDxMjGz4FeAsKFd2YXUucHfnsydrBNt03yVMcM4JeJH0rAGWsQNIA0a5IyyBC0wN.
+  - name: group30
+    password: $6$l3fPBmHF/H4c5zsw$O2JxocwEeX5Dun6KQwKkQMBRfYhSFN.jvWGotekODcBbET8grcgxYdwjw2KPxKOvJSb.wa14PXLPjFpL4v6Kh.

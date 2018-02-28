@@ -7,7 +7,7 @@ import org.apache.spark.api.java.JavaSparkContext;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FirstHomeworkTemplate {
+public class FirstHomework {
 
   public static void main(String[] args) {
     if (args.length == 0) {

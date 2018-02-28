@@ -1,0 +1,14 @@
+#!/usr/bin/env python
+
+from passlib.hash import sha512_crypt
+import sys
+
+num_users = int(sys.argv[1])
+
+for user_num in range(1, num_users+1):
+    user_id = "group{:02d}".format(user_num)
+    passwd = "{}pwd".format(user_id)
+    crypt = sha512_crypt.using(rounds=5000).hash(passwd)
+    print("""\
+  - name: {}
+    password: {}""".format(user_id, crypt))

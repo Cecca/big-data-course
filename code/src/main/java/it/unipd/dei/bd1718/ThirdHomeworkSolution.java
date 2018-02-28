@@ -12,10 +12,45 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class ThirdHomework {
+public class ThirdHomeworkSolution {
 
   public static ArrayList<Vector> kCenter(ArrayList<Vector> points, int k) {
-    throw new RuntimeException("Implement me!");
+    final int n = points.size();
+    if (n < k) {
+      throw new IllegalArgumentException("Cannot compute clustering with " + k + " clusters on " + n + " points");
+    } else if (n == k) {
+      return points;
+    }
+
+    double[] minDistances = new double[n];
+    Arrays.fill(minDistances, Double.POSITIVE_INFINITY);
+
+    ArrayList<Vector> centers = new ArrayList<>(k);
+
+    Vector lastCenter = points.get(0);
+    centers.add(lastCenter);
+
+    for (int iter=1; iter<k; iter++) {
+      int maxIdx = 0;
+      double maxDist = 0;
+
+      for (int i=0; i<n; i++) {
+        double d = Vectors.sqdist(points.get(i), lastCenter);
+        if (d < minDistances[i]) {
+          minDistances[i] = d;
+        }
+
+        if (minDistances[i] > maxDist) {
+          maxDist = minDistances[i];
+          maxIdx = i;
+        }
+      }
+
+      lastCenter = points.get(maxIdx);
+      centers.add(lastCenter);
+    }
+
+    return centers;
   }
 
 
