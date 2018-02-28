@@ -476,7 +476,21 @@ You can group by random keys using a combination of the ``groupBy`` key method o
 
 For the purpose of testing your implementation on your laptop, you can use the sample of vectors provided for the previous homework.
 For this homework, you should also run your code on the cluster.
-To pack your code in a jar file suitable to be uploaded on the cluster, you can use the ``shadowjar`` task available in the *gradle* menu in Intellij IDEA, as shown in the pictures below.
+To pack your code in a jar file suitable to be uploaded on the cluster, you can follow the steps below.
+
+First, open the ``gradle`` panel by hovering over the menu in the bottom-left corner
+
+.. image:: images/shadow-jar-1.png
+
+Then run the ``shadowjar`` task, which will create a jar file containing all your code and its dependencies in the directory ``build/libs``
+
+.. image:: images/shadow-jar-2.png
+
+Then, open the embedded terminal 
+
+.. image:: images/shadow-jar-3.png
+
+.. image:: images/shadow-jar-4.png
 
 
 
