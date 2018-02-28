@@ -1,43 +1,55 @@
 ---
-- hosts: all
+- hosts: frontend
   
-  vars:
-    frontend_hostname: frontend
-
   tasks:
+
+    - name: ensure that sshd allows password authentication
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        regexp: '^PasswordAuthentication '
+        line: 'PasswordAuthentication yes'
 
     - name: include usernames
       include_vars:
         file: usernames.yml
 
-    - name: create spark group
+    - name: create group for students
       group:
-        name: spark
+        name: students
         state: present
 
-    - name: create spark users
+    - name: create student users
       user:
-        name: "{{ item }}"
+        name: "{{ item.name }}"      
+        password: "{{ item.password }}"      
+        update_password: on_create
         state: present
-        groups: spark
-        append: yes
+        group: students
+        groups: hadoop,spark
         shell: /bin/bash
-      with_items: "{{ usernames }}"
+      with_items: "{{ groupusers }}"
 
+    - name: configure bash
+      copy:
+        src: files/bashrc
+        dest: "/home/{{ item.name }}/.bashrc"
+      with_items: "{{ groupusers }}"
 
-    - name: generate ssh keys (on the frontend)
-      user:
-        name: "{{ item }}"
-        generate_ssh_key: yes
-      with_items: "{{ usernames }}"
-      when: ansible_hostname == frontend_hostname
+    - name: create user directories under hdfs
+      command: "/opt/hadoop/bin/hdfs dfs -mkdir -p /user/{{ item.name }}"
+      become: yes
+      become_user: hadoop
+      with_items: "{{ groupusers }}"      
 
-    
-    - name: authorize the user's own key
-      authorized_key:
-        user: "{{ item }}"
-        state: present
-        key: "{{ lookup('file', '/home/' + item + '/.ssh/id_rsa.pub') }}"
-      with_items: "{{ usernames }}"
-      when: ansible_hostname == frontend_hostname
+    - name: change ownership of user directories
+      command: "/opt/hadoop/bin/hdfs dfs -chown -R {{ item.name }}:{{ item.name }} /user/{{ item.name }}"
+      become: yes
+      become_user: hadoop
+      with_items: "{{ groupusers }}"
+
+    - name: set space quotas for user directories
+      command: "/opt/hadoop/bin/hdfs dfsadmin -setSpaceQuota 1m /user/{{ item.name }}"
+      become: yes
+      become_user: hadoop
+      with_items: "{{ groupusers }}"
       
