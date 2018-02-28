@@ -53,3 +53,17 @@
       become_user: hadoop
       with_items: "{{ groupusers }}"
       
+    - name: create a data directory
+      command: "/opt/hadoop/bin/hdfs dfs -mkdir -p /data"
+      become: yes
+      become_user: hadoop
+
+    - name: change ownership of user directories
+      command: "/opt/hadoop/bin/hdfs dfs -chown -R hadoop:students /data"
+      become: yes
+      become_user: hadoop
+
+    - name: make data directory readable by all students
+      command: /opt/hadoop/bin/hdfs dfs -chmod -R g-w /data
+      become: yes
+      become_user: hadoop
