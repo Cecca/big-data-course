@@ -436,7 +436,12 @@ Third Homework
 
 The task of the third homework is to implement the sequential k-center algorithm by Gonzalez.
 Points to be clustered are represented by instances of the class ``org.apache.spark.mllib.linalg.Vector``.
-You can download three example datasets here, here, and here.
+You can download three example datasets:
+
+* `vecs-50-10000.bin <https://drive.google.com/uc?export=download&id=1b6G-Y7va7Lq7ikek5XoWEquy3hu51fl7>`_ 10 thousands vectors in 50 dimensions
+* `vecs-50-50000.bin <https://drive.google.com/uc?export=download&id=1XZSi5jnijkwcXzhTkPS1cwyp-EN5-Ars>`_ 50 thousands vectors in 50 dimensions
+* `vecs-50-100000.bin <https://drive.google.com/uc?export=download&id=15KHSg7J8W0qWzw1d9RTwjGejceVrwiCi>`_ 100 thousands vectors in 50 dimensions
+
 These datasets are in binary format and should be read using the ``InputOutput.readVectors`` method provided within the project's template.
 
 .. warning::

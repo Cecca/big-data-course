@@ -21,9 +21,9 @@ repositories {
 }
 
 dependencies {
-    compileOnly 'org.apache.spark:spark-core_2.11:2.2.0'
-    compileOnly 'org.apache.spark:spark-mllib_2.11:2.2.0'
-    compileOnly 'org.apache.hadoop:hadoop-client:2.7.2'
+    compile 'org.apache.spark:spark-core_2.11:2.2.0'
+    compile 'org.apache.spark:spark-mllib_2.11:2.2.0'
+    compile 'org.apache.hadoop:hadoop-client:2.7.2'
     compile 'com.beust:jcommander:1.72'
     compile group: 'edu.stanford.nlp', name: 'stanford-corenlp', version: '3.7.0'
     runtime group: 'edu.stanford.nlp', name: 'stanford-corenlp', version: '3.7.0', classifier: 'models-english'
