@@ -15,7 +15,7 @@ These commands live in ``/opt/spark/bin``
   Spark supports the execution of jobs using several cluster managers (for more information please refer to the `official documentation <https://spark.apache.org/docs/latest/submitting-applications.html>`_).
   For the Big Data course we are using the `Yarn <https://hadoop.apache.org/docs/current/hadoop-yarn/hadoop-yarn-site/YARN.html>`_ cluster manager.
 
-.. _spark-submit:: Function spark-submit
+.. _spark-submit:
 
 .. function:: spark-submit [spark options] code.jar [program arguments]
 
@@ -42,6 +42,9 @@ Data in the cluster lives on `HDFS <https://www.google.it/search?client=ubuntu&c
 
 Commands to manage data in HDFS live in ``/opt/hadoop/bin``.
 
+.. _hdfs-command:
+
+.. function:: hdfs <subcommand> [options]
 
 .. rubric:: Footnotes
 

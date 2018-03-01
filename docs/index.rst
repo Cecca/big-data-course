@@ -7,11 +7,9 @@ This document describes the setup for the project to be done for the Big Data co
    :maxdepth: 2
    :caption: Contents:
 
-   admin_setup
-   starting_cluster
-   commands-guide
    homeworks
    api
+   commands-guide
 
 
 Indices and tables
