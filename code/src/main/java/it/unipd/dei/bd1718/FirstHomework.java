@@ -4,21 +4,26 @@ import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class FirstHomework {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws FileNotFoundException {
     if (args.length == 0) {
-      throw new IllegalArgumentException("Expecting at least one number on the command line");
+      throw new IllegalArgumentException("Expecting the file name on the command line");
     }
 
     // Read a list of numbers from the program options
     ArrayList<Double> lNumbers = new ArrayList<>();
-    for (String s : args) {
-      lNumbers.add(Double.parseDouble(s));
+    Scanner s =  new Scanner(new File(args[0]));
+    while (s.hasNext()){
+      lNumbers.add(Double.parseDouble(s.next()));
     }
+    s.close();
 
     // Setup Spark
     SparkConf conf = new SparkConf(true)
