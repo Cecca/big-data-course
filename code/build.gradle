@@ -20,17 +20,28 @@ repositories {
   jcenter()
 }
 
+configurations {
+    sparkCompile
+}
+
 dependencies {
-    compile 'org.apache.spark:spark-core_2.11:2.2.0'
-    compile 'org.apache.spark:spark-mllib_2.11:2.2.0'
-    compile 'org.apache.hadoop:hadoop-client:2.7.2'
+    compileOnly 'org.apache.spark:spark-core_2.11:2.2.0'
+    compileOnly 'org.apache.spark:spark-mllib_2.11:2.2.0'
+    compileOnly 'org.apache.hadoop:hadoop-client:2.7.2'
     compile 'com.beust:jcommander:1.72'
     compile group: 'edu.stanford.nlp', name: 'stanford-corenlp', version: '3.7.0'
     runtime group: 'edu.stanford.nlp', name: 'stanford-corenlp', version: '3.7.0', classifier: 'models-english'
 }
 
+// This line is a bit counterintuitive: we are adding to the runtime configuration
+// the dependencies of the compileOnly configurations.
+// The reason is that by doing so we can exclude spark and hadoop from
+// the fat jar, but still have them in the local classpath should we run
+// some code from the IDE.
+configurations.runtime.extendsFrom configurations.compileOnly
+
 shadowJar {
     zip64 true
-    configurations = [project.configurations.compile] // Exclude runtime-only path (which contains the models)
+    configurations = [project.configurations.compile] // Exclude runtime-only path
 }
 
