@@ -6,6 +6,8 @@
 
   tasks:
 
+    - debug: msg="IP Address {{ hostvars[inventory_hostname]['ansible_ens3']['ipv4']['address'] }}"
+
     - name: setup hosts
       template:
         src: templates/hosts.j2

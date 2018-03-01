@@ -1,4 +1,21 @@
 ---
+- hosts: all
+  tasks:
+
+    - name: create hadoop group
+      group:
+        name: hadoop
+        state: present
+
+    - name: create hadoop user
+      user:
+        name: hadoop
+        group: hadoop
+        state: present
+        createhome: no
+        system: yes
+
+
 - hosts: frontend
   
   tasks:
