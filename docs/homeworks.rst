@@ -578,12 +578,14 @@ To get a list of the available datasets you can use the following command::
 All datasets available under ``/data`` are made of ``Vector`` instances, with each vector having the number of dimensions specified by the first number its name. The second number is the number of vectors in the dataset.
 So, for instance, the dataset ``vectors-50-1000000`` is made by one million 50-dimensional vectors.
 Files with ``all`` in place of a number (like ``vectors-50-all``) are made by approximately 5 million vectors and correspond to the original dataset of which the others are samples.
-To use  ``vectors-50-1000000`` as input to your program, simply pass ``/data/vectors-50-1000000`` to the ``--input`` argument.
+An example invocation of the fourth homework on the cluster is as follows::
+
+  spark-submit --num-executors 2 --class it.unipd.dei.bdc1718.FourtHomework bdc1718-all.jar --input /data/vectors-50-1000000 -k 10
 
 .. warning::
 
   The ``/data`` directory in HDFS is read only: if you try to write into ``/data`` you will get an exception.
-  Each group (for instance ``groupXX``) has write access to a folder in HDFS called ``/user/groupXX``.
+  Each group (for instance ``groupXX``) has write access to a folder in HDFS called ``/user/groupXX`` with a 10GB quota.
   This is also the default folder for HDFS if you provide relative paths (i.e. paths not starting with a ``/`` to its commands).
 
 If you want to play with other datasets, you can upload them to the cluster using the ``scp`` command (``pscp`` on Windows) just like you did for the jar file.
