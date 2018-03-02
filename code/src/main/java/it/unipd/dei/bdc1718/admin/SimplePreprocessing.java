@@ -1,4 +1,4 @@
-package it.unipd.dei.bd1718.admin;
+package it.unipd.dei.bdc1718.admin;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
@@ -8,7 +8,6 @@ import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.apache.lucene.analysis.util.StopwordAnalyzerBase;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
@@ -138,7 +137,7 @@ public class SimplePreprocessing {
       return Collections.singleton(Vectors.dense(pageVector)).iterator();
     });
 
-    it.unipd.dei.bd1718.InputOutput.writeVectors(vectors, arguments.output);
+    it.unipd.dei.bdc1718.InputOutput.writeVectors(vectors, arguments.output);
 
     logger.info("Done");
     logger.info("Skipped {} words over {}", skippedWords.value(), totalWords.value());

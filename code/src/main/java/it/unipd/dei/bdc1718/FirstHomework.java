@@ -1,4 +1,4 @@
-package it.unipd.dei.bd1718;
+package it.unipd.dei.bdc1718;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
@@ -7,7 +7,6 @@ import org.apache.spark.api.java.JavaSparkContext;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class FirstHomework {

@@ -1,14 +1,10 @@
-package it.unipd.dei.bd1718;
+package it.unipd.dei.bdc1718;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
-import scala.Tuple2;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 public class SecondHomework {
 

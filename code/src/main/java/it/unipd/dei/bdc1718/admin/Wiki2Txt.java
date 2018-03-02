@@ -1,14 +1,12 @@
-package it.unipd.dei.bd1718.admin;
+package it.unipd.dei.bdc1718.admin;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
-import it.unipd.dei.bd1718.InputOutput;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
-import org.apache.spark.mllib.linalg.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -1,8 +1,8 @@
-package it.unipd.dei.bd1718.admin;
+package it.unipd.dei.bdc1718.admin;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
-import it.unipd.dei.bd1718.InputOutput;
+import it.unipd.dei.bdc1718.InputOutput;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.spark.SparkConf;

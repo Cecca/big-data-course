@@ -1,4 +1,4 @@
-package it.unipd.dei.bd1718;
+package it.unipd.dei.bdc1718;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;

@@ -1,56 +1,19 @@
-package it.unipd.dei.bd1718;
+package it.unipd.dei.bdc1718;
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import org.apache.spark.mllib.linalg.Vector;
-import org.apache.spark.mllib.linalg.Vectors;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.Arrays;
 
-public class ThirdHomeworkSolution {
+public class ThirdHomework {
 
   public static ArrayList<Vector> kCenter(ArrayList<Vector> points, int k) {
-    final int n = points.size();
-    if (n < k) {
-      throw new IllegalArgumentException("Cannot compute clustering with " + k + " clusters on " + n + " points");
-    } else if (n == k) {
-      return points;
-    }
-
-    double[] minDistances = new double[n];
-    Arrays.fill(minDistances, Double.POSITIVE_INFINITY);
-
-    ArrayList<Vector> centers = new ArrayList<>(k);
-
-    Vector lastCenter = points.get(0);
-    centers.add(lastCenter);
-
-    for (int iter=1; iter<k; iter++) {
-      int maxIdx = 0;
-      double maxDist = 0;
-
-      for (int i=0; i<n; i++) {
-        double d = Vectors.sqdist(points.get(i), lastCenter);
-        if (d < minDistances[i]) {
-          minDistances[i] = d;
-        }
-
-        if (minDistances[i] > maxDist) {
-          maxDist = minDistances[i];
-          maxIdx = i;
-        }
-      }
-
-      lastCenter = points.get(maxIdx);
-      centers.add(lastCenter);
-    }
-
-    return centers;
+    throw new RuntimeException("Implement me!");
   }
 
 
