@@ -88,4 +88,3 @@
       become: yes
       become_user: hadoop
 
-    # TODO: Create one directory per user under /user
