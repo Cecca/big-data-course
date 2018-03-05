@@ -601,6 +601,17 @@ will make the file available to Spark under the HDFS path ``/user/groupXX/datase
   Exceptions with a message like "Missing an output location for shuffle X" are likely due to insufficient memory. Try to look in the log for error messages mentioning "Container killed by YARN for exceeding memory limits".  
   If this is the case, try to give more memory to each executor, or to use more executors.
 
+.. warning::
+
+  In order to share the limited computing resources of the cluster among all the groups, each job can request at most 2Gb of memory *per executor* (using the ``--executor-memory`` flag of ``spark-submit``.
+  If you need more memory you can require more executors (using the ``--num-executors`` flag).
+  If your program fails with a message similar to the following::
+
+    Exception in thread "main" java.lang.IllegalArgumentException: Required executor memory (3072+384 MB) is above the max threshold (2432 MB) of this cluster!
+
+  then it means that you have requested too much memory for single executors (in this case 3Gb).
+
+
 Exercises
 ^^^^^^^^^
 
