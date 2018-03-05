@@ -1,5 +1,6 @@
 admins:
-  - ceccarel
+  - name: ceccarel
+    password: $6$v1sQ32TdgOrrd3$F630Is2SRna0mp.M5iKZmZaYqS42fon8G051LRIrAxCCvfMcrmw9qva2mhHIu5H1Me4xIsOlcSbzNqVwpaRbg.
 
 groupusers:
   - name: group01

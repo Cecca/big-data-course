@@ -1,5 +1,6 @@
 ---
 
+
 - hosts: frontend
   
   tasks:
@@ -14,10 +15,26 @@
       include_vars:
         file: usernames.yml
 
+    - name: create group for administrators
+      group:
+        name: admins
+        state: present
+
     - name: create group for students
       group:
         name: students
         state: present
+
+    - name: create admin users
+      user:
+        name: "{{ item.name }}"      
+        password: "{{ item.password }}"      
+        update_password: on_create
+        state: present
+        group: admins
+        groups: hadoop,spark
+        shell: /bin/bash
+      with_items: "{{ admins }}"
 
     - name: create student users
       user:
@@ -36,6 +53,12 @@
         dest: "/home/{{ item.name }}/.bashrc"
       with_items: "{{ groupusers }}"
 
+    - name: configure bash
+      copy:
+        src: files/bashrc
+        dest: "/home/{{ item.name }}/.bashrc"
+      with_items: "{{ admins }}"
+
     - name: create user directories under hdfs
       command: "/opt/hadoop/bin/hdfs dfs -mkdir -p /user/{{ item.name }}"
       become: yes
@@ -49,7 +72,7 @@
       with_items: "{{ groupusers }}"
 
     - name: set space quotas for user directories
-      command: "/opt/hadoop/bin/hdfs dfsadmin -setSpaceQuota 1m /user/{{ item.name }}"
+      command: "/opt/hadoop/bin/hdfs dfsadmin -setSpaceQuota 10G /user/{{ item.name }}"
       become: yes
       become_user: hadoop
       with_items: "{{ groupusers }}"
@@ -68,3 +91,23 @@
       command: /opt/hadoop/bin/hdfs dfs -chmod -R g-w /data
       become: yes
       become_user: hadoop
+
+
+    - name: create admin directories under hdfs
+      command: "/opt/hadoop/bin/hdfs dfs -mkdir -p /user/{{ item.name }}"
+      become: yes
+      become_user: hadoop
+      with_items: "{{ admins }}"      
+
+    - name: change ownership of admin directories
+      command: "/opt/hadoop/bin/hdfs dfs -chown -R {{ item.name }}:{{ item.name }} /user/{{ item.name }}"
+      become: yes
+      become_user: hadoop
+      with_items: "{{ admins }}"
+
+    - name: set space quotas for admin directories
+      command: "/opt/hadoop/bin/hdfs dfsadmin -setSpaceQuota 10G /user/{{ item.name }}"
+      become: yes
+      become_user: hadoop
+      with_items: "{{ admins }}"
+  
