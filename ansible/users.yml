@@ -106,7 +106,7 @@
       with_items: "{{ admins }}"
 
     - name: set space quotas for admin directories
-      command: "/opt/hadoop/bin/hdfs dfsadmin -setSpaceQuota 10G /user/{{ item.name }}"
+      command: "/opt/hadoop/bin/hdfs dfsadmin -setSpaceQuota 50G /user/{{ item.name }}"
       become: yes
       become_user: hadoop
       with_items: "{{ admins }}"
