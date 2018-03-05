@@ -35,8 +35,10 @@ public class FourthHomeworkSolution {
 
     // Reduce phase
     ArrayList<Vector> aggregatedCoreset = coresets.reduce((a, b) -> {
-      a.addAll(b);
-      return a;
+      ArrayList<Vector> c = new ArrayList<>(a.size()+b.size());
+      c.addAll(a);
+      c.addAll(b);
+      return c;
     });
 
     System.out.println("Aggregated coreset with " + aggregatedCoreset.size() + " points");
