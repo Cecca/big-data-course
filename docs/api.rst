@@ -341,3 +341,10 @@ This page presents detailed API, with examples, of some of the most useful Spark
     Collects the RDD locally as a ``java.util.Map<K, V>`` object.
 
     .. warning:: This method requires the driver to have enough memory to store the entire RDD at once. use this method only on small RDDs, otherwise you will get an ``OutOfMemoryError``.
+
+
+.. class:: SparkContext
+
+  .. function:: textFile(path)
+
+    Reads a text file from the given path, returning its content as a ``JavaRDD<String>`` with one element per line.
