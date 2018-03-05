@@ -146,7 +146,7 @@ public class FourthHomeworkSolution {
     int k;
 
     @Parameter(names = "--tau")
-    int tau;
+    int tau = -1;
 
     @Parameter(names = "--blocks")
     int blocks = -1;
