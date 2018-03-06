@@ -5,7 +5,7 @@ In this second homework, we will see how to use Spark more in detail, using the 
 
 .. highlight:: java
 
-Intermission: RDDs, executors, and parallelism
+Preliminaries: RDDs, executors, and parallelism
 ----------------------------------------------
 
 Before proceeding to homework 2, some words about Resilient Distributed Datasets, Spark's basic data abstraction, are in oder.
