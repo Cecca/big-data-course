@@ -6,8 +6,13 @@ This document describes the setup for the project to be done for the Big Data co
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
+   :hidden:
 
-   homeworks
+   preliminaries
+   homework1
+   homework2
+   homework3
+   homework4
    api
    commands-guide
 

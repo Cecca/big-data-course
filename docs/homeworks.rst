@@ -10,6 +10,8 @@ This page describes the assignments for the homeworks.
 Preliminaries: setup
 --------------------
 
+.. highlight:: java
+
 Before doing any work, you should setup your machine.
 First of all, you need to have the Java Development Kit (JDK) version 8 installed on your machine.
 If the command 
@@ -89,6 +91,9 @@ Which of the two configurations is used is determined by the ``spark.master`` `j
 
 Homework 1: functional programming
 ----------------------------------
+
+.. highlight:: java
+
 
 The purpose of this first homework is to get acquainted with the principles of *functional programming*, on which MapReduce and Spark are based.
 One of the core ideas of functional programming is that functions can be arguments to other functions.
@@ -227,6 +232,9 @@ Come up with a third task. You can use whichever methods of ``JavaRDD`` you want
 Intermission: RDDs, executors, and parallelism
 ----------------------------------------------
 
+.. highlight:: java
+
+
 Before proceeding to homework 2, some words about Resilient Distributed Datasets, Spark's basic data abstraction, are in oder.
 
 A Resilient Distributed Dataset (RDD for short) is a collection of elements of the same type, possibly distributed across many machines.
@@ -254,6 +262,9 @@ Setting the number of blocks depends on the application. Sometimes having many m
 
 Homework 2: Spark basics
 ------------------------
+
+.. highlight:: java
+
 
 In this second homework, we will see how to use Spark more in detail, using the classic word count task as a running example.
 
@@ -496,6 +507,9 @@ Exercises
 Third Homework
 --------------
 
+.. highlight:: java
+
+
 The task of the third homework is to implement the sequential k-center algorithm by Gonzalez.
 Points to be clustered are represented by instances of the class ``org.apache.spark.mllib.linalg.Vector``.
 You can download three example datasets:
@@ -530,6 +544,9 @@ Exercises
 
 Fourth Homework
 ---------------
+
+.. highlight:: java
+
 
 This homework's task is to solve the diversity maximization problem you have seen in class.
 The homework template provides the implementation of the sequential approximation algorithm for diversity maximization, along with a method to compute the diversity of a given set.
