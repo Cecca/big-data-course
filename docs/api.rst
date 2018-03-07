@@ -1,7 +1,7 @@
 .. _spark-api:
 
-Spark API
-=========
+Most useful Spark methods
+=========================
 
 .. highlight:: Java
 
