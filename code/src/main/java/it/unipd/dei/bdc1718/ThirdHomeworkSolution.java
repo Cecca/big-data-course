@@ -14,6 +14,10 @@ import java.util.Arrays;
 
 public class ThirdHomeworkSolution {
 
+  public static double euclidean(Vector a, Vector b) {
+    return Math.sqrt(Vectors.sqdist(a, b));
+  }
+
   public static ArrayList<Vector> kCenter(ArrayList<Vector> points, int k) {
     final int n = points.size();
     if (n < k) {
@@ -35,7 +39,7 @@ public class ThirdHomeworkSolution {
       double maxDist = 0;
 
       for (int i=0; i<n; i++) {
-        double d = Vectors.sqdist(points.get(i), lastCenter);
+        double d = euclidean(points.get(i), lastCenter);
         if (d < minDistances[i]) {
           minDistances[i] = d;
         }

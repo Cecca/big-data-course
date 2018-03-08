@@ -59,7 +59,7 @@ public class FourthHomeworkSolution {
     double sum = 0.0;
     for (int i=0; i<n; i++) {
       for (int j=i+1; j<n; j++) {
-        sum += Vectors.sqdist(points.get(i), points.get(j));
+        sum += ThirdHomeworkSolution.euclidean(points.get(i), points.get(j));
       }
     }
     return sum;
@@ -80,7 +80,7 @@ public class FourthHomeworkSolution {
     double[][] distanceMatrix = new double[n][n];
     for (int i = 0; i < n; i++) {
       for (int j = i+1; j < n; j++) {
-        distanceMatrix[i][j] = Vectors.sqdist(points.get(i), points.get(j));
+        distanceMatrix[i][j] = ThirdHomeworkSolution.euclidean(points.get(i), points.get(j));
         distanceMatrix[j][i] = distanceMatrix[i][j];
       }
     }
@@ -101,7 +101,7 @@ public class FourthHomeworkSolution {
         if (candidates[i]) {
           for (int j = i+1; j < n; j++) {
             if (candidates[j]) {
-              double d = distanceMatrix[i][j]; //Vectors.sqdist(points.get(i), points.get(j));
+              double d = distanceMatrix[i][j]; //ThirdHomeworkSolution.euclidean(points.get(i), points.get(j));
               if (d > maxDist) {
                 maxDist = d;
                 maxI = i;
