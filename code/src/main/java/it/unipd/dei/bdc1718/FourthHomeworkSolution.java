@@ -230,7 +230,9 @@ public class FourthHomeworkSolution {
     }
 
     double diversity = measure(solution);
-    double averageDistance = diversity / solution.size();
+    int solutionSize = solution.size();
+    int numDistances = (solutionSize-1)*solutionSize / 2;
+    double averageDistance = diversity / numDistances;
 
     System.out.println("Solution with diversity " + diversity + " (average distance " + averageDistance + ")");
     System.out.println("Elapsed time " + elapsed + " ms");
