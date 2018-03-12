@@ -32,8 +32,8 @@ public class FirstHomework {
     // Create a parallel collection
     JavaRDD<Double> dNumbers = sc.parallelize(lNumbers);
 
-    // ================= Your code here ===================
-
+    double sumOfSquares = dNumbers.map((x) -> x*x).reduce((x, y) -> x + y);
+    System.out.println("The sum of squares is " + sumOfSquares);
 
   }
 
