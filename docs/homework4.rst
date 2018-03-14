@@ -3,6 +3,40 @@ Fourth Homework
 
 .. highlight:: java
 
+Preliminaries: connecting to the cloud
+--------------------------------------
+
+The code you will develop in this homework will run on CloudVeneto, our university's cloud infrastructure.
+You have access to a cluster of 10 machines, each equipped with 8 cores and 16 GB of RAM. Of these 10 machines, 9 are devoted to execute parallel Spark tasks, and one, called ``frontend``, is responsible of coordinating jobs and managing resources.
+You have access to this machine, from which you can run your jobs.
+
+Access to ``frontend`` is done with the `SSH <https://en.wikipedia.org/wiki/Secure_Shell>`_ protocol.
+
+Linux and MacOS
+^^^^^^^^^^^^^^^
+
+Linux and MacOS come with a builtin SSH client.
+Open a terminal window and type the following command
+
+  ssh -p 2222 groupXX@147.162.226.106
+
+where ``groupXX`` is your group's name.
+You will be asked your group's password.
+Don't worry if you see nothing while you type: it's the normal behaviour of the SSH program when you type passwords.
+
+Windows
+^^^^^^^
+
+Windows lacks a native SSH client, so you will have to install `Putty <https://www.putty.org/>`_.
+Once you have installed it, execute it: a GUI will show up
+
+.. image:: images/putty.png
+
+Fill the boxes as shown in the image above, replacing ``groupXX`` with your own group's name. A terminal will open with your connection.
+
+
+Assignment
+----------
 
 This homework's task is to solve the diversity maximization problem you have seen in class.
 The homework template provides the implementation of the sequential approximation algorithm for diversity maximization, along with a method to compute the diversity of a given set.
