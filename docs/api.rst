@@ -249,23 +249,29 @@ This page presents detailed API, with examples, of some of the most useful Spark
     There is a workaround, that is to explicitly define a class implenting both ``Comparator`` and ``Serializable``.
     The following example finds the longest word in a RDD of words::
 
-      // In its own file
-      public class LengthComparator implements Serializable, Comparator<String> {
 
-        public int compare(String a, String b) {
-          if (a.length < b.length) return -1;
-          else if (a.length > b.length) return 1;
-          return 0;
+      public class MyClass {
+
+        // It is important to mark this class as `static`.
+        public static class LengthComparator implements Serializable, Comparator<String> {
+
+          public int compare(String a, String b) {
+            if (a.length < b.length) return -1;
+            else if (a.length > b.length) return 1;
+            return 0;
+          }
+
+        }
+
+        public static void main(String[] args) {
+
+          // ...
+
+          JavaRDD<String> words;
+          String longest = words.max(new LengthComparator());
         }
 
       }
-
-      // Then, in the body of some other method
-      JavaRDD<String> words;
-      String longest = words.max(new LengthComparator());
-
-    If you want, you can define ``LengthComparator`` as an inner class of another class.
-    The important thing is to make it a ``static`` inner class.
 
   .. function:: reduce(Function2<T, T, T> func)
 
@@ -281,7 +287,7 @@ This page presents detailed API, with examples, of some of the most useful Spark
 
   This class, similarly to its sibiling ``JavaRDD`` is a local handle to a distributed collection, but this time we are dealing with a collection of key-value pairs.
 
-  You can go back and forth from ``JavaRDD<Tuple2<K, V>>`` to ``JavaPairRDD<K, V>``. To convert a ``JavaRDD`` of `'Tuple2`` objects to a ``JavaPairRDD``, you can use the static methoc ``JavaPairRDD.fromRDD``, as in this example::
+  You can go back and forth from ``JavaRDD<Tuple2<K, V>>`` to ``JavaPairRDD<K, V>``. To convert a ``JavaRDD`` of `'Tuple2`` objects to a ``JavaPairRDD``, you can use the static method ``JavaPairRDD.fromRDD``, as in this example::
 
     JavaRDD<Tuple2<String, Integer>> wordCounts;
     JavaPairRDD<String, Integer> wordCountsPairRDD = JavaPairRDD.fromRDD(wordCounts);
