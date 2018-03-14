@@ -32,7 +32,33 @@ Once you have installed it, execute it: a GUI will show up
 
 .. image:: images/putty.png
 
-Fill the boxes as shown in the image above, replacing ``groupXX`` with your own group's name. A terminal will open with your connection.
+Fill the boxes as shown in the image above, replacing ``groupXX`` with your own group's name.
+A terminal will open, giving you access to the cluster.
+
+Uploading code to the cluster
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+To pack your code in a jar file suitable to be uploaded on the cluster, you can follow the steps below.
+
+In Intellij IDEA, open the ``gradle`` panel by hovering over the menu in the bottom-left corner
+
+.. image:: images/shadow-jar-1.png
+
+Then run the ``shadowjar`` task, which will create a jar file containing all your code and its dependencies in the directory ``build/libs``
+
+.. image:: images/shadow-jar-2.png
+
+Then, to upload the jar file to your account on the cluster, open the embedded terminal, again by hovering over the bottom-left button.
+
+.. image:: images/shadow-jar-3.png
+
+The terminal will open in the root directory of the project.
+On Linux and MacOS, run the scp command as shown in the image below, changing ``group01`` to your group's ID, and possibly changing the name of the jar file.
+
+.. image:: images/shadow-jar-4.png
+
+If you are on windows, replace ``scp`` with ``pscp`` (which was installed along with Putty), and use ``\`` instead of ``/`` in file paths.
+Again, on all operating systems, don't worry if you don't see characters appearing on screen while you type your password: it's the expected behaviour to preserve your privacy.
 
 
 Assignment
@@ -49,28 +75,7 @@ The second method, ``runMapReduce``, takes as input a RDD of vectors, the parame
 You can group by random keys using a combination of the ``groupBy`` key method of the ``JavaRDD`` class, and the ``java.util.Random.nextInt(int)`` method.
 
 For the purpose of testing your implementation on your laptop, you can use the sample of vectors provided for the previous homework.
-For this homework, you should also run your code on the cluster.
-To pack your code in a jar file suitable to be uploaded on the cluster, you can follow the steps below.
-
-First, open the ``gradle`` panel by hovering over the menu in the bottom-left corner
-
-.. image:: images/shadow-jar-1.png
-
-Then run the ``shadowjar`` task, which will create a jar file containing all your code and its dependencies in the directory ``build/libs``
-
-.. image:: images/shadow-jar-2.png
-
-Then, to upload the jar file to your account on the cluster, open the embedded terminal, again by hovering over the bottom-left button.
-
-.. image:: images/shadow-jar-3.png
-
-The terminal will open in the root directory of the project.
-Run the scp command as shown in the image below, changing ``group01`` to your group's ID, and possibly changing the name of the jar file.
-
-.. image:: images/shadow-jar-4.png
-
-If you are on windows, replace ``scp`` with ``pscp``, and use ``\`` instead of ``/`` in file paths.
-On all operating systems, don't worry if you don't see characters appearing on screen while you type your password: it's the expected behaviour to preserve your privacy.
+For this homework, you should also run your code on the cluster, which you can access as outlined in the preliminaries.
 
 Now you can login to the ``frontend`` and run your code using the ``spark-submit``, which is described :ref:`here <spark-submit>`.
 Data on the cluster is hosted in `HDFS <https://www.ibm.com/analytics/hadoop/hdfs>`_, which stands for Hadoop Distributed Filesystem.
