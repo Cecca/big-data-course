@@ -3,95 +3,76 @@ package it.unipd.dei.bdc1718;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.storage.StorageLevel;
 import scala.Tuple2;
 
 import java.io.IOException;
+import java.io.Serializable;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.*;
 
 public class SecondHomeworkSolution {
 
   public static void main(String[] args) throws IOException {
-    if (args.length != 1) {
-      throw new IllegalArgumentException("This program accepts just the path to the input file");
+    if (args.length != 2) {
+      throw new IllegalArgumentException("This program accepts just the path to the input file and an integer k");
     }
 
     String path = args[0];
+    int k = Integer.parseInt(args[1]);
 
     // Setup Spark
     SparkConf conf = new SparkConf(true)
-      .setMaster("local")
-      .setAppName("WordCount");
+            .setMaster("local")
+            .setAppName("WordCount");
     JavaSparkContext sc = new JavaSparkContext(conf);
 
-    JavaRDD<String> words = sc.textFile(path, 16).cache();
+    JavaRDD<String> words = sc.textFile(path, 16)
+            .persist(StorageLevel.MEMORY_AND_DISK());
+    // The count below triggers the loading and caching of the words dataset.
     words.count();
+
+    List<Tuple2<String, Long>> topWords;
 
     long start = System.currentTimeMillis();
 
-//    Map<String, Integer> count = words.flatMapToPair((d) -> {
-//      String[] tokens = d.split(" ");
-//      ArrayList<Tuple2<String, Long>> pairs = new ArrayList<>();
-//      for (String token : tokens) {
-//        pairs.add(new Tuple2<>(token, 1L));
-//      }
-//      return pairs.iterator();
-//    }).groupByKey()
-//      .mapValues((it) -> {
-//        int sum = 0;
-//        for (long c : it) {
-//          sum += c;
-//        }
-//        return sum;
-//      })
-//      .collectAsMap();
-
-    Map<String, Integer> count = words.flatMapToPair((d) -> {
-      String[] tokens = d.split(" ");
-      HashMap<String, Long> counts = new HashMap<>();
-      ArrayList<Tuple2<String, Long>> pairs = new ArrayList<>();
-      for (String token : tokens) {
-        counts.put(token, 1L + counts.getOrDefault(token, 0L));
-      }
-      for (Map.Entry<String, Long> e : counts.entrySet()) {
-        pairs.add(new Tuple2<>(e.getKey(), e.getValue()));
-      }
-      return pairs.iterator();
-//      return counts.entrySet().stream()
-//        .map((entry) -> new Tuple2<>(entry.getKey(), entry.getValue()))
-//        .iterator();
-    }).groupByKey()
-      .mapValues((it) -> {
-        int sum = 0;
-        for (long c : it) {
-          sum += c;
-        }
-        return sum;
-      })
-      .collectAsMap();
-
-//    Map<String, Long> count = words.flatMapToPair((d) -> {
-//      String[] tokens = d.split(" ");
-//      HashMap<String, Long> counts = new HashMap<>();
-//      ArrayList<Tuple2<String, Long>> pairs = new ArrayList<>();
-//      for (String token : tokens) {
-//        counts.put(token, 1L + counts.getOrDefault(token, 0L));
-//      }
-//      for (Map.Entry<String, Long> e : counts.entrySet()) {
-//        pairs.add(new Tuple2<>(e.getKey(), e.getValue()));
-//      }
-//      return pairs.iterator();
-//    }).reduceByKey((x, y) -> x + y)
-//      .collectAsMap();
-
-//    Map<String, Long> count = words.flatMap((d) -> {
-//      String[] tokens = d.split(" ");
-//      return Arrays.asList(tokens).iterator();
-//    }).countByValue();
+    // Your code here
+    topWords = words
+            .flatMapToPair((doc) -> Arrays.stream(doc.split(" ")).map((t) -> new Tuple2<>(t, 1L)).iterator())
+            .reduceByKey((c1, c2) -> c1 + c2)
+            .top(k, new TupleComparator());
 
     long end = System.currentTimeMillis();
     System.out.println("Elapsed time: " + (end - start) + " ms");
+
+    appendResult(path, k, end - start, topWords);
+
+    // The following two lines make the program wait to allow
+    // you to explore the web interface
     System.out.println("Press enter to finish");
-    System.in.read();
+//    System.in.read();
+  }
+
+  private static class TupleComparator implements Comparator<Tuple2<String, Long>>, Serializable {
+    @Override
+    public int compare(Tuple2<String, Long> t1, Tuple2<String, Long> t2) {
+      return t1._2().compareTo(t2._2());
+    }
+  }
+
+  private static void appendResult(String input, int k, long elapsedTime, List<Tuple2<String, Long>> top) throws IOException {
+    StringBuffer topStr = new StringBuffer();
+    for (Tuple2<String, Long> t : top) {
+      System.out.println(t);
+      topStr.append(t._1()).append(':').append(t._2()).append(';');
+    }
+    Files.write(
+            Paths.get("word-count-result.txt"),
+            (input + "," + k + "," + elapsedTime + "," + topStr.toString() + "\n").getBytes(),
+            StandardOpenOption.APPEND,
+            StandardOpenOption.CREATE);
   }
 
 }
