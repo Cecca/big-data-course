@@ -1,6 +1,0 @@
-/data/matteo/Datasets/bd1718/vectors-glove-100/part-00000-a92b411a-4301-47b3-8546-ff577a2c1f7b-c000.gz.parquet,100,858
-/data/matteo/Datasets/bd1718/vectors-glove-100/part-00000-a92b411a-4301-47b3-8546-ff577a2c1f7b-c000.gz.parquet,100,1363
-/data/matteo/Datasets/bd1718/vectors-glove-100/part-00000-a92b411a-4301-47b3-8546-ff577a2c1f7b-c000.gz.parquet,200,1834
-/data/matteo/Datasets/bd1718/vectors-glove-100,10,1455
-/data/matteo/Datasets/bd1718/vectors-glove-100,10,1613
-/data/matteo/Datasets/bd1718/vectors-glove-100,100,16378
