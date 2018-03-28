@@ -3,7 +3,7 @@
   vars:
     java_home: /usr/lib/jvm/java-8-oracle
     hadoop_home: /opt/hadoop
-    hdfs_volume: /dev/vdb
+    hdfs_volume: /dev/vdb1
     hdfs_volume_mount_point: /var/hdfs
     hdfs: {
       host: frontend,
@@ -15,18 +15,11 @@
 
   tasks:
 
-    - name: create hadoop group
-      group:
-        name: hadoop
+    - name: Create a partition for hdfs
+      parted:
+        device: /dev/vdb
+        number: 1
         state: present
-
-    - name: create hadoop user
-      user:
-        name: hadoop
-        group: hadoop
-        state: present
-        createhome: no
-        system: yes
 
     - name: format the volume, if needed
       filesystem:
@@ -49,7 +42,7 @@
         path: "{{ hdfs_volume_mount_point }}"
         state: mounted
         fstype: ext4        
-      when: ansible_hostname == "frontend"        
+      when: ansible_hostname == "frontend"
 
     - name: copy configuration templates
       template:
@@ -65,9 +58,9 @@
         src: "files/{{ item }}"
         dest: "/etc/systemd/system/{{ item }}"
       with_items:
-        - hdfs-datanode.service
         - hdfs-namenode.service
         - hdfs-secondary-namenode.service
+        - hdfs-datanode.service
 
     - name: enable and start systemd services
       service:
@@ -76,24 +69,22 @@
         enabled: yes
       when: ansible_hostname == "frontend"
       with_items:
-        - hdfs-datanode
         - hdfs-namenode
         - hdfs-secondary-namenode
-
+        - hdfs-datanode
 
     - name: create temporary and scratch directories
-      command: /opt/hadoop/bin/hdfs -mkdir -p /tmp /shared/spark-logs
+      command: /opt/hadoop/bin/hdfs dfs -mkdir -p /tmp /shared/spark-logs
       become: yes
       become_user: hadoop
 
     - name: change ownership of common hdfs directories
-      command: /opt/hadoop/bin/hdfs -chown -R hadoop:hadoop /tmp /shared/spark-logs
+      command: /opt/hadoop/bin/hdfs dfs -chown -R hadoop:hadoop /tmp /shared/spark-logs
       become: yes
       become_user: hadoop
 
     - name: change permissions of common hdfs directories
-      command: /opt/hadoop/bin/hdfs -chmod -R 777 /tmp /shared/spark-logs
+      command: /opt/hadoop/bin/hdfs dfs -chmod -R 777 /tmp /shared/spark-logs
       become: yes
       become_user: hadoop
 
-    # TODO: Create one directory per user under /user

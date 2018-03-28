@@ -35,8 +35,10 @@ public class FourthHomeworkSolution {
 
     // Reduce phase
     ArrayList<Vector> aggregatedCoreset = coresets.reduce((a, b) -> {
-      a.addAll(b);
-      return a;
+      ArrayList<Vector> c = new ArrayList<>(a.size()+b.size());
+      c.addAll(a);
+      c.addAll(b);
+      return c;
     });
 
     System.out.println("Aggregated coreset with " + aggregatedCoreset.size() + " points");
@@ -57,7 +59,7 @@ public class FourthHomeworkSolution {
     double sum = 0.0;
     for (int i=0; i<n; i++) {
       for (int j=i+1; j<n; j++) {
-        sum += Vectors.sqdist(points.get(i), points.get(j));
+        sum += ThirdHomeworkSolution.euclidean(points.get(i), points.get(j));
       }
     }
     return sum;
@@ -78,7 +80,7 @@ public class FourthHomeworkSolution {
     double[][] distanceMatrix = new double[n][n];
     for (int i = 0; i < n; i++) {
       for (int j = i+1; j < n; j++) {
-        distanceMatrix[i][j] = Vectors.sqdist(points.get(i), points.get(j));
+        distanceMatrix[i][j] = ThirdHomeworkSolution.euclidean(points.get(i), points.get(j));
         distanceMatrix[j][i] = distanceMatrix[i][j];
       }
     }
@@ -99,7 +101,7 @@ public class FourthHomeworkSolution {
         if (candidates[i]) {
           for (int j = i+1; j < n; j++) {
             if (candidates[j]) {
-              double d = distanceMatrix[i][j]; //Vectors.sqdist(points.get(i), points.get(j));
+              double d = distanceMatrix[i][j]; //ThirdHomeworkSolution.euclidean(points.get(i), points.get(j));
               if (d > maxDist) {
                 maxDist = d;
                 maxI = i;
@@ -146,7 +148,7 @@ public class FourthHomeworkSolution {
     int k;
 
     @Parameter(names = "--tau")
-    int tau;
+    int tau = -1;
 
     @Parameter(names = "--blocks")
     int blocks = -1;
@@ -228,7 +230,9 @@ public class FourthHomeworkSolution {
     }
 
     double diversity = measure(solution);
-    double averageDistance = diversity / solution.size();
+    int solutionSize = solution.size();
+    int numDistances = (solutionSize-1)*solutionSize / 2;
+    double averageDistance = diversity / numDistances;
 
     System.out.println("Solution with diversity " + diversity + " (average distance " + averageDistance + ")");
     System.out.println("Elapsed time " + elapsed + " ms");

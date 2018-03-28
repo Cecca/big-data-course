@@ -3,6 +3,7 @@ package it.unipd.dei.bdc1718;
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
 import org.apache.spark.mllib.linalg.Vector;
+import org.apache.spark.mllib.linalg.Vectors;
 
 import java.io.IOException;
 import java.nio.file.Files;

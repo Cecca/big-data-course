@@ -79,8 +79,14 @@
 
   <property>
     <name>yarn.scheduler.maximum-allocation-mb</name>
-    <value> 14336 </value>
+    <value> 2432 </value>
     <description>the maximum memory that can be allocated for each container, in MB</description>
+  </property>
+
+  <property>
+    <name>yarn.scheduler.maximum-allocation-vcores</name>
+    <value> 4 </value>
+    <description>the maximum number of cores per container</description>
   </property>
 
   <property>
