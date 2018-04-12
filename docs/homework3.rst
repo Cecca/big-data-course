@@ -3,6 +3,14 @@ Third Homework
 
 .. highlight:: java
 
+Preliminaries
+-------------
+
+You can download the `homework template <https://drive.google.com/uc?export=download&id=120llcNk2dAY1lKOLAxsKo8N-TxwHCuJB>`_
+and place it in the project along with the other homeworks, renaming it as ``GxxH33.java``.
+
+Assignment
+----------
 
 The task of the third homework is to implement the sequential k-center algorithm by Gonzalez.
 Points to be clustered are represented by instances of the class ``org.apache.spark.mllib.linalg.Vector``.

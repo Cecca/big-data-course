@@ -27,6 +27,10 @@ public class FourthHomework {
     throw new RuntimeException("Implement me!");
   }
 
+  public static double euclidean(Vector a, Vector b) {
+    return Math.sqrt(Vectors.sqdist(a, b));
+  }
+
   /**
    * Compute the sum of pairwise distances (that is, the remote clique measure) on the given set.
    */
@@ -35,7 +39,7 @@ public class FourthHomework {
     double sum = 0.0;
     for (int i=0; i<n; i++) {
       for (int j=i+1; j<n; j++) {
-        sum += Vectors.sqdist(points.get(i), points.get(j));
+        sum += euclidean(points.get(i), points.get(j));
       }
     }
     return sum;
@@ -56,7 +60,7 @@ public class FourthHomework {
     double[][] distanceMatrix = new double[n][n];
     for (int i = 0; i < n; i++) {
       for (int j = i+1; j < n; j++) {
-        distanceMatrix[i][j] = Vectors.sqdist(points.get(i), points.get(j));
+        distanceMatrix[i][j] = euclidean(points.get(i), points.get(j));
         distanceMatrix[j][i] = distanceMatrix[i][j];
       }
     }
@@ -77,7 +81,7 @@ public class FourthHomework {
         if (candidates[i]) {
           for (int j = i+1; j < n; j++) {
             if (candidates[j]) {
-              double d = distanceMatrix[i][j]; //Vectors.sqdist(points.get(i), points.get(j));
+              double d = distanceMatrix[i][j];
               if (d > maxDist) {
                 maxDist = d;
                 maxI = i;

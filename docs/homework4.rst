@@ -3,6 +3,9 @@ Fourth Homework
 
 .. highlight:: java
 
+You can find the template for this homework `here <https://drive.google.com/uc?export=download&id=120llcNk2dAY1lKOLAxsKo8N-TxwHCuJB>`_.
+Download it and rename it to ``GxxHM4.java``, replacing ``xx`` with your group number.
+
 Preliminaries: connecting to the cloud
 --------------------------------------
 

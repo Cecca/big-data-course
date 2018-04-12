@@ -17,6 +17,9 @@ public class ThirdHomework {
     throw new RuntimeException("Implement me!");
   }
 
+  public static double euclidean(Vector a, Vector b) {
+    return Math.sqrt(Vectors.sqdist(a, b));
+  }
 
   private static class Args {
 
