@@ -33,7 +33,7 @@ Once you have installed it, execute it: a GUI will show up
 .. image:: images/putty.png
 
 Fill the boxes as shown in the image above, replacing ``groupXX`` with your own group's name.
-A terminal will open, giving you access to the cluster.
+A terminal will open, asking for your password and giving you access to the cluster.
 
 Uploading code to the cluster
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -55,7 +55,7 @@ Then, to upload the jar file to your account on the cluster, open the embedded t
 The terminal will open in the root directory of the project.
 On Linux and MacOS, run the scp command as shown in the image below, changing ``group01`` to your group's ID, and possibly changing the name of the jar file.
 
-.. image:: images/shadow-jar-4.png
+.. image:: images/scp.png
 
 If you are on windows, replace ``scp`` with ``pscp`` (which was installed along with Putty), and use ``\`` instead of ``/`` in file paths.
 Again, on all operating systems, don't worry if you don't see characters appearing on screen while you type your password: it's the expected behaviour to preserve your privacy.
