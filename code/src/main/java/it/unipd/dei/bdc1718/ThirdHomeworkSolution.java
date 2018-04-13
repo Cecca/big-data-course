@@ -84,7 +84,7 @@ public class ThirdHomeworkSolution {
             .build()
             .parse(args);
 
-    ArrayList<Vector> input = InputOutput.readVectorsSequential(arguments.input);
+    ArrayList<Vector> input = InputOutput.readVectorsSequentialBin(arguments.input);
     long start = System.currentTimeMillis();
     System.out.println("Loaded input with " + input.size() + " points");
     ArrayList<Vector> solution = kCenter(input, arguments.k);

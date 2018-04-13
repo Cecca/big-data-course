@@ -54,7 +54,7 @@ public class Sample {
       return;
     }
 
-    JavaRDD<Vector> vecs = InputOutput.readVectors(sc, arguments.input).cache();
+    JavaRDD<Vector> vecs = InputOutput.readVectorsBin(sc, arguments.input).cache();
     long cnt = vecs.count();
     logger.info("The count of vectors is {}", cnt);
     int dims = vecs.take(1).get(0).size();
@@ -65,9 +65,9 @@ public class Sample {
     long sampleCnt = sample.count();
     logger.info("Sampled {} vectors", sampleCnt);
     if (arguments.coalesce) {
-      InputOutput.writeVectors(sample.coalesce(1), output);
+      InputOutput.writeVectorsBin(sample.coalesce(1), output);
     } else {
-      InputOutput.writeVectors(sample, output);
+      InputOutput.writeVectorsBin(sample, output);
     }
   }
 

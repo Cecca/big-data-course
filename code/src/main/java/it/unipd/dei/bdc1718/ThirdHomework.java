@@ -24,7 +24,7 @@ public class ThirdHomework {
     String inputPath = args[0];
     int k = Integer.parseInt(args[1]);
 
-    ArrayList<Vector> input = InputOutput.readVectorsSequential(inputPath);
+    ArrayList<Vector> input = InputOutput.readVectorsSequentialBin(inputPath);
     long start = System.currentTimeMillis();
     System.out.println("Loaded input with " + input.size() + " points");
     ArrayList<Vector> solution = kCenter(input, k);

@@ -40,7 +40,7 @@ public class DistanceDistribution {
       .setAppName("Simple preprocessing");
     JavaSparkContext sc = new JavaSparkContext(conf);
 
-    JavaRDD<Vector> vectors =InputOutput.readVectors(sc, arguments.input).cache();
+    JavaRDD<Vector> vectors =InputOutput.readVectorsBin(sc, arguments.input).cache();
     long cnt = vectors.count();
     JavaRDD<Vector> sample = vectors
       .sample(false, arguments.sampleSize / ((double) cnt));
