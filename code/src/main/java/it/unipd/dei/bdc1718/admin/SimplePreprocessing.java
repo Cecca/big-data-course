@@ -137,7 +137,7 @@ public class SimplePreprocessing {
       return Collections.singleton(Vectors.dense(pageVector)).iterator();
     });
 
-    it.unipd.dei.bdc1718.InputOutput.writeVectorsBin(vectors, arguments.output);
+    it.unipd.dei.bdc1718.InputOutput.writeVectors(vectors, arguments.output);
 
     logger.info("Done");
     logger.info("Skipped {} words over {}", skippedWords.value(), totalWords.value());

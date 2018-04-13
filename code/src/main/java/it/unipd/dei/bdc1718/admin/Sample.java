@@ -54,7 +54,7 @@ public class Sample {
       return;
     }
 
-    JavaRDD<Vector> vecs = InputOutput.readVectorsBin(sc, arguments.input).cache();
+    JavaRDD<Vector> vecs = InputOutput.readVectors(sc, arguments.input).cache();
     long cnt = vecs.count();
     logger.info("The count of vectors is {}", cnt);
     int dims = vecs.take(1).get(0).size();

@@ -192,7 +192,7 @@ public class FourthHomeworkSolution {
     SparkConf conf = new SparkConf(true).setAppName("diversity maximization");
     JavaSparkContext sc = new JavaSparkContext(conf);
 
-    JavaRDD<Vector> input = InputOutput.readVectorsBin(sc, arguments.input).repartition(Utils.getNumCores(sc.getConf())).cache();
+    JavaRDD<Vector> input = InputOutput.readVectors(sc, arguments.input).repartition(Utils.getNumCores(sc.getConf())).cache();
     long cnt = input.count(); // Force caching of input, so that we don't measure loading time
     System.out.println("Loaded dataset with " + cnt + " elements");
 
