@@ -1,9 +1,10 @@
 package it.unipd.dei.bdc1718;
 
-import jdk.nashorn.internal.runtime.arrays.ArrayLikeIterator;
+import org.apache.hadoop.io.compress.BZip2Codec;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.io.CompressionCodec;
 import org.apache.spark.mllib.linalg.Vector;
 import org.apache.spark.mllib.linalg.Vectors;
 import org.apache.spark.sql.Encoders;
@@ -13,7 +14,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 /**
  * Collection of utility input/output methods
@@ -56,7 +56,8 @@ public class InputOutput {
   }
 
   public static void writeVectors(JavaRDD<Vector> vectors, String path) {
-    vectors.map(InputOutput::vectorToStr).saveAsTextFile(path);
+    vectors.map(InputOutput::vectorToStr)
+            .saveAsTextFile(path, BZip2Codec.class);
   }
 
   public static JavaRDD<Vector> readVectorsBin(JavaSparkContext sc, String path) {
@@ -85,7 +86,21 @@ public class InputOutput {
   }
 
   public static void main(String[] args) throws IOException {
-    System.out.println(readVectorsSeq("vecs.txt"));
+    String subcmd = args[0];
+    String input = args[1];
+    String output = args[2];
+
+    SparkConf conf = new SparkConf(true).setAppName("conversions");
+    JavaSparkContext sc = new JavaSparkContext(conf);
+
+    if ("bin2txt".equals(subcmd)) {
+      writeVectors(readVectorsBin(sc, input), output);
+    } else if ("txt2bin".equals(subcmd)) {
+      writeVectorsBin(readVectors(sc, input), output);
+    } else {
+      throw new IllegalArgumentException("Unknown subcommand");
+    }
+
   }
 
 }
