@@ -65,9 +65,9 @@ public class Sample {
     long sampleCnt = sample.count();
     logger.info("Sampled {} vectors", sampleCnt);
     if (arguments.coalesce) {
-      InputOutput.writeVectorsBin(sample.coalesce(1), output);
+      InputOutput.writeVectorsSeq(sample, output);
     } else {
-      InputOutput.writeVectorsBin(sample, output);
+      InputOutput.writeVectors(sample, output);
     }
   }
 

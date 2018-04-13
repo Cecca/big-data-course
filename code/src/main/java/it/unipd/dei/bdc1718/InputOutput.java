@@ -9,8 +9,9 @@ import org.apache.spark.mllib.linalg.Vector;
 import org.apache.spark.mllib.linalg.Vectors;
 import org.apache.spark.sql.Encoders;
 import org.apache.spark.sql.SparkSession;
+import org.apache.spark.sql.execution.datasources.OutputWriter;
 
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -58,6 +59,17 @@ public class InputOutput {
   public static void writeVectors(JavaRDD<Vector> vectors, String path) {
     vectors.map(InputOutput::vectorToStr)
             .saveAsTextFile(path, BZip2Codec.class);
+  }
+
+  public static void writeVectorsSeq(JavaRDD<Vector> vectors, String path) {
+    try (OutputStream os = new BufferedOutputStream(new FileOutputStream(path))) {
+      PrintWriter pw = new PrintWriter(os);
+      vectors.map(InputOutput::vectorToStr)
+              .toLocalIterator()
+              .forEachRemaining(pw::println);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   public static JavaRDD<Vector> readVectorsBin(JavaSparkContext sc, String path) {
