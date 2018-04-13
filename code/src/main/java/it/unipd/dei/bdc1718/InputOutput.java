@@ -1,5 +1,6 @@
 package it.unipd.dei.bdc1718;
 
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import org.apache.hadoop.io.compress.BZip2Codec;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
@@ -62,8 +63,9 @@ public class InputOutput {
   }
 
   public static void writeVectorsSeq(JavaRDD<Vector> vectors, String path) {
-    try (OutputStream os = new BufferedOutputStream(new FileOutputStream(path))) {
-      PrintWriter pw = new PrintWriter(os);
+    try (FileOutputStream fos = new FileOutputStream(path);
+         OutputStream os = new BufferedOutputStream(fos);
+         PrintWriter pw = new PrintWriter(os)) {
       vectors.map(InputOutput::vectorToStr)
               .toLocalIterator()
               .forEachRemaining(pw::println);

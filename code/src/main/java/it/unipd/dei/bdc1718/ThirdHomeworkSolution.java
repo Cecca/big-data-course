@@ -57,47 +57,28 @@ public class ThirdHomeworkSolution {
     return centers;
   }
 
-
-  private static class Args {
-
-    @Parameter(names = "--input", required = true, description = "Path to the input dataset")
-    String input;
-
-    @Parameter(names = "-k", required = true)
-    int k;
-
-  }
-
-  private static void appendResult(Args arguments, long elapsedTime) throws IOException {
-    Files.write(
-            Paths.get("k-center-time.txt"),
-            (arguments.input + "," + arguments.k + "," + elapsedTime + "\n").getBytes(),
-            StandardOpenOption.APPEND,
-            StandardOpenOption.CREATE);
-  }
-
   public static void main(String[] args) throws Exception {
 
-    Args arguments = new Args();
-    JCommander.newBuilder()
-            .addObject(arguments)
-            .build()
-            .parse(args);
+    if (args.length != 2) {
+      throw new IllegalArgumentException("USAGE: ThirdHomework PATH K");
+    }
 
-    ArrayList<Vector> input = InputOutput.readVectorsSeq(arguments.input);
+    String inputPath = args[0];
+    int k = Integer.parseInt(args[1]);
+
+    ArrayList<Vector> input = InputOutput.readVectorsSeq(inputPath);
     long start = System.currentTimeMillis();
     System.out.println("Loaded input with " + input.size() + " points");
-    ArrayList<Vector> solution = kCenter(input, arguments.k);
+    ArrayList<Vector> solution = kCenter(input, k);
     long end = System.currentTimeMillis();
 
-    if (solution.size() > arguments.k) {
+    if (solution.size() > k) {
       throw new IllegalArgumentException(
-              "The solution has " + solution.size() + " points ( > " + arguments.k + " )");
+              "The solution has " + solution.size() + " points ( > " + k + " )");
     }
 
     long elapsed = end - start;
     System.out.println("Elapsed time " + elapsed + " ms");
-    appendResult(arguments, elapsed);
   }
 
 
