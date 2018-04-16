@@ -8,19 +8,22 @@ Preliminaries
 
 You can download the `homework template <https://drive.google.com/uc?export=download&id=120llcNk2dAY1lKOLAxsKo8N-TxwHCuJB>`_
 and place it in the project along with the other homeworks, renaming it as ``GxxH33.java``.
+Along with this file, you should also download the class 
+`InputOutput <https://drive.google.com/uc?export=download&id=1_2rTHh7loUpRg0V_TCqVIs5iJG4aQLJF>`_, which contains useful methods to load and write text files containing vectors.
 
 Assignment
 ----------
 
 The task of the third homework is to implement the sequential k-center algorithm by Gonzalez.
 Points to be clustered are represented by instances of the class ``org.apache.spark.mllib.linalg.Vector``.
-You can download three example datasets:
+You can download a `zip file <https://drive.google.com/uc?export=download&id=1x1z4tgrEyBwv9jPto_iOiYo0FUJeheYp>`_ containing the following datasets:
 
-* `vecs-50-10000.bin <https://drive.google.com/uc?export=download&id=1b6G-Y7va7Lq7ikek5XoWEquy3hu51fl7>`_ 10 thousands vectors in 50 dimensions
-* `vecs-50-50000.bin <https://drive.google.com/uc?export=download&id=1XZSi5jnijkwcXzhTkPS1cwyp-EN5-Ars>`_ 50 thousands vectors in 50 dimensions
-* `vecs-50-100000.bin <https://drive.google.com/uc?export=download&id=15KHSg7J8W0qWzw1d9RTwjGejceVrwiCi>`_ 100 thousands vectors in 50 dimensions
+* vecs-50-10000.bin: 10 thousands vectors in 50 dimensions
+* vecs-50-50000.bin: 50 thousands vectors in 50 dimensions
+* vecs-50-100000.bin: 100 thousands vectors in 50 dimensions
+* vecs-50-500000.bin: 500 thousands vectors in 50 dimensions
 
-These datasets are in binary format and should be read using the ``InputOutput.readVectors`` method provided within the project's template.
+These datasets are in text format and can be read using the ``InputOutput.readVectorsSeq`` method provided by the class `InputOutput`.
 
 .. warning::
   There is also a ``org.apache.spark.ml.linalg.Vector`` class within Spark.

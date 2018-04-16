@@ -25,16 +25,6 @@ public class InputOutput {
     return Vectors.dense(data);
   }
 
-  public static String vectorToStr(Vector v) {
-    StringBuffer sb = new StringBuffer();
-    double[] data = v.toArray();
-    for (int i=0; i<data.length-1; i++) {
-      sb.append(data[i]).append(' ');
-    }
-    sb.append(data[data.length-1]);
-    return sb.toString();
-  }
-
   public static JavaRDD<Vector> readVectors(JavaSparkContext sc, String path) {
     return sc.textFile(path).map(InputOutput::strToVector);
   }
@@ -50,24 +40,5 @@ public class InputOutput {
             .forEach(result::add);
     return result;
   }
-
-  public static void writeVectors(JavaRDD<Vector> vectors, String path) {
-    vectors.map(InputOutput::vectorToStr)
-            .saveAsTextFile(path, BZip2Codec.class);
-  }
-
-  public static void writeVectorsSeq(JavaRDD<Vector> vectors, String path) {
-    try (FileOutputStream fos = new FileOutputStream(path);
-         OutputStream os = new BufferedOutputStream(fos);
-         PrintWriter pw = new PrintWriter(os)) {
-      vectors.map(InputOutput::vectorToStr)
-              .toLocalIterator()
-              .forEachRemaining(pw::println);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
-
-
 
 }

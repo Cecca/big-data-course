@@ -47,7 +47,7 @@ public class BinaryIO {
     JavaSparkContext sc = new JavaSparkContext(conf);
 
     if ("bin2txt".equals(subcmd)) {
-      InputOutput.writeVectors(readVectorsBin(sc, input), output);
+      Output.writeVectors(readVectorsBin(sc, input), output);
     } else if ("txt2bin".equals(subcmd)) {
       writeVectorsBin(InputOutput.readVectors(sc, input), output);
     } else {
