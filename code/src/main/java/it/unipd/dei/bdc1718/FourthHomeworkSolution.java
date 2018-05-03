@@ -1,24 +1,20 @@
 package it.unipd.dei.bdc1718;
 
-import com.beust.jcommander.JCommander;
-import com.beust.jcommander.Parameter;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.mllib.linalg.Vector;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Random;
 
 public class FourthHomeworkSolution {
 
   /**
    * Two round MapReduce algorithm
    */
-  public static ArrayList<Vector> runMapReduce(final JavaRDD<Vector> points, int k, int tau, int numBlocks) {
+  public static ArrayList<Vector> runMapReduce(final JavaRDD<Vector> points, int k, int numBlocks) {
 
     // Map phase
     JavaRDD<ArrayList<Vector>> coresets = points
@@ -29,7 +25,7 @@ public class FourthHomeworkSolution {
               for (Vector v : pointsIter) {
                 localPoints.add(v);
               }
-              return ThirdHomeworkSolution.kCenter(localPoints, tau);
+              return ThirdHomeworkSolution.kCenter(localPoints, k);
             });
 
     // Reduce phase
@@ -137,54 +133,17 @@ public class FourthHomeworkSolution {
     return result;
   }
 
-
-  private static class Args {
-
-    @Parameter(names = "--input", required = true, description = "Path to the input dataset")
-    String input;
-
-    @Parameter(names = "-k", required = true)
-    int k;
-
-    @Parameter(names = "--tau")
-    int tau = -1;
-
-    @Parameter(names = "--blocks")
-    int blocks = -1;
-
-    @Parameter(names = "--algorithm")
-    String algorithm = "mapreduce";
-
-    Set<String> validAlgorithms = new HashSet<>(Arrays.asList(
-            "random", "mapreduce", "sequential"
-    ));
-
-  }
-
-  private static void appendResult(Args arguments, long elapsedTime, double diversity, double average) throws IOException {
-    Files.write(
-            Paths.get("diversity-result.txt"),
-            (arguments.input + "," + arguments.algorithm + "," + arguments.k + "," + arguments.tau + "," + arguments.blocks + "," + elapsedTime + "," + diversity + "," + average + "\n").getBytes(),
-            StandardOpenOption.APPEND,
-            StandardOpenOption.CREATE);
-  }
-
   public static void main(String[] args) throws Exception {
-
-    Args arguments = new Args();
-    JCommander.newBuilder()
-            .addObject(arguments)
-            .build()
-            .parse(args);
-
-    if (!arguments.validAlgorithms.contains(arguments.algorithm)) {
-      System.err.println("Unknown algorithm `" + arguments.algorithm + "`");
-      System.err.println("Valid algorithms are");
-      System.err.println("  " + arguments.validAlgorithms);
+    if (args.length != 4) {
+      System.err.println("USAGE: <progname> input algorithm k blocks");
       System.exit(1);
     }
+    String inputPath = args[0];
+    String algorithm = args[1];
+    int k = Integer.parseInt(args[2]);
+    int blocks = Integer.parseInt(args[3]);
 
-    if (arguments.k <= 2) {
+    if (k <= 2) {
       System.err.println("Parameter `k` must be greater than 2");
       System.exit(1);
     }
@@ -192,40 +151,37 @@ public class FourthHomeworkSolution {
     SparkConf conf = new SparkConf(true).setAppName("diversity maximization");
     JavaSparkContext sc = new JavaSparkContext(conf);
 
-    JavaRDD<Vector> input = InputOutput.readVectors(sc, arguments.input).repartition(Utils.getNumCores(sc.getConf())).cache();
+    JavaRDD<Vector> input = InputOutput.readVectors(sc, inputPath).repartition(Utils.getNumCores(sc.getConf())).cache();
     long cnt = input.count(); // Force caching of input, so that we don't measure loading time
     System.out.println("Loaded dataset with " + cnt + " elements");
 
     long elapsed;
     ArrayList<Vector> solution;
 
-    if ("sequential".equals(arguments.algorithm)) {
+    if ("sequential".equals(algorithm)) {
       ArrayList<Vector> localPoints = new ArrayList<>();
       localPoints.addAll(input.collect());
       long start = System.currentTimeMillis();
-      solution = runSequential(localPoints, arguments.k);
+      solution = runSequential(localPoints, k);
       elapsed = System.currentTimeMillis() - start;
-    } else if ("mapreduce".equals(arguments.algorithm)) {
-      if (arguments.blocks < 0) {
-        arguments.blocks = input.getNumPartitions();
-      }
-      if (arguments.tau < 0) {
-        arguments.tau = arguments.k;
+    } else if ("mapreduce".equals(algorithm)) {
+      if (blocks < 0) {
+        blocks = input.getNumPartitions();
       }
       long start = System.currentTimeMillis();
-      solution = runMapReduce(input, arguments.k, arguments.tau, arguments.blocks);
+      solution = runMapReduce(input, k, blocks);
       elapsed = System.currentTimeMillis() - start;
-    } else if ("random".equals(arguments.algorithm)) {
+    } else if ("random".equals(algorithm)) {
       long start = System.currentTimeMillis();
-      solution = runRandom(input, arguments.k);
+      solution = runRandom(input, k);
       elapsed = System.currentTimeMillis() - start;
     } else {
-      throw new IllegalArgumentException("Unsupported algorithm " + arguments.algorithm);
+      throw new IllegalArgumentException("Unsupported algorithm " + algorithm);
     }
 
-    if (solution.size() > arguments.k) {
+    if (solution.size() > k) {
       throw new IllegalArgumentException(
-              "The solution has " + solution.size() + " points ( > " + arguments.k + " )");
+              "The solution has " + solution.size() + " points ( > " + k + " )");
     }
 
     double diversity = measure(solution);
@@ -235,7 +191,6 @@ public class FourthHomeworkSolution {
 
     System.out.println("Solution with diversity " + diversity + " (average distance " + averageDistance + ")");
     System.out.println("Elapsed time " + elapsed + " ms");
-    appendResult(arguments, elapsed, diversity, averageDistance);
   }
 
 
