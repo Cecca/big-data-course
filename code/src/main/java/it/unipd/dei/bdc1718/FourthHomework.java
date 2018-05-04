@@ -54,8 +54,6 @@ public class FourthHomework {
       return points;
     }
 
-
-    System.out.println("Populating distance matrix (requiring " + Utils.matrixMemory(n) + ")");
     long start = System.currentTimeMillis();
     double[][] distanceMatrix = new double[n][n];
     for (int i = 0; i < n; i++) {
@@ -76,6 +74,7 @@ public class FourthHomework {
       // Find the maximum distance pair among the candidates
       double maxDist = 0;
       int maxI = 0;
+
       int maxJ = 0;
       for (int i = 0; i < n; i++) {
         if (candidates[i]) {
@@ -136,7 +135,7 @@ public class FourthHomework {
     SparkConf conf = new SparkConf(true).setAppName("diversity maximization");
     JavaSparkContext sc = new JavaSparkContext(conf);
 
-    JavaRDD<Vector> input = InputOutput.readVectors(sc, inputPath).repartition(Utils.getNumCores(sc.getConf())).cache();
+    JavaRDD<Vector> input = InputOutput.readVectors(sc, inputPath).repartition(blocks).cache();
     long cnt = input.count(); // Force caching of input, so that we don't measure loading time
     System.out.println("Loaded dataset with " + cnt + " elements");
 
