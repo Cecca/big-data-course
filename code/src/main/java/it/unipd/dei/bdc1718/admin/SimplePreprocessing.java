@@ -6,6 +6,7 @@ import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.ling.CoreLabel;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
+import it.unipd.dei.bdc1718.InputOutput;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.spark.SparkConf;
@@ -137,7 +138,7 @@ public class SimplePreprocessing {
       return Collections.singleton(Vectors.dense(pageVector)).iterator();
     });
 
-    it.unipd.dei.bdc1718.InputOutput.writeVectors(vectors, arguments.output);
+    Output.writeVectors(vectors, arguments.output);
 
     logger.info("Done");
     logger.info("Skipped {} words over {}", skippedWords.value(), totalWords.value());
