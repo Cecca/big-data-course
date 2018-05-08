@@ -50,15 +50,23 @@
         src: files/spark-defaults.conf
         dest: /opt/spark/conf/spark-defaults.conf
 
-    - name: copy systemd scripts
+    - name: change ownership of Spark directories
+      file:
+        path: /opt/spark
+        owner: hadoop
+        group: hadoop
+        recurse: yes
+
+    - name: copy systemd scripts on the frontend
       copy:
         src: "files/{{ item }}"
         dest: "/etc/systemd/system/{{ item }}"
       with_items:
         - spark-history-server.service
+        - spark-master.service
       when: ansible_hostname == "frontend"      
 
-    - name: enable and start systemd services
+    - name: enable and start systemd services on the workers
       service:
         name: "{{ item }}"
         state: restarted
@@ -66,3 +74,23 @@
       when: ansible_hostname == "frontend"
       with_items:
         - spark-history-server
+        - spark-master.service
+
+    - name: copy systemd scripts on the workers
+      copy:
+        src: "files/{{ item }}"
+        dest: "/etc/systemd/system/{{ item }}"
+      with_items:
+        - spark-slave.service
+      when: ansible_hostname != "frontend"      
+
+    - name: disable systemd services on the workers
+      service:
+        name: "{{ item }}"
+        state: stopped 
+        enabled: yes
+      when: ansible_hostname != "frontend"
+      with_items:
+        - spark-slave.service
+
+
