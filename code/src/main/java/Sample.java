@@ -1,18 +1,20 @@
-package it.unipd.dei.bdc1718.admin;
+
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
+
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
+import org.apache.spark.mllib.linalg.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 
-public class Wiki2Txt {
+public class Sample {
 
   private static Logger logger = LoggerFactory.getLogger(Sample.class);
 
@@ -21,8 +23,14 @@ public class Wiki2Txt {
     @Parameter(names = "--input", required = true, description = "Path to the input dataset")
     String input;
 
-    @Parameter(names = "--output", required = true, description = "Path to the output vector dataset")
+    @Parameter(names = "--basename", required = true, description = "Path to the output vector dataset")
     String output;
+
+    @Parameter(names = "--size", required = true, description = "The size of the output")
+    long size;
+
+    @Parameter(names = "--coalesce", description = "Whether to coalesce into a single partition")
+    boolean coalesce = false;
 
   }
 
@@ -46,9 +54,21 @@ public class Wiki2Txt {
       return;
     }
 
-    JavaRDD<WikiPage> pages = WikiPage.readPages(sc, arguments.input);
-    pages.map((page) -> page.getText().replace('\n', ' '))
-            .saveAsTextFile(arguments.output);
+    JavaRDD<Vector> vecs = InputOutput.readVectors(sc, arguments.input).cache();
+    long cnt = vecs.count();
+    logger.info("The count of vectors is {}", cnt);
+    int dims = vecs.take(1).get(0).size();
+    String output = arguments.output + "-" + dims + "-" + arguments.size;
+    double prob = arguments.size / ((double) cnt);
+    logger.info("Sampling with probability {}", prob);
+    JavaRDD<Vector> sample = vecs.sample(false, prob).cache();
+    long sampleCnt = sample.count();
+    logger.info("Sampled {} vectors", sampleCnt);
+    if (arguments.coalesce) {
+      Output.writeVectorsSeq(sample, output);
+    } else {
+      Output.writeVectors(sample, output);
+    }
   }
 
 }

@@ -1,5 +1,3 @@
-package it.unipd.dei.bdc1718;
-
 import org.apache.spark.SparkConf;
 
 public class Utils {

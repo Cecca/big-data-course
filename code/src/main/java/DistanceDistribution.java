@@ -1,8 +1,8 @@
-package it.unipd.dei.bdc1718.admin;
+
 
 import com.beust.jcommander.JCommander;
 import com.beust.jcommander.Parameter;
-import it.unipd.dei.bdc1718.InputOutput;
+
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;

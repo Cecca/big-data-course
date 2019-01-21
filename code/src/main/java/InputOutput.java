@@ -1,5 +1,3 @@
-package it.unipd.dei.bdc1718;
-
 import org.apache.hadoop.io.compress.BZip2Codec;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
