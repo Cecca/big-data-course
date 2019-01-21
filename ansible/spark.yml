@@ -93,4 +93,8 @@
       with_items:
         - spark-slave.service
 
+    - name: deploy libraries to speed up startup
+      command: /opt/hadoop/bin/hdfs dfs -ls /libs/spark-* || /opt/hadoop/bin/hdfs dfs -put /opt/spark/jars/*
+      when: ansible_hostname == "frontend"
+
 

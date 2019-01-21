@@ -3,6 +3,10 @@
 from passlib.hash import sha512_crypt
 import sys
 
+if len(sys.argv) != 2:
+    print("USAGE: python create_groupsdata.py NUM_GROUPS", file=sys.stderr)
+    sys.exit(1)
+
 num_users = int(sys.argv[1])
 
 for user_num in range(1, num_users+1):
