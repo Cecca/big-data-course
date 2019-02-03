@@ -240,6 +240,14 @@ ansible-playbook -i hosts -b ansible/site.yml
 
 and wait (quite a long time) for the configuration to finish.
 
+\vspace{2em}
+
+To verify that Spark works, run the following command on `frontend`, using a user other than `ubuntu`:
+
+```
+/opt/spark/bin/run-example SparkPi 10
+```
+
 # Turning machines on and off
 
 To turn on and off machines, go to the dashboard, select the _instances_ tab, and use the dropdown menu associated to each machine to turn them on and off, and also for rebooting.
@@ -248,13 +256,6 @@ To turn on and off machines, go to the dashboard, select the _instances_ tab, an
 
 When a machine turns on, all the associated services should start as well, including Spark, Yarn, and HDFS. If they don't, consult the next section on general administration.
 
-\vspace{2em}
-
-To verify that Spark works, run the following command on `frontend`, using a user other than `ubuntu`:
-
-```
-/opt/spark/bin/run-example SparkPi 10
-```
 
 # General administration
 
