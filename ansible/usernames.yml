@@ -2,6 +2,9 @@ admins:
   - name: ceccarel
     password: $6$v1sQ32TdgOrrd3$F630Is2SRna0mp.M5iKZmZaYqS42fon8G051LRIrAxCCvfMcrmw9qva2mhHIu5H1Me4xIsOlcSbzNqVwpaRbg.
 
+  - name: andrea
+    password: $6$4C/PRuRTFdIm0HIk$DjmJaN/G6iZ3bjsTY1O4TgZIHBtoYbX6AJPZUaEa6Fg71HpqukLEdSiIHFG/Ti1oW2znBAJCeO3EmrkhqzjiG1
+
 groupusers:
   - name: group01
     password: $6$0.kzc7dQkf9t1anW$ldJkkxEfKXqFAniFr239OOiY63qHjp4V46fzdft4muR1QHi/Ceczk8CMsIn9bTbrNnKNfs1Tlc6NkO7s3dvGG/

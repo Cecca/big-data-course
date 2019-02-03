@@ -62,6 +62,13 @@
         - hdfs-secondary-namenode.service
         - hdfs-datanode.service
 
+    - name: format the namenode
+      become_user: hadoop
+      shell:
+        /opt/hadoop/bin/hdfs namenode -format
+      args:
+        creates: /var/hdfs/names
+
     - name: enable and start systemd services
       service:
         name: "{{ item }}"

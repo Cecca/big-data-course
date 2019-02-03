@@ -93,8 +93,14 @@
       with_items:
         - spark-slave.service
 
+    - name: make directory for Spark jars
+      shell: /opt/hadoop/bin/hdfs dfs -mkdir -p /libs
+      become_user: hadoop
+      when: ansible_hostname == "frontend"
+
     - name: deploy libraries to speed up startup
-      command: /opt/hadoop/bin/hdfs dfs -ls /libs/spark-* || /opt/hadoop/bin/hdfs dfs -put /opt/spark/jars/*
+      shell: /opt/hadoop/bin/hdfs dfs -put -f /opt/spark/jars/* /libs
+      become_user: hadoop
       when: ansible_hostname == "frontend"
 
 

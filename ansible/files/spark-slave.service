@@ -1,0 +1,13 @@
+[Unit]
+Description=Apache Spark worker
+After=network.target
+
+[Service]
+Type=forking
+User=hadoop
+Group=hadoop
+ExecStart=/opt/spark/sbin/start-slave.sh spark://frontend:7077
+ExecStop=/opt/spark/sbin/stop-slave.sh 
+
+[Install]
+WantedBy=multi-user.target

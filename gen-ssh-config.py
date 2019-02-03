@@ -12,6 +12,7 @@ with open('frontend-public.txt') as fp:
 print("""\
 Host cloudveneto-frontend 
    HostName {}
+   Port 2222
    User ubuntu
    IdentityFile ~/.ssh/cloudveneto-machines.pem
 """.format(frontend_ip))
