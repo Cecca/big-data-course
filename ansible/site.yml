@@ -4,6 +4,6 @@
 - import_playbook: net.yml
 - import_playbook: monitoring.yml
 - import_playbook: yarn.yml
-- import_playbook: spark.yml
 - import_playbook: hdfs.yml
+- import_playbook: spark.yml
 - import_playbook: users.yml

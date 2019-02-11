@@ -227,7 +227,7 @@ bash gen-hosts.sh > hosts
 To check that everything is correctly configured, execute the following command
 
 ```
-ansible -i hosts -m ping
+ansible -i hosts all -m ping
 ```
 \noindent
 all the machines should reply `pong`, with green messages.
