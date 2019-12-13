@@ -50,9 +50,15 @@
         src: files/spark-defaults.conf
         dest: /opt/spark/conf/spark-defaults.conf
 
-    - name: change ownership of Spark directories
+    - name: change ownership of Spark symlink
       file:
         path: /opt/spark
+        owner: hadoop
+        group: hadoop
+
+    - name: change ownership of Spark directories
+      file:
+        path: /opt/spark-2.4.4-bin-hadoop2.7
         owner: hadoop
         group: hadoop
         recurse: yes
