@@ -549,5 +549,13 @@ it is most likely an issue of permissions. To solve it, run the following comman
 ansible all -b -i hosts -m file -a "path=/var/spark/local mode=777 state=directory"
 \end{verbatim}
 
+\section{Changing the space quota for users on HDFS}
+
+By default, each user has a quota of 10Gb under his home HDFS directory.
+To change this value to, say, 100Gb, the following command should be run on \lstinline{frontend} 
+
+\begin{verbatim}
+sudo -u hadoop /opt/hadoop/bin/hdfs dfsadmin -setSpaceQuota 100G /user/group71
+\end{verbatim}
 
 \end{document}
