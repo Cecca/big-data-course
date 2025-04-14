@@ -9,10 +9,12 @@ if len(sys.argv) != 2:
 
 num_users = int(sys.argv[1])
 
-for user_num in range(1, num_users+1):
-    user_id = "group{:02d}".format(user_num)
+for user_num in range(1, num_users + 1):
+    user_id = "group{:03d}".format(user_num)
     passwd = "{}pwd".format(user_id)
     crypt = sha512_crypt.using(rounds=5000).hash(passwd)
-    print("""\
+    print(
+        """\
   - name: {}
-    password: {}""".format(user_id, crypt))
+    password: {}""".format(user_id, crypt)
+    )
